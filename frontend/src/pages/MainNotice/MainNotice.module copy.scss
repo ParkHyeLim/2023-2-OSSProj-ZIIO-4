@@ -1,0 +1,41 @@
+.SelectionBox {
+    margin-right: 2rem;
+    padding-left: 0.5rem;
+    width: 12rem;
+    height: 3.5rem;
+    border-radius: 7px;
+    border-color: #E5E7EB;
+}
+
+.SelectionText {
+    font-size: 13px;
+    color: #374151;
+}
+
+input {
+    margin-right: 2rem;
+    padding-left: 0.5rem;
+    width: 20rem;
+    height: 3.5rem;
+    border-radius: 7px;
+    border-color: #E5E7EB;
+}
+
+.searchButton {
+    margin-right: 2rem;
+    width: 5rem;
+    height: 3.5rem;
+    background-color: #ffffff;
+    border-radius: 7px;
+    border-color: #E5E7EB;
+}
+
+.starButton {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0.2rem 1rem 0 0;
+    cursor: pointer;
+    outline: none
+}
+

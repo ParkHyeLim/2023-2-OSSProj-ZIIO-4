@@ -1,0 +1,1 @@
+export { MainNotice } from "./MainNotice";
