@@ -64,6 +64,9 @@ function MainNotice() {
       const isSubSubcategoryMatch = !categories3 || item.categories_3 === url.categories3;
       const isQueryMatch = !searchQuery || item.title.includes(searchQuery);
 
+      setCategories1(url.categories1);
+      setCategories2(url.categories2);
+      setCategories3(url.categories3);
       return isCategoryMatch && isSubcategoryMatch && isSubSubcategoryMatch && isQueryMatch;
     });
 
