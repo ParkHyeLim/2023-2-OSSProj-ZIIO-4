@@ -3,7 +3,7 @@ import logo from '../../assets/images/logo.png';
 import styles from './Header.module.scss';
 import classNames from 'classnames';
 
-export const Header = () => {
+const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname.split('/')[1];
@@ -35,3 +35,5 @@ export const Header = () => {
     </>
   );
 };
+
+export default Header;
