@@ -14,6 +14,14 @@ const MyPage = () => {
   return (
     <div className={styles.container}>
       <FullCalendar
+        customButtons={{
+          add: {
+            text: '✨ 새 일정 추가',
+            click: function () {
+              alert('clicked the custom button!');
+            },
+          },
+        }}
         initialView="dayGridMonth"
         events={[
           { title: 'event 1', date: '2023-10-16' },
@@ -25,12 +33,12 @@ const MyPage = () => {
         ]}
         plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={{
-          left: 'prev',
-          center: 'title',
-          right: 'next',
+          left: '',
+          center: 'prev title next',
+          right: 'add',
         }}
         titleFormat={{ year: 'numeric', month: 'numeric' }}
-        eventColor={'#8C8FDE'}
+        eventColor={'#f5a986'}
         editable={true}
         selectable={true}
         eventClick={handleEventClick}
