@@ -83,8 +83,8 @@ public class JsoupComponentLocalMain {
     }
 
     public static void main(String args[]) {
-        // 변수명, 카테고리 ID
-        String[][] kind = new String[][]{{"GENERALNOTICES","100000100"}, {"HAKSANOTICE","100000101"}, {"JANGHAKNOTICE","100000102"}};
+        // 메인 홈페이지 변수명, 카테고리 ID
+        String[][] kind = new String[][]{{"GENERALNOTICES","1"}, {"HAKSANOTICE","2"}, {"JANGHAKNOTICE","3"}};
         for (String[] k : kind) {
             for (int pageNum = 1; pageNum <= 1; pageNum++) { // 페이지 설정
                 getNoticeList(k[0], k[1], pageNum);

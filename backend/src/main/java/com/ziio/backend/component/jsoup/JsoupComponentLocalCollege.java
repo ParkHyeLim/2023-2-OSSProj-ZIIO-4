@@ -94,7 +94,7 @@ public class JsoupComponentLocalCollege {
 
     public static void main(String args[]) {
         // 단과대 변수명, notice no, 카테고리 ID
-        String[][] kind = new String[][]{{"bs","","102100000"},{"liberal","","102101000"}, {"science","","102102000"}};
+        String[][] kind = new String[][]{{"bs","","8"},{"liberal","","9"}, {"science","","10"}};
         for (String k[] : kind) {
             for (int pageNum = 1; pageNum <= 1; pageNum++) { // 페이지 설정
                 getNoticeList(k[0], k[1], k[2], pageNum);
