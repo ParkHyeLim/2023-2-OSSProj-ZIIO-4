@@ -1,35 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar, FaRegStar } from 'react-icons/fa';
-import './MainNotice.module copy.scss'
+import { AiOutlineClose } from 'react-icons/ai'
+import './MainNotice.module.scss'
 import categories from "../../util/category";
+import ClipModal from "../../components/ClipModal/ClipModal";
 
-const contents = [
-  { id: '공지', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '공지', categories_1: '메인', categories_2: '학술공지', categories_3: '', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '공지', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '공지', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4398', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4399', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4400', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4401', categories_1: '메인', categories_2: '학술공지', categories_3: '', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4402', categories_1: '메인', categories_2: '학술공지', categories_3: '', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4403', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4404', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4405', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4406', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
-  { id: '4407', categories_1: '단과대', categories_2: '불교대학', categories_3: '불교학부', title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표', date: '2023. 09. 21', writer: '나윤주' },
+const categories_id = [
+  { category_name: "일반공지", category_id: 0 },
+  { category_name: "학사공지", category_id: 1 },
+  { category_name: "학술공지", category_id: 2 },
+  { category_name: "불교대학", category_id: 3 },
+];
+
+const Data = [
+  {
+    announcement_id: '공지', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '공지', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '공지', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '공지', category_id: 2, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '1', category_id: 3, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '2', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+  {
+    announcement_id: '3', category_id: 2, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
 ]
 
 function MainNotice() {
-  const [categories1, setCategories1] = useState(''); // 선택한 대분류
-  const [categories2, setCategories2] = useState(''); // 선택한 중분류
-  const [categories3, setCategories3] = useState(''); // 선택한 소분류
+  const [categoryId, setCategoryId] = useState(categories_id); // db에서 카테고리 id 전달 받기
+  const [filteredContents, setFilteredContents] = useState(Data); // db에서 필터된 공지사항 전달 받기(첫: 메인-일반공지)
+
+  // 필터
+  const [categories1, setCategories1] = useState('메인');
+  const [categories2, setCategories2] = useState('일반공지');
+  const [categories3, setCategories3] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); // 검색어
-  const [bookmarkCategories, setBookmarkCategories] = useState([]); // 즐겨찾기
-  const [filteredContents, setFilteredContents] = useState(contents); // 필터된 공지사항 목록
+  const [filterId, setFilterId] = useState(0);
+
+  // 동작
+  const [isSearch, setIsSearch] = useState(true); // 검색 버튼 활성화/비활성화
+  const [isLogin, setIsLogin] = useState(true); // 로그인 여부
   const [isStarred, setIsStarred] = useState(
-    Array(contents.length).fill(false) // 초기 상태는 모두 false // db랑 연동되면 북마크 사항 반영
-  );
+    Array(Data.length).fill(false) // 초기 상태는 모두 false // db랑 연동되면 북마크 사항 반영
+  )
+  const [isClipModalOpen, setIsClipModalOpen] = useState(false); // 모달창
+  const [searchCategories, setSearchCategories] = useState([]); // 검색 기록
+  const [bookmarkCategories, setBookmarkCategories] = useState([]); // 즐겨찾기
+
+  // 공지 스크랩
+  const [focusIndex, setFocusIndex] = useState(0);// focus된 공지 index
+
+  // 검색 기록(세션 불러오기)
+  useEffect(() => {
+    // sessionStorage.clear();
+    const isSessionData = sessionStorage.getItem('searchCategories');
+    const parseExistingData = isSessionData ? JSON.parse(isSessionData) : sessionStorage.setItem('searchCategories', JSON.stringify([]));
+    setSearchCategories(parseExistingData);
+  }, []);
+
+  // 필터
+  useEffect(() => {
+    if (categories2 === '') {
+      setIsSearch(false);
+    } else {
+      setIsSearch(true);
+    }
+
+  }, [categories2]);
 
   const handleCategories1Change = (e) => {
     setCategories1(e.target.value);
@@ -42,37 +96,63 @@ function MainNotice() {
     setCategories3(''); // 소분류 초기화
   };
 
+  // 카테고리 id 찾기
+  const checkSearchCategoryId = (c1, c2, c3) => {
+    let select_category
+    if (categories2 === '') {
+      select_category = categoryId.filter((item) => {
+        const isCategoryIdMatch = !c1 || item.category_name === c1;
+        return isCategoryIdMatch;
+      })
+    } else if (categories3 === '') {
+      select_category = categoryId.filter((item) => {
+        const isCategoryIdMatch = !c2 || item.category_name === c2;
+        return isCategoryIdMatch;
+      })
+    } else {
+      select_category = categoryId.filter((item) => {
+        const isCategoryIdMatch = !c3 || item.category_name === c3;
+        return isCategoryIdMatch;
+      });
+    }
+
+    setFilterId(select_category[0].category_id);  // 백에 전달
+    return select_category[0].category_id
+  }
+
+
+  // 필터 테스트 용(추후에는 db에서 받기 때문에 사라질 것)
+  // 검색(카테고리 id 받아서 db에 전달)
   const handleSearch = () => {
-    // 필터링 및 검색어 처리 로직 추가
-    const filtered = contents.filter((item) => {
-      const isCategoryMatch = !categories1 || item.categories_1 === categories1;
-      const isSubcategoryMatch = !categories2 || item.categories_2 === categories2;
-      const isSubSubcategoryMatch = !categories3 || item.categories_3 === categories3;
-      const isQueryMatch = !searchQuery || item.title.includes(searchQuery);
+    const id = checkSearchCategoryId(categories1, categories2, categories3);
 
-      return isCategoryMatch && isSubcategoryMatch && isSubSubcategoryMatch && isQueryMatch;
+    const filtered = Data.filter((item) => {
+      const isCategoryMatch = !filterId || item.category_id === id;
+      return isCategoryMatch;
     });
 
     setFilteredContents(filtered);
+
+    if (isLogin) {
+      handleAddBookmark();
+    } else {
+      addSearchList(id);
+    }
   };
 
+  // 즐겨찾기 검색(카테고리id 받아서 db에 전달)
   const handleBookmarkSearch = (url) => {
-    // 필터링 및 검색어 처리 로직 추가
-    const filtered = contents.filter((item) => {
-      const isCategoryMatch = !categories1 || item.categories_1 === url.categories1;
-      const isSubcategoryMatch = !categories2 || item.categories_2 === url.categories2;
-      const isSubSubcategoryMatch = !categories3 || item.categories_3 === url.categories3;
-      const isQueryMatch = !searchQuery || item.title.includes(searchQuery);
+    const id = checkSearchCategoryId(url.categories1, url.categories2, url.categories3);
 
-      setCategories1(url.categories1);
-      setCategories2(url.categories2);
-      setCategories3(url.categories3);
-      return isCategoryMatch && isSubcategoryMatch && isSubSubcategoryMatch && isQueryMatch;
+    const filtered = Data.filter((item) => {
+      const isCategoryMatch = !id || item.category_id === filterId;
+      return isCategoryMatch;
     });
 
     setFilteredContents(filtered);
   };
 
+  // 즐겨찾기 추가 
   const handleAddBookmark = () => {
     if (categories1 || categories2 || categories3) {
       const newBookmark = {
@@ -83,9 +163,35 @@ function MainNotice() {
           categories3,
         },
       };
-      setBookmarkCategories([...bookmarkCategories, newBookmark]);
+
+      // 같은 이름을 가진 항목이 이미 있는지 확인
+      if (isLogin) {
+        const hasDuplicate = bookmarkCategories.some((bookmark) => bookmark.name === newBookmark.name);
+        if (!hasDuplicate) {
+          // 같은 이름이 없는 경우에만 추가
+          setBookmarkCategories([...bookmarkCategories, newBookmark]);
+        }
+      }
     }
   };
+
+  // 즐겨찾기 삭제(db에 id 전달)
+  const handleDeleteBookmark = (title) => {
+    if (isLogin) {
+      const updatedBookmarkCategories = bookmarkCategories.filter((bookmark) => bookmark.name !== title);
+      setBookmarkCategories(updatedBookmarkCategories);
+    }
+  }
+
+  // 스크랩 취소
+  const handleCencleBookmark = (idx) => {
+    setIsStarred((prevIsStarred) => {
+      const updatedIsStarred = [...prevIsStarred];
+      updatedIsStarred[idx] = !prevIsStarred[idx];
+      return updatedIsStarred;
+    });
+    setIsClipModalOpen(!isClipModalOpen);
+  }
 
   const toggleStar = (idx) => {
     setIsStarred((prevIsStarred) => {
@@ -93,7 +199,55 @@ function MainNotice() {
       updatedIsStarred[idx] = !prevIsStarred[idx];
       return updatedIsStarred;
     });
+    setFocusIndex(idx);
+    setIsClipModalOpen(!isClipModalOpen);
   };
+
+  // 검색 기록 (세션에 저장)
+  const addSearchList = (id) => {
+    if (categories1 || categories2 || categories3) {
+      const newSearch = {
+        name: categories3 || categories2,
+        url: {
+          categories1,
+          categories2,
+          categories3,
+        },
+        id: id,
+      };
+
+      // 세션에서 데이터를 가져온 뒤, 같은 이름이 없는지 확인
+      const existingData = sessionStorage.getItem('searchCategories');
+      const parseExistingData = existingData ? JSON.parse(existingData) : [];
+
+      // 같은 이름을 가진 항목이 이미 있는지 확인
+      const isExist = parseExistingData.some((filter) => filter.name === newSearch.name);
+
+      if (!isExist) {
+        // 새로운 검색을 기존 데이터에 추가
+        parseExistingData.push(newSearch);
+
+        // 세션에 업데이트된 데이터 저장
+        sessionStorage.setItem('searchCategories', JSON.stringify(parseExistingData));
+
+        // 업데이트된 검색 기록 상태 설정
+        setSearchCategories(parseExistingData);
+      }
+    }
+  };
+
+  // 검색 기록에서 검색
+  const handleSearchListSearch = (id) => {
+    const filtered = Data.filter((item) => {
+      const isCategoryMatch = !id || item.category_id === id;
+      return isCategoryMatch;
+    });
+
+    setFilteredContents(filtered);
+  };
+
+  // 검색 기록 삭제
+
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem', height: '88vh' }}>
@@ -103,24 +257,49 @@ function MainNotice() {
         borderRadius: '15px',
         border: '1px solid #E5E7EB',
       }}>
-        <div style={{ margin: '2.5rem 0 0 2rem', fontSize: '15px', fontWeight: 'normal' }}>즐겨찾기 공지사항</div>
+        <div style={{ margin: '2.5rem 0 0 2rem', fontSize: '15px', fontWeight: 'normal' }}>{isLogin ? '즐겨찾기 공지사항' : '검색한 공지사항'}</div>
         <div style={{ margin: '2rem 0 0 2rem' }}>
-          {bookmarkCategories.map((value, index) => (
-            <div
-              key={index}
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-start',
-                margin: '0 0 1rem 0',
-                fontSize: '15px',
-                fontWeight: 'normal',
-              }}
-              onClick={() => handleBookmarkSearch(value.url)}
-            >
-              <FaStar style={{ margin: '0.2rem 1rem 0 0', color: '#FCD34D' }} />
-              <div>{value.name}</div>
-            </div>
-          ))}
+          {isLogin ?
+            bookmarkCategories.map((value, index) => (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    margin: '0 0 1rem 0',
+                    fontSize: '15px',
+                    fontWeight: 'normal',
+                  }}
+                  onClick={() => handleBookmarkSearch(value.url)}
+                >
+                  <FaStar style={{ margin: '0 1rem 0 0', color: '#FCD34D' }} />
+                  <div>{value.name}</div>
+                </div>
+                <AiOutlineClose size={15} style={{ margin: "0 1rem 0 0" }} onClick={() => handleDeleteBookmark(value.name)} />
+              </div>
+            ))
+            :
+            searchCategories.map((value, index) => (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    margin: '0 0 1rem 0',
+                    fontSize: '15px',
+                    fontWeight: 'normal',
+                  }}
+                  onClick={() => handleSearchListSearch(value.id)}
+                >
+                  <FaStar style={{ margin: '0.2rem 1rem 0 0', color: '#FCD34D' }} />
+                  <div>{value.name}</div>
+                </div>
+                <AiOutlineClose onClick={() => handleDeleteBookmark(value.name)} />
+              </div>
+            ))}
         </div>
       </div>
       <div style={{
@@ -188,7 +367,7 @@ function MainNotice() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="searchButton" onClick={handleSearch}>
+          <button className="searchButton" onClick={handleSearch} disabled={!isSearch}>
             검색
           </button>
           <button style={{
@@ -208,15 +387,19 @@ function MainNotice() {
             <button className="starButton" onClick={() => toggleStar(index)}>
               {isStarred[index] ? <FaStar style={{ color: '#FCD34D' }} /> : <FaRegStar style={{ color: '0.5px soild #E5E7EB' }} />}
             </button>
-            <div style={value.id === "공지" ? { width: '5rem', color: '#EA5514', fontWeight: 'bold', fontSize: '15px' } : { width: '5rem', fontSize: '13px' }}>
-              {value.id}
+            <div style={value.announcement_id === "공지" ? { width: '5rem', color: '#EA5514', fontWeight: 'bold', fontSize: '15px' } : { width: '5rem', fontSize: '13px' }}>
+              {value.announcement_id}
             </div>
-            <div style={value.id === "공지" ? { width: '80rem', fontWeight: 'bold', fontSize: '13px' } : { width: '80rem', fontSize: '13px' }}>{value.title}</div>
-            <div style={value.id === "공지" ? { width: '18rem', fontWeight: 'bold', fontSize: '13px' } : { width: '18rem', fontSize: '13px' }}>{value.date}</div>
-            <div style={value.id === "공지" ? { width: '10rem', fontWeight: 'bold', fontSize: '13px' } : { width: '10rem', fontSize: '13px' }}>{value.writer}</div>
+            <a href={value.announcement_url} target="_blank" rel="noopener noreferrer"><div style={value.announcement_id === "공지" ? { width: '80rem', fontWeight: 'bold', fontSize: '13px' } : { width: '80rem', fontSize: '13px' }}>{value.announcement_title}</div></a>
+            <div style={value.announcement_id === "공지" ? { width: '18rem', fontWeight: 'bold', fontSize: '13px' } : { width: '18rem', fontSize: '13px' }}>{value.announcement_date_posted}</div>
+            <div style={value.announcement_id === "공지" ? { width: '10rem', fontWeight: 'bold', fontSize: '13px' } : { width: '10rem', fontSize: '13px' }}>{value.announcement_author}</div>
           </div>
         ))}
       </div>
+      {isClipModalOpen && (
+        <ClipModal onModalClose={(idx) => handleCencleBookmark(idx)} />
+
+      )}
     </div>
   );
 }
