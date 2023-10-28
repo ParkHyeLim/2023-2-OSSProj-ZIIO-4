@@ -1,4 +1,4 @@
-// 동국대학교 메인 홈페이지
+// 동국대학교 메인 웹사이트
 package com.ziio.backend.component.jsoup;
 
 import org.jsoup.Connection;

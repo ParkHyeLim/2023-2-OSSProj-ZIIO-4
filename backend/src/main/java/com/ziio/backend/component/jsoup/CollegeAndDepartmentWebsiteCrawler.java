@@ -1,4 +1,4 @@
-// 단과대 홈페이지
+// 단과대 웹사이트
 package com.ziio.backend.component.jsoup;
 
 import org.jsoup.Connection;
