@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class JsoupComponentLocalMain {
+public class MainWebsiteCrawler {
 
     // 홈페이지별 URL을 생성한 후, 크롤링을 진행하는 메소드
     public static void getNoticeList(String noticeKind, String categoryID, int pageNum) {
