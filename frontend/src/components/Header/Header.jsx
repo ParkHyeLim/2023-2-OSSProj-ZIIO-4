@@ -3,7 +3,7 @@ import logo from '../../assets/images/logo.png';
 import styles from './Header.module.scss';
 import classNames from 'classnames';
 
-const Header = () => {
+export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname.split('/')[1];
