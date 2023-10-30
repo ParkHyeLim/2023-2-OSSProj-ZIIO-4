@@ -1,0 +1,23 @@
+.categoryContainer {
+  margin: 1rem 1.5rem 0 1.5rem;
+
+  .categoryButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0;
+
+    .content {
+      display: flex;
+
+      .star {
+        margin: 0.4rem 1rem 0 0;
+        color: #FCD34D;
+      }
+
+      div {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
