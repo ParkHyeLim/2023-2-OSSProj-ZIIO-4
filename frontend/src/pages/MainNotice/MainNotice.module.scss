@@ -1,45 +1,64 @@
-.SelectionBox {
-  margin-right: 2rem;
-  padding-left: 0.5rem;
-  width: 12rem;
-  height: 3.5rem;
-  border-radius: 7px;
-  border-color: #E5E7EB;
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem;
+  width: calc(100% - 1rem * 2);
+  height: calc(100vh - 1rem * 2 - 6.8rem);
+
+  .userContainer {
+    width: 20%;
+    height: 100%;
+    border-radius: 15px;
+    border: 1px solid #E5E7EB;
+
+    .text1 {
+      margin: 1.5rem 0 0 1.5rem;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+  }
+
+  .noticeContainer {
+    width: 80%;
+    height: 100%;
+    border-radius: 15px;
+    border: 1px solid #E5E7EB;
+
+    .fillterContainer {
+      margin: 3rem;
+
+      input {
+        margin-right: 2rem;
+        padding-left: 0.5rem;
+        width: 20rem;
+        height: 3.5rem;
+        border-radius: 7px;
+        border-color: #E5E7EB;
+      }
+
+      .searchButton {
+        margin-right: 2rem;
+        width: 5rem;
+        height: 3.5rem;
+        background-color: #ffffff;
+        border-radius: 7px;
+        border-color: #E5E7EB;
+      }
+    
+      .bookmarkButton {
+        padding-left: 0.5rem;
+        width: 12rem;
+        height: 3.5rem;
+        background-color: #ffffff;
+        border-radius: 7px;
+        border-color: #E5E7EB;
+      }
+    }
+  }
 }
 
-.SelectionText {
-  font-size: 13px;
-  color: #374151;
-}
-
-input {
-  margin-right: 2rem;
-  padding-left: 0.5rem;
-  width: 20rem;
-  height: 3.5rem;
-  border-radius: 7px;
-  border-color: #E5E7EB;
-}
-
-.searchButton {
-  margin-right: 2rem;
-  width: 5rem;
-  height: 3.5rem;
-  background-color: #ffffff;
-  border-radius: 7px;
-  border-color: #E5E7EB;
-}
-
-.starButton {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0.2rem 1rem 0 0;
-  cursor: pointer;
-  outline: none
-}
-
-.modal-container {
+.modalContainer {
   position: fixed;
   top: 0;
   left: 0;
@@ -51,7 +70,8 @@ input {
   align-items: center;
 }
 
-.modal-content {
+.modalContent {
+  position: absolute;
   background: #fff;
   padding: 20px;
   border-radius: 4px;
