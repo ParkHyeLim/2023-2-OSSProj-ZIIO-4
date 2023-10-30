@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 0 2rem 2rem;
+  
+  .starButton {
+    /* Add star button styles here */
+  }
+  
+  .starIcon {
+    margin: 0.3rem 0 0 0;
+    color: #FCD34D;
+  }
+  
+  .regStarIcon {
+    margin: 0.4rem 0 0 0;
+    color: #E5E7EB;
+  }
+  
+  .announcementIdDefault {
+    width: 5rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .announcementId {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #EA5514;
+  }
+
+  .announcementTitleDefault {
+    width: 80rem;
+    font-size: 1.5rem;
+  }
+  
+  .announcementTitle {
+    width: 80rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .announcementDatePostedDefault {
+    width: 18rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .announcementDatePosted {
+    width: 18rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .announcementAuthorDefault {
+    width: 10rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .announcementAuthor {
+    width: 10rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+}
