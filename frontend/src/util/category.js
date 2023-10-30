@@ -1,37 +1,36 @@
 const categories = [{
-  categories1: "메인",
-  categories2: [
+  category1: "메인",
+  category2: [
     {
-      categories2: "일반공지",
-      categories3: [],
+      category2: "일반공지",
+      category3: [],
     },
     {
-      categories2: "학사공지",
-      categories3: [],
+      category2: "학사공지",
+      category3: [],
     },
     {
-      categories2: "장학공지",
-      categories3: [],
+      category2: "장학공지",
+      category3: [],
     },
     {
-      categories2: "학술공지",
-      categories3: [],
+      category2: "학술공지",
+      category3: [],
     },
   ]
 },
 {
-  categories1: "단과대",
-  categories2: [
+  category1: "단과대",
+  category2: [
     {
-      categories2: "불교대학",
-      categories3: [
-        "불교학부",
+      category2: "불교대학",
+      category3: [
         "문화재학과"
       ]
     },
     {
-      categories2: "문과대학",
-      categories3: [
+      category2: "문과대학",
+      category3: [
         "국어국문문예창작학부",
         "영어영문학부",
         "일본학과",
@@ -41,8 +40,8 @@ const categories = [{
       ]
     },
     {
-      categories2: "이과대학",
-      categories3: [
+      category2: "이과대학",
+      category3: [
         "수학과",
         "화학과",
         "통계학과",
@@ -50,8 +49,8 @@ const categories = [{
       ]
     },
     {
-      categories2: "법과대학",
-      categories3: [
+      category2: "법과대학",
+      category3: [
         "정치행정학부 정치외교학전공",
         "정치행정학부 행정학전공",
         "정치행정학부 북한학전공",
@@ -65,22 +64,22 @@ const categories = [{
       ]
     },
     {
-      categories2: "사회과학대학",
-      categories3: []
+      category2: "사회과학대학",
+      category3: []
     },
     {
-      categories2: "경영대학",
-      categories3: []
+      category2: "경영대학",
+      category3: []
     },
     {
-      categories2: "경찰사법대학",
-      categories3: [
+      category2: "경찰사법대학",
+      category3: [
         "경찰행정학부"
       ]
     },
     {
-      categories2: "바이오시스템대학",
-      categories3: [
+      category2: "바이오시스템대학",
+      category3: [
         "바이오환경과학과",
         "생명과학과",
         "식품생명공학과",
@@ -88,12 +87,12 @@ const categories = [{
       ]
     },
     {
-      categories2: "AI융합대학",
-      categories3: []
+      category2: "AI융합대학",
+      category3: []
     },
     {
-      categories2: "공과대학",
-      categories3: [
+      category2: "공과대학",
+      category3: [
         "전자전기공학부",
         "정보통신공학과",
         "건설환경공학과",
@@ -105,8 +104,8 @@ const categories = [{
       ]
     },
     {
-      categories2: "사범대학",
-      categories3: [
+      category2: "사범대학",
+      category3: [
         "교육학과",
         "국어교육과",
         "역사교육과",
@@ -117,20 +116,20 @@ const categories = [{
       ]
     },
     {
-      categories2: "약학대학",
-      categories3: []
+      category2: "약학대학",
+      category3: []
     },
     {
-      categories2: "미래융합대학",
-      categories3: []
+      category2: "미래융합대학",
+      category3: []
     },
     {
-      categories2: "다르마칼리지",
-      categories3: []
+      category2: "다르마칼리지",
+      category3: []
     },
     {
-      categories2: "예술대학",
-      categories3: [
+      category2: "예술대학",
+      category3: [
         "미술학부",
         "연국학부",
         "영화영상학과",
@@ -141,21 +140,30 @@ const categories = [{
   ]
 },
 {
-  categories1: "기타",
-  categories2: [
+  category1: "기타",
+  category2: [
     {
-      categories2: "동국대학교 IT융합교육센터",
-      categories3: [],
+      category2: "동국대학교 IT융합교육센터",
+      category3: [],
     },
     {
-      categories2: "동국대학교 고양캠퍼스 미래융합교육원",
-      categories3: [],
+      category2: "동국대학교 고양캠퍼스 미래융합교육원",
+      category3: [],
     },
     {
-      categories2: "동국대학교 미래융합교육원",
-      categories3: [],
+      category2: "동국대학교 미래융합교육원",
+      category3: [],
     },
   ]
 }];
 
-export default categories;
+export default categories ;
+
+const categories_id = [
+  { category_name: "일반공지", category_id: "100100000" },
+  { category_name: "학사공지", category_id: "100200000" },
+  { category_name: "학술공지", category_id: "100400000" },
+  { category_name: "불교학부", category_id: "200100101" },
+];
+
+export { categories_id };
