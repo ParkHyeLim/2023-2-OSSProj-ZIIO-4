@@ -25,7 +25,7 @@ public class MainWebsiteCrawler {
             String noticeTitle = getNoticeTitle(document); // 공지사항 제목
             System.out.println(noticeTitle);
 
-            String noticeDate = getNoticeDate(document); // 게시일, 저자
+            String noticeDate = getNoticeDateAndAuthor(document); // 게시일, 저자
             System.out.println(noticeDate);
 
         } catch (IOException ignored) {
@@ -64,7 +64,7 @@ public class MainWebsiteCrawler {
     }
 
     // 3, 4. 게시일, 저자 크롤링
-    public static String getNoticeDate(Document document) {
+    public static String getNoticeDateAndAuthor(Document document) {
 
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그에 조회
 
