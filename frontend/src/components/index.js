@@ -1,2 +1,2 @@
 export { Header } from './Header/Header';
-export { AddEventModal } from './AddEventModal/AddEventModal';
+export { EventModal } from './EventModal/EventModal';

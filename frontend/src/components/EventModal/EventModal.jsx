@@ -1,15 +1,19 @@
 // 새 이벤트를 추가하는 모달 또는 폼 컴포넌트
 import React, { useState } from 'react';
-import styles from './AddEventModal.module.scss';
+import styles from './EventModal.module.scss';
 import closeIcon from '../../assets/icons/close.svg';
 import { ConfigProvider, DatePicker } from 'antd';
+import { colors } from '../../constants/eventColors';
 
 const { RangePicker } = DatePicker;
 
-export const AddEventModal = ({ onSave, onClose }) => {
+export const EventModal = ({ modalTitle, onSave, onClose }) => {
   const [title, setTitle] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
+  const [memo, setMemo] = useState('');
+  const [url, setUrl] = useState('');
+  const [color, setColor] = useState('');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
 
   const handleMouseDownInside = () => {
@@ -24,6 +28,10 @@ export const AddEventModal = ({ onSave, onClose }) => {
     setIsMouseDownInside(false);
   };
 
+  const handleColorClick = event => {
+    setColor(colors[event.target.getAttribute('name')]);
+  };
+
   const handleSubmit = event => {
     event.preventDefault();
     onSave({
@@ -31,7 +39,12 @@ export const AddEventModal = ({ onSave, onClose }) => {
       title,
       start,
       end,
+      url,
       allDay: !start.includes('T'),
+      backgroundColor: color,
+      extendedProps: {
+        memo,
+      },
     });
   };
 
@@ -51,7 +64,7 @@ export const AddEventModal = ({ onSave, onClose }) => {
       }}>
       <div className={styles.overlay} onClick={handleOverlayClick}>
         <form onSubmit={handleSubmit} className={styles.container} onMouseDown={handleMouseDownInside}>
-          <h1 className={styles.title}>새 일정 추가</h1>
+          <h1 className={styles.title}>{modalTitle}</h1>
           <img src={closeIcon} alt="close" className={styles.close} onClick={onClose} />
           <div>
             <label className={styles.label}>일정명</label>
@@ -67,8 +80,8 @@ export const AddEventModal = ({ onSave, onClose }) => {
             <label className={styles.label}>메모</label>
             <input
               type="text"
-              // value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
               placeholder="메모를 입력해주세요"
               className={styles.input}
             />
@@ -77,8 +90,8 @@ export const AddEventModal = ({ onSave, onClose }) => {
             <label className={styles.label}>URL</label>
             <input
               type="text"
-              // value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={url}
+              onChange={e => setUrl(e.target.value)}
               placeholder="URL을 입력해주세요"
               className={styles.input}
             />
@@ -86,9 +99,6 @@ export const AddEventModal = ({ onSave, onClose }) => {
           <div>
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
-              {/* <DatePicker onChange={(_, dateString) => setStart(dateString)} />
-              ~
-              <DatePicker onChange={(_, dateString) => setEnd(dateString)} /> */}
               <RangePicker
                 onChange={(_, dateString) => {
                   setStart(dateString[0]);
@@ -99,13 +109,16 @@ export const AddEventModal = ({ onSave, onClose }) => {
           </div>
           <div>
             <label className={styles.label}>색상</label>
-            <input
-              type="text"
-              // value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="색상"
-              className={styles.input}
-            />
+            <div className={styles.colorWrapper}>
+              {Object.keys(colors).map(color => (
+                <div
+                  key={color}
+                  name={color}
+                  className={styles.color}
+                  style={{ backgroundColor: colors[color] }}
+                  onClick={handleColorClick}></div>
+              ))}
+            </div>
           </div>
           <button type="submit" className={styles.button}>
             일정 추가
@@ -115,5 +128,3 @@ export const AddEventModal = ({ onSave, onClose }) => {
     </ConfigProvider>
   );
 };
-
-export default AddEventModal;

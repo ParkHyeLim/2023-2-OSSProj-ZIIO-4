@@ -50,8 +50,11 @@
 
 .row {
   display: flex;
-  gap: 16px;
   margin: 0.3rem 0;
+}
+
+.subtitleWrapper {
+  width: 35px;
 }
 
 .subtitle {

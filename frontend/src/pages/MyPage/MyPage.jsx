@@ -5,15 +5,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
 import EventDetail from './components/EventDetail';
-import { AddEventModal } from '../../components';
+import { EventModal } from '../../components';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
+  const [events, setEvents] = useState([]);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDateStart, setEventDateStart] = useState('');
   const [eventDateEnd, setEventDateEnd] = useState('');
+  const [eventMemo, setEventMemo] = useState('');
+  const [eventUrl, setEventUrl] = useState('');
+  const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [events, setEvents] = useState([]);
 
   const handleAddEventClick = () => {
     setShowModal(true);
@@ -22,6 +25,7 @@ const MyPage = () => {
   const saveEvent = eventData => {
     setEvents([...events, eventData]);
     setShowModal(false);
+    console.log(eventData);
   };
 
   const closeModal = () => {
@@ -29,10 +33,12 @@ const MyPage = () => {
   };
 
   const handleEventClick = clickInfo => {
-    /*  if (window.confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    } */
+    clickInfo.jsEvent.preventDefault();
+
     setEventTitle(clickInfo.event.title);
+    setEventUrl(clickInfo.event.url);
+    setEventMemo(clickInfo.event.extendedProps.memo);
+    setEventColor(clickInfo.event.backgroundColor);
     if (clickInfo.event.end === null) {
       setEventDateStart(clickInfo.event.start);
       setEventDateEnd('');
@@ -45,8 +51,15 @@ const MyPage = () => {
 
   return (
     <div className={styles.container}>
-      <EventDetail eventTitle={eventTitle} eventDateStart={eventDateStart} eventDateEnd={eventDateEnd} />
-      {showModal && <AddEventModal onSave={saveEvent} onClose={closeModal} />}
+      <EventDetail
+        eventTitle={eventTitle}
+        eventDateStart={eventDateStart}
+        eventDateEnd={eventDateEnd}
+        eventMemo={eventMemo}
+        eventUrl={eventUrl}
+        eventColor={eventColor}
+      />
+      {showModal && <EventModal modalTitle={'새 일정 추가'} onSave={saveEvent} onClose={closeModal} />}
       <FullCalendar
         ref={calendarRef}
         customButtons={{
@@ -63,8 +76,8 @@ const MyPage = () => {
           center: 'prev title next',
           right: 'add',
         }}
-        titleFormat={{ year: 'numeric', month: 'numeric' }}
-        eventColor={'#f5a986'}
+        titleFormat={({ date }) => `${date.year}. ${date.month + 1}`}
+        // eventColor={'#f5a986'}
         editable={true}
         selectable={true}
         eventClick={handleEventClick}

@@ -100,9 +100,34 @@
   align-items: center;
   gap: 0.8rem;
   border-radius: 0.5rem;
-  background: #ea5514;
+  background: var(--orange);
   color: #fff;
   margin-top: auto;
   margin-left: auto;
   cursor: pointer;
+}
+
+.colorWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.color {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &Active {
+    &::after {
+      content: '';
+      position: absolute;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+  }
 }
