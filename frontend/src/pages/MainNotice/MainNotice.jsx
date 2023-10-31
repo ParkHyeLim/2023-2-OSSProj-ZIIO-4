@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import './MainNotice.module copy.scss'
+import styles from './MainNotice.module.scss'
 import BookmarkCategory from "../../components/UserCategory/UserCategory";
 import ClipModal from "../../components/ClipModal/ClipModal";
 import LoginModal from "../../components/LoginModal/LoginModal";
@@ -82,7 +82,7 @@ function MainNotice() {
     Array(Data.length).fill(false) // 초기 상태는 모두 false // db랑 연동되면 북마크 사항 반영
   )
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isSearch, setIsSearch] = useState(true); // 검색 버튼 활성화/비활성화
 
@@ -204,24 +204,24 @@ function MainNotice() {
   };
 
   return (
-    <div className="container">
+    <div className={styles.container}>
 
-      <div className="userContainer">
+      <div className={styles.userContainer}>
         {isLogin ? (
           <div>
-            <div className="text1">즐겨찾기 공지사항</div>
+            <div className={styles.text1}>즐겨찾기 공지사항</div>
             <BookmarkCategory categoryList={bookmarkCategories} />
           </div>
         ) : (
           <div>
-            <div className="text1">검색한 공지사항</div>
+            <div className={styles.text1}>검색한 공지사항</div>
             <BookmarkCategory categoryList={searchCategories} />
           </div>
         )}
       </div>
 
-      <div className="noticeContainer">
-        <div className="fillterContainer">
+      <div className={styles.noticeContainer}>
+        <div className={styles.fillterContainer}>
           <DropDownComp placeholder="대분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => handleCategories1Change(e)}></DropDownComp>
           <DropDownComp placeholder="중분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => handleCategories2Change(e)}></DropDownComp>
           <DropDownComp placeholder="소분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => setCategory3(e.target.value)}></DropDownComp>
@@ -231,10 +231,10 @@ function MainNotice() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="searchButton" onClick={handleSearch} disabled={!isSearch}>
+          <button className={styles.searchButton} onClick={handleSearch} disabled={!isSearch}>
             검색
           </button>
-          <button className="bookmarkButton" onClick={handleAddBookmark}>
+          <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
             <FaStar style={{ color: '#FCD34D' }} />
             즐겨찾기 추가
           </button>
