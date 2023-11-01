@@ -4,10 +4,11 @@ import styles from './EventModal.module.scss';
 import closeIcon from '../../assets/icons/close.svg';
 import { ConfigProvider, DatePicker } from 'antd';
 import { colors } from '../../constants/eventColors';
+import classNames from 'classnames';
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ modalTitle, onSave, onClose }) => {
+export const EventModal = ({ modalTitle, saveEvent, closeModal }) => {
   const [title, setTitle] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
@@ -22,7 +23,7 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
 
   const handleOverlayClick = event => {
     if (event.target === event.currentTarget && !isMouseDownInside) {
-      onClose();
+      closeModal();
     }
     // 마우스를 떼는 순간에 상태를 초기화
     setIsMouseDownInside(false);
@@ -45,7 +46,7 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
       return;
     }
 
-    onSave({
+    saveEvent({
       id: Date.now(),
       title,
       start: start,
@@ -75,7 +76,7 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
       <div className={styles.overlay} onClick={handleOverlayClick}>
         <form onSubmit={handleSubmit} className={styles.container} onMouseDown={handleMouseDownInside}>
           <h1 className={styles.title}>{modalTitle}</h1>
-          <img src={closeIcon} alt="close" className={styles.close} onClick={onClose} />
+          <img src={closeIcon} alt="close" className={styles.close} onClick={closeModal} />
           <div>
             <label className={styles.label}>일정명</label>
             <input
@@ -130,12 +131,14 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
           <div>
             <label className={styles.label}>색상</label>
             <div className={styles.colorWrapper}>
-              {Object.keys(colors).map(color => (
+              {Object.keys(colors).map(key => (
                 <div
-                  key={color}
-                  name={color}
-                  className={styles.color}
-                  style={{ backgroundColor: colors[color] }}
+                  key={key}
+                  name={key}
+                  className={classNames(styles.color, {
+                    [styles.colorActive]: color === colors[key],
+                  })}
+                  style={{ backgroundColor: colors[key] }}
                   onClick={handleColorClick}></div>
               ))}
             </div>

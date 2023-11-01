@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClic
 import EventDetail from './components/EventDetail';
 import { EventModal } from '../../components';
 import { calculateDDay } from '../../utils/dateUtils';
+import { EventList } from './components/EventList';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -23,8 +24,8 @@ const MyPage = () => {
   const sortEventsByDate = eventData => {
     return [...eventData].sort((a, b) => {
       const today = new Date();
-      const diffA = today - new Date(a.start);
-      const diffB = today - new Date(b.start);
+      const diffA = today - new Date(a.end);
+      const diffB = today - new Date(b.end);
       return diffB - diffA;
     });
   };
@@ -70,17 +71,9 @@ const MyPage = () => {
 
   return (
     <div className={styles.container}>
-      {showModal && <EventModal modalTitle={'새 일정 추가'} onSave={saveEvent} onClose={closeModal} />}
+      {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
       <div className={styles.leftWrapper}>
-        <div className={styles.eventList}>
-          {listedEvents.map(event => (
-            <div key={event.defId} className={styles.eventListRow} onClick={() => handleEventClick(event)}>
-              <div className={styles.eventColor} style={{ backgroundColor: event.backgroundColor }}></div>
-              <div className={styles.eventText}>{event.title}</div>
-              <div className={styles.eventDday}>{calculateDDay(event.end)}</div>
-            </div>
-          ))}
-        </div>
+        <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail
           eventTitle={eventTitle}
           eventDateStart={eventDateStart}
