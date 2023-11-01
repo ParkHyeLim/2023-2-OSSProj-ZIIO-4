@@ -2,21 +2,13 @@ import React from 'react';
 import styles from '../MyPage.module.scss';
 import classNames from 'classnames';
 import editIcon from '../../../assets/icons/edit.svg';
+import { formatDate } from '../../../utils/dateUtils';
 
 const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, eventUrl, eventColor }) => {
-  const formatDate = date => {
-    if (date === '') return '';
-    // 시, 분이 0일 경우에는 출력하지 않음
-    if (date.getHours() === 0 && date.getMinutes() === 0) {
-      return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-    }
-    return `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
-  };
-
   return (
     <div className={classNames(styles.eventWrapper, eventTitle === '' && styles.invisible)}>
       <div className={styles.titleWrapper}>
-        <div className={styles.color} style={{ backgroundColor: eventColor }} />
+        <div className={styles.eventColor} style={{ backgroundColor: eventColor }} />
         <div className={styles.title}>{eventTitle}</div>
       </div>
       <div className={styles.row}>
@@ -24,7 +16,13 @@ const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, even
           <div className={styles.subtitle}>기간</div>
         </div>
         <div className={styles.content}>
-          {formatDate(eventDateStart)} {eventDateEnd && `~ ${formatDate(eventDateEnd)}`}
+          {eventDateStart === '' && eventDateEnd === '' ? (
+            '없음'
+          ) : (
+            <>
+              {formatDate(eventDateStart)} ~ {eventDateEnd ? formatDate(eventDateEnd) : formatDate(eventDateStart)}
+            </>
+          )}
         </div>
       </div>
       <div className={styles.row}>

@@ -34,13 +34,23 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
+
+    if (title === '') {
+      alert('일정명을 입력해주세요');
+      return;
+    }
+
+    if ((start !== '' || end !== '') && color === '') {
+      alert('색상을 선택해주세요');
+      return;
+    }
+
     onSave({
       id: Date.now(),
       title,
-      start,
-      end,
+      start: start,
+      end: end,
       url,
-      allDay: !start.includes('T'),
       backgroundColor: color,
       extendedProps: {
         memo,
@@ -100,9 +110,19 @@ export const EventModal = ({ modalTitle, onSave, onClose }) => {
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
               <RangePicker
-                onChange={(_, dateString) => {
-                  setStart(dateString[0]);
-                  setEnd(dateString[1]);
+                onChange={dates => {
+                  if (dates.length === 2) {
+                    // 첫 번째 날짜의 시, 분, 초를 0으로 설정
+                    const startDate = new Date(dates[0].$d);
+                    startDate.setHours(0, 0, 0, 0);
+
+                    // 두 번째 날짜의 시, 분, 초를 0으로 설정
+                    const endDate = new Date(dates[1].$d);
+                    endDate.setHours(0, 0, 0, 0);
+
+                    setStart(startDate);
+                    setEnd(endDate);
+                  }
                 }}
               />
             </div>
