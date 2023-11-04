@@ -10,7 +10,7 @@
     width: 20%;
     height: 100%;
     border-radius: 15px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--gray-200);
 
     .text1 {
       margin: 1.5rem 0 0 1.5rem;
@@ -23,37 +23,74 @@
     width: 80%;
     height: 100%;
     border-radius: 15px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--gray-200);
 
     .fillterContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin: 3rem;
 
       input {
         margin-right: 2rem;
-        padding-left: 0.5rem;
-        width: 20rem;
+        padding: 0 0 0 0.5rem;
+        width: 17rem;
         height: 3.5rem;
         border-radius: 7px;
-        border-color: #E5E7EB;
+        border: 1px solid var(--gray-300);
+        font-family: var(--font-family);
+      }
+
+      input:focus {
+        border-color: initial;
+        background-color: initial;
+        color: initial;
+        box-shadow: none;
       }
 
       .searchButton {
         margin-right: 2rem;
-        width: 5rem;
-        height: 3.5rem;
+        padding: 0.7rem 1rem;
         background-color: #ffffff;
         border-radius: 7px;
-        border-color: #E5E7EB;
+        border: 1px solid var(--gray-300);
+        font-size: 1.2rem;
+        font-family: var(--font-family);
+        color: var(--gray-700);
       }
-    
+
+      .searchButton:hover {
+        border: 1.5px solid var(--gray-400);
+      }
+
       .bookmarkButton {
-        padding-left: 0.5rem;
-        width: 12rem;
-        height: 3.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0.7rem 1rem;
         background-color: #ffffff;
         border-radius: 7px;
-        border-color: #E5E7EB;
+        border: 1px solid var(--gray-300);
+
+        .plusIcon {
+          margin: 0 0.5rem 0 0;
+          color: var(--gray-700);
+        }
+
+        div {
+          font-size: 1.2rem;
+          font-family: var(--font-family);
+          color: var(--gray-700);
+        }
       }
+
+      .bookmarkButton:hover {
+        border: 1.5px solid var(--gray-400);
+      }
+    }
+
+    .itemList {
+      margin: 0 2.5rem 0 1rem;
     }
   }
 }
