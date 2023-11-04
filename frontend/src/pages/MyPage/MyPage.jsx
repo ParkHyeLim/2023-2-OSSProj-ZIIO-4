@@ -1,93 +1,111 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './MyPage.module.scss';
 
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
-import classNames from 'classnames';
+import EventDetail from './components/EventDetail';
+import { EventModal } from '../../components';
+import { calculateDDay } from '../../utils/dateUtils';
+import { EventList } from './components/EventList';
 
 const MyPage = () => {
+  const calendarRef = useRef(null);
+  const [events, setEvents] = useState([]);
+  const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
   const [eventTitle, setEventTitle] = useState('');
   const [eventDateStart, setEventDateStart] = useState('');
   const [eventDateEnd, setEventDateEnd] = useState('');
+  const [eventMemo, setEventMemo] = useState('');
+  const [eventUrl, setEventUrl] = useState('');
+  const [eventColor, setEventColor] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  const handleEventClick = clickInfo => {
-    /*  if (window.confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    } */
-    setEventTitle(clickInfo.event.title);
-    if (clickInfo.event.end === null) {
-      setEventDateStart(clickInfo.event.start);
-      setEventDateEnd('');
-    } else {
-      setEventDateStart(clickInfo.event.start);
-      setEventDateEnd(clickInfo.event.end);
-    }
-    console.log(clickInfo);
+  const sortEventsByDate = eventData => {
+    return [...eventData].sort((a, b) => {
+      const today = new Date();
+      const diffA = today - new Date(a.end);
+      const diffB = today - new Date(b.end);
+      return diffB - diffA;
+    });
   };
 
-  const formatDate = date => {
-    // 시, 분이 0일 경우에는 출력하지 않음
-    if (date.getHours() === 0 && date.getMinutes() === 0) {
-      return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+  const handleAddEventClick = () => {
+    setShowModal(true);
+  };
+
+  const saveEvent = eventData => {
+    if (eventData.end) {
+      const endDate = new Date(eventData.end);
+      endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
+      eventData.end = endDate;
     }
-    return `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
+    const updatedEvents = [...events, eventData];
+    setEvents(updatedEvents);
+    const sortedEvents = sortEventsByDate(updatedEvents);
+    setListedEvents(sortedEvents.filter(event => new Date(event.end) >= new Date()));
+    setShowModal(false);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleEventClick = (eventData, jsEvent) => {
+    // jsEvent가 있으면 기본 동작 방지 (FullCalendar 이벤트에서만 적용)
+    if (jsEvent) {
+      jsEvent.preventDefault();
+    }
+
+    // eventData의 구조에 따라 필요한 정보를 추출
+    const { title, url, extendedProps, backgroundColor, start, end } = eventData;
+
+    setEventTitle(title);
+    setEventUrl(url);
+    setEventMemo(extendedProps ? extendedProps.memo : '');
+    setEventColor(backgroundColor);
+    setEventDateStart(start);
+    setEventDateEnd(end ? end : '');
+    console.log(eventData);
   };
 
   return (
     <div className={styles.container}>
-      {eventTitle && (
-        <div className={styles.eventWrapper}>
-          <div className={styles.titleWrapper}>
-            <div className={classNames(styles.color, styles.colorOrange)}></div>
-            <div className={styles.title}>{eventTitle}</div>
-          </div>
-          <div className={styles.row}>
-            <div className={styles.subtitle}>기간</div>
-            <div className={styles.content}>
-              {formatDate(eventDateStart)} {eventDateEnd && `~ ${formatDate(eventDateEnd)}`}
-            </div>
-          </div>
-          <div className={styles.row}>
-            <div className={styles.subtitle}>메모</div>
-            <div className={styles.content}>메모 내용</div>
-          </div>
-          <div className={styles.row}>
-            <div className={styles.subtitle}>URL</div>
-            <div className={styles.content}>https://www.naver.com</div>
-          </div>
-          <button className={styles.button}>일정 편집</button>
-        </div>
-      )}
+      {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
+      <div className={styles.leftWrapper}>
+        <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
+        <EventDetail
+          eventTitle={eventTitle}
+          eventDateStart={eventDateStart}
+          eventDateEnd={eventDateEnd}
+          eventMemo={eventMemo}
+          eventUrl={eventUrl}
+          eventColor={eventColor}
+        />
+      </div>
       <FullCalendar
+        ref={calendarRef}
         customButtons={{
           add: {
             text: '✨ 새 일정 추가',
-            click: function () {
-              alert('clicked the custom button!');
-            },
+            click: handleAddEventClick,
           },
         }}
         initialView="dayGridMonth"
-        events={[
-          { title: 'event 1', date: '2023-10-16' },
-          { title: 'event 2', start: '2023-10-03', end: '2023-10-07' },
-          { title: 'event 3', start: '2023-10-02T12:30:00', allDay: false },
-          { title: 'event 4', start: '2023-10-04T12:30:00', allDay: false },
-          { title: 'event 5', start: '2023-10-26', end: '2023-10-29' },
-          { title: 'event 6', start: '2023-10-19T12:30:00', allDay: false },
-        ]}
+        events={events}
         plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: '',
           center: 'prev title next',
           right: 'add',
         }}
-        titleFormat={{ year: 'numeric', month: 'numeric' }}
-        eventColor={'#f5a986'}
+        titleFormat={({ date }) => `${date.year}. ${date.month + 1}`}
+        // eventColor={'#f5a986'}
         editable={true}
-        selectable={true}
-        eventClick={handleEventClick}
+        // selectable={true}
+        displayEventTime={false}
+        eventClick={clickInfo => handleEventClick(clickInfo.event, clickInfo.jsEvent)}
+        nextDayThreshold={'00:00:00'}
       />
     </div>
   );

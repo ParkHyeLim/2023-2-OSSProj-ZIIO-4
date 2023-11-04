@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import LoginModal from '../LoginModal/LoginModal';
 
-const Header = () => {
+export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname.split('/')[1];
