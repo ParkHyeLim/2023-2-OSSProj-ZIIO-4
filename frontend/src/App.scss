@@ -58,13 +58,21 @@ a {
   text-decoration: none;
 }
 
-/* table.fc-scrollgrid.fc-scrollgrid-liquid {
-  border-radius: 0.7rem;
+input,
+button {
+  font-family: var(--font-family);
+  outline: none;
+  background-color: #fff;
   border: none;
-} */
+}
+
+table.fc-scrollgrid.fc-scrollgrid-liquid {
+  border-radius: 0.7rem;
+  // border: none;
+}
 
 .fc {
-  width: 76%;
+  width: 75%;
   // margin-left: 2.4rem;
   // border: none;
 
@@ -95,6 +103,16 @@ a {
   .fc-toolbar-chunk {
     display: flex;
     align-items: center;
+    gap: 1.5em;
+  }
+
+  .fc-event-title:not(.fc-sticky) {
+    color: var(--gray-600);
+  }
+
+  .fc-toolbar-title {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
   .fc-toolbar-chunk:last-of-type {
@@ -130,4 +148,62 @@ a {
     font-weight: 500;
     box-shadow: none !important;
   }
+}
+
+.ant-picker {
+  height: 3.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-200, #e5e7eb);
+  background: var(--Color-2, #fff);
+  margin-top: 0.5rem;
+
+  .ant-picker-input > input {
+    font-size: 1.3rem;
+    color: var(--gray-800, #1f2937);
+    font-family: var(--font-family);
+
+    &::placeholder {
+      color: var(--gray-400, #9ca3af);
+    }
+  }
+}
+
+.ant-picker-dropdown {
+  .ant-picker-today-btn {
+    color: var(--orange);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+    background-color: var(--orange);
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border: 1px solid var(--orange);
+  }
+  .ant-picker-date-panel
+    .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end
+    .ant-picker-cell-inner::after,
+  .ant-picker-date-panel
+    .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start
+    .ant-picker-cell-inner::after,
+  .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(
+      .ant-picker-cell-range-start-single
+    ).ant-picker-cell-range-hover-start::before,
+  .ant-picker-date-panel
+    .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start
+    .ant-picker-cell-inner::after,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(
+      .ant-picker-cell-range-end-single
+    ).ant-picker-cell-range-hover-end::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
+  .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+  .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before {
+    background: #fde1d0;
+  }
+}
+
+.ant-picker-range .ant-picker-active-bar {
+  background-color: var(--orange);
 }

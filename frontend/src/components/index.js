@@ -1,1 +1,2 @@
-export { default as Header } from './Header/Header';
+export { Header } from './Header/Header';
+export { EventModal } from './EventModal/EventModal';
