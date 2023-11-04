@@ -15,7 +15,7 @@ public class MainWebsiteCrawler {
     // 크롤링 실행
     public void crawl() {
         // 웹사이트별 변수명, 카테고리 ID, 페이지 한정
-        String[][] mainAllInfos = new String[][]{{"GENERALNOTICES","100100000", "3"}, {"HAKSANOTICE","100101000", "3"}, {"JANGHAKNOTICE","100102000", "3"}};
+        String[][] mainAllInfos = new String[][]{{"GENERALNOTICES","100100000","3"}, {"HAKSANOTICE","100101000","3"}, {"JANGHAKNOTICE","100102000","3"}};
         for (String[] eachInfo : mainAllInfos) {
             getNoticeList(eachInfo[0], eachInfo[1], Integer.parseInt(eachInfo[2]));
             }
@@ -31,9 +31,9 @@ public class MainWebsiteCrawler {
             Connection conn = Jsoup.connect(URL); // Jsoup 연결 객체 생성
             try {
                 Document document = conn.get(); // HTML 구조를 불러와 할당
-                getNoticeURL(document, noticeKind, url_Infos, topFixed);              // URL
-                topFixed = getNoticeTitle(document, title_Infos, topFixed);           // 제목
-                getNoticeDateAndAuthor(document, date_Infos, author_Infos, topFixed); // 게시일, 글 작성자
+                getNoticeURL(document, noticeKind, url_Infos, pageNum, topFixed);              // URL
+                topFixed = getNoticeTitle(document, title_Infos, pageNum, topFixed);           // 제목
+                getNoticeDateAndAuthor(document, date_Infos, author_Infos, pageNum, topFixed); // 게시일, 글 작성자
             } catch (IOException ignored) {
             }
         }
@@ -44,15 +44,19 @@ public class MainWebsiteCrawler {
             //sb.append(title_Infos.get(i));
             //sb.append(date_Infos.get(i));
             //sb.append(author_Infos.get(i));
-            System.out.println(title_Infos.get(i));
+            System.out.print(url_Infos.get(i) + "\s");
+            System.out.print(title_Infos.get(i) + "\s");
+            System.out.print(author_Infos.get(i) + "\s");
+            System.out.print(date_Infos.get(i) + "\n");
         }
     }
     // 1. URL
-    private void getNoticeURL(Document document, String noticeKind, List<String> url_Infos, int topFixed) {
+    private void getNoticeURL(Document document, String noticeKind, List<String> url_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그 조회
         int index = 0; // 현 페이지에서 몇 번째 공지인지
+
         for (Element li : boardList.select("li")) { // li 태그 조회
-            if (topFixed > index) { // 중복 제거
+            if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
@@ -63,12 +67,12 @@ public class MainWebsiteCrawler {
         }
     }
     // 2. 제목
-    private int getNoticeTitle(Document document, List<String> title_Infos, int topFixed) {
+    private int getNoticeTitle(Document document, List<String> title_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그 조회
         int index = 0; // 현 페이지에서 몇 번째 공지인지
 
         for (Element top : boardList.select("li div.top")) { // li 태그 => div 클래스 top 태그 조회
-            if (topFixed > index) { // 중복 제거
+            if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
@@ -84,11 +88,12 @@ public class MainWebsiteCrawler {
         return topFixed;
     }
     // 3, 4. 게시일, 글 작성자
-    private void getNoticeDateAndAuthor(Document document, List<String> date_Infos, List<String> author_Infos, int topFixed) {
+    private void getNoticeDateAndAuthor(Document document, List<String> date_Infos, List<String> author_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그에 조회
         int index = 0; // 현 페이지에서 몇 번째 공지인지
+
         for (Element li : boardList.select("li div.top")) { // li 태그 => div 클래스 top 태그 조회
-            if (topFixed > index) { // 중복 제거
+            if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
@@ -99,6 +104,7 @@ public class MainWebsiteCrawler {
                     cnt++;
                 } else if (cnt == 1) { // 4. 글 작성자
                     author_Infos.add(span.text());
+                    cnt++;
                 } else {
                     break;
                 }
