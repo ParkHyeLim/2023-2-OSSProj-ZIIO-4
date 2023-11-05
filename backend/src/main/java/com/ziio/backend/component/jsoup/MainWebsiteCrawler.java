@@ -1,4 +1,4 @@
-// 동국대학교 메인 홈페이지
+// 동국대학교 메인 웹사이트
 package com.ziio.backend.component.jsoup;
 
 import org.jsoup.Connection;
@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class JsoupComponentLocalMain {
+public class MainWebsiteCrawler {
 
     // 홈페이지별 URL을 생성한 후, 크롤링을 진행하는 메소드
     public static void getNoticeList(String noticeKind, String categoryID, int pageNum) {
@@ -25,7 +25,7 @@ public class JsoupComponentLocalMain {
             String noticeTitle = getNoticeTitle(document); // 공지사항 제목
             System.out.println(noticeTitle);
 
-            String noticeDate = getNoticeDate(document); // 게시일, 저자
+            String noticeDate = getNoticeDateAndAuthor(document); // 게시일, 저자
             System.out.println(noticeDate);
 
         } catch (IOException ignored) {
@@ -64,7 +64,7 @@ public class JsoupComponentLocalMain {
     }
 
     // 3, 4. 게시일, 저자 크롤링
-    public static String getNoticeDate(Document document) {
+    public static String getNoticeDateAndAuthor(Document document) {
 
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그에 조회
 
@@ -83,8 +83,8 @@ public class JsoupComponentLocalMain {
     }
 
     public static void main(String args[]) {
-        // 변수명, 카테고리 ID
-        String[][] kind = new String[][]{{"GENERALNOTICES","100000100"}, {"HAKSANOTICE","100000101"}, {"JANGHAKNOTICE","100000102"}};
+        // 메인 홈페이지 변수명, 카테고리 ID
+        String[][] kind = new String[][]{{"GENERALNOTICES","1"}, {"HAKSANOTICE","2"}, {"JANGHAKNOTICE","3"}};
         for (String[] k : kind) {
             for (int pageNum = 1; pageNum <= 1; pageNum++) { // 페이지 설정
                 getNoticeList(k[0], k[1], pageNum);
