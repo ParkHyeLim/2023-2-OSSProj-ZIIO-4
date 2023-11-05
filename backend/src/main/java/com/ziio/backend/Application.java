@@ -2,12 +2,13 @@ package com.ziio.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-public class BackendApplication {
-
+@ComponentScan(basePackages = "com.ziio.backend")
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(BackendApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }
