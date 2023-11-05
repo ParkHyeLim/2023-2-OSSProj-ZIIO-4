@@ -1,0 +1,20 @@
+package com.ziio.backend.service;
+
+import com.ziio.backend.entity.Notice;
+import com.ziio.backend.repository.NoticeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@org.springframework.stereotype.Service
+public class NoticeService {
+    private NoticeRepository noticeRepository;
+
+    @Autowired
+    public NoticeService(NoticeRepository noticeRepository) {
+        this.noticeRepository = noticeRepository;
+    }
+    // DB에 공지사항 저장
+    private void save(Notice notice) {
+        noticeRepository.save(notice);
+    }
+}
+
