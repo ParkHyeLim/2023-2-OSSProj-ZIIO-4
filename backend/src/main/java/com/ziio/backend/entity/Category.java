@@ -16,21 +16,21 @@ public class Category {
     public String getId() {
         return id;
     }
-    public void setId() {
+    public void setId(String id) {
         this.id = id;
     }
 
     public String getName() {
         return name;
     }
-    public void setName() {
+    public void setName(String name) {
         this.name = name;
     }
 
     public int getTop_fixed() {
         return  top_fixed;
     }
-    public void setTop_fixed() {
+    public void setTop_fixed(int top_fixed) {
         this.top_fixed = top_fixed;
     }
 }
