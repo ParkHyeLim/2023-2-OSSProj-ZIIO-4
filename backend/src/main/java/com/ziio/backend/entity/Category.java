@@ -2,22 +2,32 @@ package com.ziio.backend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Category {
     @Id
-    @GeneratedValue()
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // id 자동 +1
+    private Long id;
 
+    private String category_id;
     private String name;
     private int top_fixed;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
     }
 
     public String getName() {
