@@ -1,27 +1,40 @@
 // 동국대학교 메인 웹사이트
-package com.ziio.backend.service.crawling;
+package com.ziio.backend.crawling;
 
+import com.ziio.backend.constants.CrawlingInfos;
+import com.ziio.backend.entity.Category;
+import com.ziio.backend.entity.Notice;
+import com.ziio.backend.service.CategoryService;
+import com.ziio.backend.service.NoticeService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainWebsiteCrawler {
+    private final NoticeService noticeService;
+    private final CategoryService categoryService;
+
+    @Autowired
+    public MainWebsiteCrawler(NoticeService noticeService, CategoryService categoryService) {
+        this.noticeService = noticeService;
+        this.categoryService = categoryService;
+    }
     // 크롤링 실행
     public void crawl() {
-        // 웹사이트별 변수명, 카테고리 ID, 페이지 한정
-        String[][] mainAllInfos = new String[][]{{"GENERALNOTICES","100100000","3"}, {"HAKSANOTICE","100101000","3"}, {"JANGHAKNOTICE","100102000","3"}};
+        String[][] mainAllInfos = CrawlingInfos.MAIN_ALL_INFOS;
         for (String[] eachInfo : mainAllInfos) {
-            getNoticeList(eachInfo[0], eachInfo[1], Integer.parseInt(eachInfo[2]));
+            getNoticeList(eachInfo[0], eachInfo[1], eachInfo[2], Integer.parseInt(eachInfo[3]));
             }
         }
     // 카테고리 별로 크롤링
-    private void getNoticeList(String noticeKind, String categoryID, int pageLimit) {
+    private void getNoticeList(String categoryID, String categoryName, String noticeKind, int pageLimit) {
         List<String> url_Infos = new ArrayList<>(); List<String> title_Infos = new ArrayList<>();
         List<String> date_Infos = new ArrayList<>(); List<String> author_Infos = new ArrayList<>();
         int topFixed = 0; // 상단 고정 공지 개수
@@ -37,19 +50,24 @@ public class MainWebsiteCrawler {
             } catch (IOException ignored) {
             }
         }
-        // DB 저장 로직 구현 예정
+        // 메인 웹사이트 공지사항 DB 저장
         for (int i = 0; i < url_Infos.size(); i++) {
-            //StringBuilder sb = new StringBuilder();
-            //sb.append(url_Infos.get(i));
-            //sb.append(title_Infos.get(i));
-            //sb.append(date_Infos.get(i));
-            //sb.append(author_Infos.get(i));
-            System.out.print(url_Infos.get(i) + "\s");
-            System.out.print(title_Infos.get(i) + "\s");
-            System.out.print(author_Infos.get(i) + "\s");
-            System.out.print(date_Infos.get(i) + "\n");
+            Notice notice = new Notice();
+            notice.setTitle(title_Infos.get(i));
+            notice.setUrl(url_Infos.get(i));
+            notice.setDate_posted(date_Infos.get(i));
+            notice.setAuthor(author_Infos.get(i));
+            notice.setCategory_id(categoryID);
+            noticeService.save(notice);
         }
+        // 카테고리 공지사항 DB 저장
+        Category category = new Category();
+        category.setCategory_id(categoryID);
+        category.setName(categoryName);
+        category.setTop_fixed(topFixed);
+        categoryService.save(category);
     }
+
     // 1. URL
     private void getNoticeURL(Document document, String noticeKind, List<String> url_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그 조회
@@ -66,6 +84,7 @@ public class MainWebsiteCrawler {
             index++;
         }
     }
+
     // 2. 제목
     private int getNoticeTitle(Document document, List<String> title_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그 조회
@@ -87,6 +106,7 @@ public class MainWebsiteCrawler {
         }
         return topFixed;
     }
+
     // 3, 4. 게시일, 글 작성자
     private void getNoticeDateAndAuthor(Document document, List<String> date_Infos, List<String> author_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그에 조회

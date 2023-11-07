@@ -3,8 +3,9 @@ package com.ziio.backend.service;
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.repository.AcademicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@org.springframework.stereotype.Service
+@Service
 public class AcademicService {
     private AcademicRepository academicRepository;
 
@@ -13,7 +14,7 @@ public class AcademicService {
         this.academicRepository = academicRepository;
     }
     // DB에 공지사항 저장
-    private void save(Academic academic) {
+    public void save(Academic academic) {
         academicRepository.save(academic);
     }
 }

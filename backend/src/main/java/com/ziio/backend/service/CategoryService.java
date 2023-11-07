@@ -3,8 +3,9 @@ package com.ziio.backend.service;
 import com.ziio.backend.entity.Category;
 import com.ziio.backend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@org.springframework.stereotype.Service
+@Service
 public class CategoryService {
     private CategoryRepository categoryRepository;
 
@@ -13,7 +14,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
     // DB에 공지사항 저장
-    private void save(Category category) {
+    public void save(Category category) {
         categoryRepository.save(category);
     }
 }
