@@ -1,18 +1,26 @@
 // 학사일정 웹사이트
-package com.ziio.backend.service.crawling;
+package com.ziio.backend.crawling;
 
+import com.ziio.backend.entity.Academic;
+import com.ziio.backend.service.AcademicService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
 public class AcademicCalendarWebsiteCrawler {
+    private final AcademicService academicService;
+
+    @Autowired
+    public AcademicCalendarWebsiteCrawler(AcademicService academicService) {
+        this.academicService = academicService;
+    }
     // 크롤링 실행
     public void crawl() {
-        // category_id, category_name
         getNotice();
     }
     // 크롤링 동작
@@ -30,20 +38,22 @@ public class AcademicCalendarWebsiteCrawler {
 
         for (Element tr : boardList.select("tr")) { // tr 태그 조회
             String date = "";
-            String titleAndhostDepartment = "";
+            String titleAndHostDepartment = "";
             int index = 0;
             for (Element td : tr.select("td")) { // td 태그 조회
                 if (index == 0) {
                     date = td.text(); // 기간
                     index++;
                 } else if (index == 1) {
-                    titleAndhostDepartment = td.text(); // 제목 및 주관 부서
+                    titleAndHostDepartment = td.text(); // 제목 및 주관 부서
                     break;
                 }
             }
-            // DB 저장 로직 구현 예정
-            //System.out.println(date + " " + titleAndhostDepartment);
-
+            // DB 저장 로직
+            Academic academic = new Academic();
+            academic.setDate(date);
+            academic.setTitleAndHostDepartment(titleAndHostDepartment);
+            academicService.save(academic);
         }
     }
 }
