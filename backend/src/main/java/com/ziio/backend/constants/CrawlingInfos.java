@@ -1,10 +1,10 @@
 package com.ziio.backend.constants;
 
 public class CrawlingInfos {
-    // 메인 웹사이트 정보 (category_id, category_name, 변수, 페이지 제한)
+    // 메인 웹사이트 정보 (category_id, category_name, 카테고리 변수, 페이지 제한)
     public static final String[][] MAIN_ALL_INFOS = new String[][]{{"100100000","일반공지","GENERALNOTICES","5"}, {"100101000","학사공지","HAKSANOTICE","5"}, {"100102000","장학공지","JANGHAKNOTICE","5"}};
 
-    // 단과대 & 학과 웹사이트 정보 (category_id, category_name, 변수, notice 번호, 페이지 제한)
+    // 단과대 & 학과 웹사이트 정보 (category_id, category_name, 카테고리 변수, notice 번호, 페이지 제한)
     public static final String[][] COLLEGE_AND_DEPARTMENT_ALL_INFOS = new String[][]{
             {"101100000","불교대학","bs","","3"}, {"101101000","문과대학","liberal","","3"}, {"101102000","이과대학","science","","3"},
             {"101103000","법과대학","law","1","3"}, {"101104000","사회과학대학","social","","3"}, {"101105000","경영대학","sba","","3"},
@@ -17,7 +17,7 @@ public class CrawlingInfos {
             {"101102103","물리반도체과학부","physics","1","3"}, {"101104100","정치외교학전공","politics","2","3"}, {"101104101","행정학전공","pa","1","3"},
             {"101104102","북한학전공","nk","","3"}, {"101104103","경제학과","econ","","3"}, {"101104104","국제통상학과","itrade","","3"},
             {"101104105","사회학전공","sociology","","3"}, {"101104106","미디어커뮤니케이션전공","comm","1","3"}, {"101104107","식품산업관리학과","poodindus","1","3"},
-            {"101104109","사회복지학과","welfare","","3"}, {"101105100","경영학과","mgt","","3"}, {"101105101","회계학과","acc","1","3"},
+            {"101104108","사회복지학과","welfare","","3"}, {"101105100","경영학과","mgt","","3"}, {"101105101","회계학과","acc","1","3"},
             {"101106100","경찰행정학부","police","1","3"}, {"101107100","바이오환경과학과","bio","","3"}, {"101107101","생명과학과","lifescience","","3"},
             {"101107102","식품생명공학과","food","","3"}, {"101107103","의생명공학과","mbt","1","3"}, {"101109100","전자전기공학부","dee","1","3"},
             {"101109101","정보통신공학과","ice","","3"}, {"101109102","건설환경공학과","civil","","3"}, {"101109103","화공생물공학과","chembioeng","1","3"},
@@ -27,11 +27,9 @@ public class CrawlingInfos {
             {"101113100","미술학부","aart","","3"}, {"101113101","연극학부","theatre","","3"}, {"101113103","한국음악","kmart","","3"},
             {"102100000","IT융합교육센터","itcec","","3"}, {"102101000","고양캠퍼스 미래융합교육원","bmclife","","3"}
     };
-    // 기타 웹사이트 정보 (category_id, category_name, 크롤링 대상 URL, 페이지 제한)
+    // 기타 웹사이트 정보 (category_id, category_name, 크롤링 대상 URL, 카테고리 변수, 페이지 제한)
     public static final String[][] ETC_ALL_INFOS = new String[][]{
-            {"101102102","통계학과","https://stat.dongguk.edu/article/board1/list","3"}, {"101104108","광고홍보학과","http://dguadpr.kr/bbs/board.php?bo_table=table31","3"},
-            {"101105102","경영정보학과","https://mis.dongguk.edu/article/news/list","3"}, {"101109105","건축공학부","https://archi.dongguk.edu/article/info1/list","3"},
-            {"101110100","교육학과","https://education.dongguk.edu/article/news2/list","3"}, {"101113102","영화영상학과","https://movie.dongguk.edu/movie23_1_3_1","3"},
-            {"102102000","서울캠퍼스 미래융합교육원","https://edulife.dongguk.edu/grade/site/article/33/list,","3"}
+            {"101102102","통계학과","https://stat.dongguk.edu/article/board1/list","stat","3"}, {"101105102","경영정보학과","https://mis.dongguk.edu/article/news/list","mis","3"},
+            {"101109105","건축공학부","https://archi.dongguk.edu/article/info1/list","archi","3"}, {"101110100","교육학과","https://education.dongguk.edu/article/news2/list","education","3"},
     };
 }
