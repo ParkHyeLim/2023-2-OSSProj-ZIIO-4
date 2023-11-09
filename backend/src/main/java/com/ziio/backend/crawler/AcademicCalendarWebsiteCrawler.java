@@ -1,5 +1,5 @@
 // 학사일정 웹사이트
-package com.ziio.backend.crawling;
+package com.ziio.backend.crawler;
 
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.service.AcademicService;

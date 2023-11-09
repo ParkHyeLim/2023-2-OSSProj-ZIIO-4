@@ -1,4 +1,4 @@
-package com.ziio.backend.crawling;
+package com.ziio.backend.crawler;
 
 import com.ziio.backend.service.AcademicService;
 import com.ziio.backend.service.CategoryService;
