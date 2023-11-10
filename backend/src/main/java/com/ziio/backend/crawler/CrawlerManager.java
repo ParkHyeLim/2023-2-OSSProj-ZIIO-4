@@ -1,4 +1,4 @@
-package com.ziio.backend.crawling;
+package com.ziio.backend.crawler;
 
 import com.ziio.backend.service.AcademicService;
 import com.ziio.backend.service.CategoryService;
@@ -31,10 +31,5 @@ public class CrawlerManager {
     // 학사일정 크롤러 실행
     public void runAcademicCrawlers() {
         academicCalendarWebsiteCrawler.crawl();
-    }
-
-    private void processData() {
-        // 크롤링된 데이터 처리 코드 작성
-        // 각 크롤러 클래스의 결과를 병합하거나 원하는 형태로 가공할 수 있습니다.
     }
 }

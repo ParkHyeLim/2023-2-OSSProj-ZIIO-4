@@ -1,5 +1,5 @@
 // 학사일정 웹사이트
-package com.ziio.backend.crawling;
+package com.ziio.backend.crawler;
 
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.service.AcademicService;
@@ -38,21 +38,24 @@ public class AcademicCalendarWebsiteCrawler {
 
         for (Element tr : boardList.select("tr")) { // tr 태그 조회
             String date = "";
-            String titleAndHostDepartment = "";
+            String title = "";
+            String host_department = "";
             int index = 0;
             for (Element td : tr.select("td")) { // td 태그 조회
                 if (index == 0) {
                     date = td.text(); // 기간
                     index++;
                 } else if (index == 1) {
-                    titleAndHostDepartment = td.text(); // 제목 및 주관 부서
+                    title = td.ownText(); // 제목
+                    host_department = td.select("p").text(); // 주관 부서
                     break;
                 }
             }
             // DB 저장 로직
             Academic academic = new Academic();
             academic.setDate(date);
-            academic.setTitleAndHostDepartment(titleAndHostDepartment);
+            academic.setTitle(title);
+            academic.setHost_department(host_department);
             academicService.save(academic);
         }
     }

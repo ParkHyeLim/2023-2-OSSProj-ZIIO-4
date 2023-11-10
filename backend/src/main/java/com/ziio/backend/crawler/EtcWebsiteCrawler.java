@@ -1,5 +1,5 @@
 // 동국대학교 메인 웹사이트
-package com.ziio.backend.crawling;
+package com.ziio.backend.crawler;
 
 import com.ziio.backend.constants.CrawlingInfos;
 import com.ziio.backend.entity.Category;
