@@ -12,7 +12,9 @@ public class Academic {
     private Long id;
 
     private String date;
-    private String titleAndHostDepartment;
+    private String title;
+
+    private String host_department;
 
     public Long getId() {
         return id;
@@ -30,11 +32,19 @@ public class Academic {
         this.date = date;
     }
 
-    public String getTitleAndHostDepartment() {
-        return titleAndHostDepartment;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitleAndHostDepartment(String titleAndHostDepartment) {
-        this.titleAndHostDepartment = titleAndHostDepartment;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getHost_department() {
+        return host_department;
+    }
+
+    public void setHost_department(String host_department) {
+        this.host_department = host_department;
     }
 }
