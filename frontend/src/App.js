@@ -1,7 +1,7 @@
 import './App.scss';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { MyPage, MainNotice } from './pages';
+import { MyPage, MainNotice, SchoolCalendar } from './pages';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Header />}>
           <Route index element={<MainNotice />} />
-          <Route path="schoolCalendar" element={<h1>schoolCalendar</h1>} />
+          <Route path="schoolCalendar" element={<SchoolCalendar />} />
           <Route path="myPage" element={<MyPage />} />
           <Route path="login" element={<h1>login</h1>} />
           <Route path="*" element={<h1>Not Found</h1>} />
