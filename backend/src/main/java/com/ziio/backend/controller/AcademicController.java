@@ -1,7 +1,6 @@
 package com.ziio.backend.controller;
 
 import com.ziio.backend.crawler.CrawlerManager;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,7 +13,7 @@ public class AcademicController {
         this.crawlerManager = crawlerManager;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void startCrawling() {
         // 크롤링 실행
         crawlerManager.runAcademicCrawlers();
