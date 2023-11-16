@@ -1,11 +1,12 @@
-# 1. 베이스 이미지 선택
-FROM openjdk:17-jdk-slim
+# backend Dockerfile
+FROM openjdk:11-jdk-slim
 
-# 2. 작업 디렉토리 설정
 ARG JAR_PATH=./build/libs
 
-# 3. 어플리케이션 복사
 COPY ${JAR_PATH}/*.jar .
 
-# 4. 실행 명령 설정
-ENTRYPOINT ["java","-jar","backend-0.0.1-SNAPSHOT.jar"]
+# Add wait-for-it.sh to the image
+ADD wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+ENTRYPOINT ["/wait-for-it.sh", "ziio_db:3306", "--", "java", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
