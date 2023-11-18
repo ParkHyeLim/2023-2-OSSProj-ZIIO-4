@@ -3,6 +3,7 @@ package com.ziio.backend.config.handler;
 import com.ziio.backend.entity.User;
 import com.ziio.backend.repository.UserRepository;
 import com.ziio.backend.service.UserService;
+import com.ziio.backend.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,8 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     UserService userService;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
@@ -31,6 +34,12 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String email = token.getPrincipal().getAttribute("email").toString();
         String name = token.getPrincipal().getAttribute("name").toString();
         log.info("LOGIN SUCCESS : EMAIL - {}, NAME - {}", email, name);
+
+        // Jwt 토큰 발급
+        String jwtToken = jwtUtil.generateToken(email, 3600000); // 1시간 동안 유효한 토큰
+
+        // Jwt를 헤더에 담음
+        response.setHeader("Authorization", "Bearer " + jwtToken);
 
         // Email로 기존 유저 & 신규 유저인지 확인
         // 1. 신규 유저인 경우 저장
@@ -42,13 +51,16 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
             userService.save(user);
         }
-        // 2. 기존 유저인 경우 id 반환 (추후 추가)
+        // 2. 기존 유저인 경우 log만 출력
         else {
             User existUser = userRepository.findUserByEmail(email);
             Long id = existUser.getId();
             log.info("{} EXISTS. ID : {}", email, id);
         }
-
+        // 유저 리다이렉트 시, uri에 쿼리 파라미터로 jwt 토큰을 함께 보냄
+        String redirectUri = "http://localhost:3000/login?jwt=" + jwtToken;
+        getRedirectStrategy().sendRedirect(request, response, redirectUri);
+        
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }
