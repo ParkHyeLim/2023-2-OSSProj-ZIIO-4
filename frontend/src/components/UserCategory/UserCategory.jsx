@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
-import { FaStar } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import { IoClose } from 'react-icons/io5';
+import { FaStar } from 'react-icons/fa';
 import styles from './UserCategory.module.scss';
 
 function BookmarkCategory({ categoryList }) {
-
-  const searchCategory = (title) => {
+  const searchCategory = title => {
     // onClick(title);
-  }
+  };
 
-  const deleteCategory = (title) => {
+  const deleteCategory = title => {
     // onDelete(title);
-  }
+  };
 
   return (
     <div className={styles.categoryContainer}>
@@ -21,7 +20,7 @@ function BookmarkCategory({ categoryList }) {
             <FaStar size={15} className={styles.star} />
             <div>{value.name}</div>
           </div>
-          <AiOutlineClose size={15} onClick={deleteCategory(value.name)} />
+          <IoClose size={16} onClick={deleteCategory(value.name)} className={styles.close} />
         </div>
       ))}
     </div>

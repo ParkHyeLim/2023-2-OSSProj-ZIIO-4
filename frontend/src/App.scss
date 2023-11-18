@@ -1,7 +1,7 @@
 :root {
   --font-family: 'Noto Sans KR', sans-serif;
   --orange: #ea5514;
-  --yellow: #FCD34D;
+  --yellow: #fcd34d;
   --gray-900: #111827;
   --gray-800: #1f2937;
   --gray-700: #374151;
@@ -65,6 +65,12 @@ button {
   outline: none;
   background-color: #fff;
   border: none;
+}
+
+select {
+  font-family: var(--font-family);
+  outline: none;
+  background-color: #fff;
 }
 
 table.fc-scrollgrid.fc-scrollgrid-liquid {
