@@ -49,6 +49,9 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             log.info("{} EXISTS. ID : {}", email, id);
         }
 
+        getRedirectStrategy().sendRedirect(request, response, "http://localhost:3000/login");
+
         super.onAuthenticationSuccess(request, response, authentication);
+
     }
 }
