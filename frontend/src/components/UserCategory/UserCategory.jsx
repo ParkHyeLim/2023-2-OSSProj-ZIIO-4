@@ -17,10 +17,10 @@ function BookmarkCategory({ categoryList }) {
       {categoryList.map((value, index) => (
         <div key={index} className={styles.categoryButton} onClick={searchCategory(value.name)}>
           <div className={styles.content}>
-            <FaStar size={15} className={styles.star} />
+            <FaStar size={16} className={styles.star} />
             <div>{value.name}</div>
+            <IoClose size={13} onClick={deleteCategory(value.name)} className={styles.close} />
           </div>
-          <IoClose size={16} onClick={deleteCategory(value.name)} className={styles.close} />
         </div>
       ))}
     </div>

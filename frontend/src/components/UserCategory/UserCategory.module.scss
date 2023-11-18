@@ -5,24 +5,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-
-    .close {
-      color: var(--gray-400);
-      font-weight: 700;
-      margin-top: 0.4rem;
-    }
+    margin-bottom: 0.8rem;
 
     .content {
+      width: 100%;
       display: flex;
+      align-items: center;
 
       .star {
-        margin: 0.4rem 1rem 0 0;
+        margin-right: 1rem;
         color: #fcd34d;
       }
 
       div {
         font-size: 1.5rem;
+        margin-top: 0.1rem;
+      }
+
+      .close {
+        color: var(--gray-400);
+        font-weight: 700;
+        margin-top: 0.5rem;
+        margin-left: auto;
       }
     }
   }
