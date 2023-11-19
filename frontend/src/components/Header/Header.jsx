@@ -4,13 +4,15 @@ import styles from './Header.module.scss';
 import classNames from 'classnames';
 import { useState } from 'react';
 import LoginModal from '../LoginModal/LoginModal';
+import { useRecoilState } from 'recoil';
+import { loginModalState, loginState } from '../../store/loginStore';
 
 export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname.split('/')[1];
-  const [isLoggedin, setIsLoggedin] = useState(localStorage.getItem('ziio-token') ? true : false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoggedin, setIsLoggedin] = useRecoilState(loginState);
+  const [isModalOpen, setIsModalOpen] = useRecoilState(loginModalState);
 
   const handleLogin = () => {
     if (isLoggedin) {
@@ -49,7 +51,7 @@ export const Header = () => {
         </ul>
       </header>
       <Outlet />
-      {isModalOpen && <LoginModal onModalClose={() => setIsModalOpen(!isModalOpen)} />}
+      {isModalOpen && <LoginModal onModalClose={() => setIsModalOpen(false)} />}
     </>
   );
 };

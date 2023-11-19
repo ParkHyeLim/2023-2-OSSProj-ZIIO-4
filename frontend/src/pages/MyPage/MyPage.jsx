@@ -8,9 +8,15 @@ import EventDetail from './components/EventDetail';
 import { EventModal } from '../../components';
 import { calculateDDay } from '../../utils/dateUtils';
 import { EventList } from './components/EventList';
+import { useNavigate } from 'react-router';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { loginModalState, loginState } from '../../store/loginStore';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
+  const navigate = useNavigate();
+  const isLoggedin = useRecoilValue(loginState);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(loginModalState);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
   const [eventTitle, setEventTitle] = useState('');
@@ -43,7 +49,7 @@ const MyPage = () => {
     const updatedEvents = [...events, eventData];
     setEvents(updatedEvents);
     const sortedEvents = sortEventsByDate(updatedEvents);
-    setListedEvents(sortedEvents.filter(event => new Date(event.end) >= new Date()));
+    setListedEvents(sortedEvents.filter(event => new Date(event.end) >= new Date() || event.end === ''));
     setShowModal(false);
   };
 
@@ -68,6 +74,14 @@ const MyPage = () => {
     setEventDateEnd(end ? end : '');
     console.log(eventData);
   };
+
+  useEffect(() => {
+    if (!isLoggedin) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/'); // 홈으로 리다이렉트
+      setIsLoginModalOpen(true);
+    }
+  }, []);
 
   return (
     <div className={styles.container}>

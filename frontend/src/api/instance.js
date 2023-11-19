@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 인증 토큰을 가져오는 함수 (여기서는 예시로 localStorage를 사용)
-const getAuthToken = () => localStorage.getItem('jwt');
+const getAuthToken = () => localStorage.getItem('ziio-token');
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,

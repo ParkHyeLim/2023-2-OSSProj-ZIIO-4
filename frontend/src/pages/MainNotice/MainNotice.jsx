@@ -6,7 +6,7 @@ import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
-import sampleCategories from '../../util/category';
+import sampleCategories from '../../utils/category';
 import NoticeItem from '../../components/NoticeItem/NoticeItem';
 import { FaStar } from 'react-icons/fa';
 
