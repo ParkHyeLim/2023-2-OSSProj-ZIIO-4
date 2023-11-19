@@ -13,12 +13,18 @@ public class Academic {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id 자동 +1
     private Long id;
 
-    @Column(nullable = false)
-    private String date;
+    @Column(nullable = true)
+    private String start_date;
+
+    @Column(nullable = true)
+    private String end_date;
 
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String host_department;
+
+    @Column(nullable = false)
+    private String color_code;
 }
