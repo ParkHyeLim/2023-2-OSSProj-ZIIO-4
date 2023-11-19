@@ -4,7 +4,7 @@ import styles from './MainNotice.module.scss'
 import BookmarkCategory from "../../components/UserCategory/UserCategory";
 import ClipModal from "../../components/ClipModal/ClipModal";
 import LoginModal from "../../components/LoginModal/LoginModal";
-import { FaStar } from "react-icons/fa";
+import { AiOutlinePlus } from "react-icons/ai";
 import DropDownComp from "../../components/DropDownComp/DropDownComp";
 
 import sampleCategories from "../../util/category";
@@ -46,32 +46,39 @@ const sample2 = [
 
 const Data = [
   {
-    announcement_id: '공지', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1254', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "학사공지", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '공지', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1255', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "일반공지", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '공지', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1258', category_id: 3, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "SW융합교육원", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '공지', category_id: 2, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1259', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "불교학부", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '1', category_id: 3, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1260', category_id: 2, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "사학과", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+  },
+]
+
+const TopData = [
+  {
+    announcement_id: '1254', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "학사공지", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '2', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1255', category_id: 0, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "일반공지", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
   {
-    announcement_id: '3', category_id: 2, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
+    announcement_id: '1256', category_id: 1, announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
+    "announcement_url": "https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176", announcement_category: "학사공지", announcement_date_posted: '2023. 09. 21', announcement_author: '나윤주'
   },
 ]
 
@@ -82,7 +89,7 @@ function MainNotice() {
     Array(Data.length).fill(false) // 초기 상태는 모두 false // db랑 연동되면 북마크 사항 반영
   )
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isSearch, setIsSearch] = useState(true); // 검색 버튼 활성화/비활성화
 
@@ -222,27 +229,32 @@ function MainNotice() {
 
       <div className={styles.noticeContainer}>
         <div className={styles.fillterContainer}>
+          <div>
           <DropDownComp placeholder="대분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => handleCategories1Change(e)}></DropDownComp>
           <DropDownComp placeholder="중분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => handleCategories2Change(e)}></DropDownComp>
           <DropDownComp placeholder="소분류" data={sampleCategories} fillterData={[category1, category2, category3]} onChange={(e) => setCategory3(e.target.value)}></DropDownComp>
           <input
             type="text"
-            placeholder="검색어를 입력해주세요"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button className={styles.searchButton} onClick={handleSearch} disabled={!isSearch}>
             검색
           </button>
+          </div>
+
           <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
-            <FaStar style={{ color: '#FCD34D' }} />
-            즐겨찾기 추가
+            <AiOutlinePlus className={styles.plusIcon} />
+            <div>즐겨찾기에 추가</div>
           </button>
         </div>
 
-        <div>
+        <div className={styles.itemList}>
+          {TopData.map((value, index) => (
+            <NoticeItem item={value} idx={index} fixed={true} clipStar={isClickedStar} onStarClick={(idx) => changeClipStarList(idx)} />
+          ))}
           {Data.map((value, index) => (
-            <NoticeItem item={value} idx={index} clipStar={isClickedStar} onStarClick={(idx) => changeClipStarList(idx)} />
+            <NoticeItem item={value} idx={index} fixed={false} clipStar={isClickedStar} onStarClick={(idx) => changeClipStarList(idx)} />
           ))}
         </div>
       </div>

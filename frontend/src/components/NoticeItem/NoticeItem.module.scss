@@ -1,68 +1,78 @@
 .container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   margin: 0 0 2rem 2rem;
-  
-  .starButton {
-    /* Add star button styles here */
-  }
-  
-  .starIcon {
-    margin: 0.3rem 0 0 0;
-    color: #FCD34D;
-  }
-  
-  .regStarIcon {
-    margin: 0.4rem 0 0 0;
-    color: #E5E7EB;
-  }
-  
-  .announcementIdDefault {
-    width: 5rem;
-    font-size: 1.5rem;
-    text-align: center;
+  padding: 0 0 2rem 0;
+  border-bottom: 1px solid #E5E7EB;
+  color: var(--gray-500);
+
+  .leftContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .bookmarkIcon {
+      color: var(--yellow);
+    }
+
+    .regBookmarkIcon {
+      color: var(--gray-400);
+    }
+
+    .announcementIdDefault {
+      margin: 0 1rem 0 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    .announcementId {
+      margin: 0 1rem 0 1.5rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--orange);
+    }
+
+    .announcementTitleDefault {
+      margin: 0 1rem;
+      font-size: 1.5rem;
+      color: var(--gray-900);
+    }
+
+    .announcementTitle {
+      font-weight: bold;
+    }
   }
 
-  .announcementId {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #EA5514;
-  }
+  .rightContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 
-  .announcementTitleDefault {
-    width: 80rem;
-    font-size: 1.5rem;
-  }
-  
-  .announcementTitle {
-    width: 80rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
+    .announcementCategoryDefault {
+      margin: 0 1rem;
+      font-size: 1.3rem;
+    }
 
-  .announcementDatePostedDefault {
-    width: 18rem;
-    font-size: 1.5rem;
-    text-align: center;
-  }
-  
-  .announcementDatePosted {
-    width: 18rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .announcementAuthorDefault {
-    width: 10rem;
-    font-size: 1.5rem;
-    text-align: center;
-  }
+    .announcementCategory {
+      font-weight: bold;
+    }
 
-  .announcementAuthor {
-    width: 10rem;
-    font-size: 1.5rem;
-    font-weight: bold;
+    .announcementDatePostedDefault {
+      margin: 0 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    .announcementDatePosted {
+      font-weight: bold;
+    }
+
+    .announcementAuthorDefault {
+      margin: 0 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    .announcementAuthor {
+      font-weight: bold;
+    }
   }
-  
 }

@@ -1,20 +1,21 @@
 // 새 이벤트를 추가하는 모달 또는 폼 컴포넌트
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './EventModal.module.scss';
 import closeIcon from '../../assets/icons/close.svg';
 import { ConfigProvider, DatePicker } from 'antd';
 import { colors } from '../../constants/eventColors';
 import classNames from 'classnames';
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ modalTitle, saveEvent, closeModal }) => {
-  const [title, setTitle] = useState('');
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
-  const [memo, setMemo] = useState('');
-  const [url, setUrl] = useState('');
-  const [color, setColor] = useState('');
+export const EventModal = ({ modalTitle, saveEvent, closeModal, prevData }) => {
+  const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
+  const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
+  const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
+  const [memo, setMemo] = useState(prevData && prevData.memo !== '' ? prevData.memo : '');
+  const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
+  const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
 
   const handleMouseDownInside = () => {
@@ -111,7 +112,9 @@ export const EventModal = ({ modalTitle, saveEvent, closeModal }) => {
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
               <RangePicker
+                defaultValue={prevData ? [dayjs(start), dayjs(end)] : null}
                 onChange={dates => {
+                  console.log(dates)
                   if (dates.length === 2) {
                     // 첫 번째 날짜의 시, 분, 초를 0으로 설정
                     const startDate = new Date(dates[0].$d);
