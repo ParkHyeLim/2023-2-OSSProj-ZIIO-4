@@ -22,7 +22,7 @@ public class Academic {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String host_department;
 
     @Column(nullable = false)

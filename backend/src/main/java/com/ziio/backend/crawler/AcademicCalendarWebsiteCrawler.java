@@ -54,8 +54,8 @@ public class AcademicCalendarWebsiteCrawler {
                     date = td.text(); // 기간
                     index++;
                 } else if (index == 1) {
-                    title = td.ownText(); // 제목
-                    host_department = td.select("p").text(); // 주관 부서
+                    title = td.ownText().trim(); // 제목
+                    host_department = td.select("p").text().trim(); // 주관 부서
                     break;
                 }
             }
@@ -71,7 +71,10 @@ public class AcademicCalendarWebsiteCrawler {
             academic.setEnd_date(endDate);
 
             academic.setTitle(title); // 제목
-            academic.setHost_department(host_department); // 주관부서
+            // 제목과 주관부서가 다른 경우 == 주관부서가 있는 경우에만 저장
+            if (!title.equals(host_department)) {
+                academic.setHost_department(host_department); // 주관부서
+            }
             // 색상은 랜덤으로 설정
             String code = colorService.findCodeById(randomUtil.generateRandomNumber());
             academic.setColor_code(code); // 헥스코드로 저장
