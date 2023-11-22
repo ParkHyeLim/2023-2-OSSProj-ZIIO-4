@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login/**").permitAll()       // 로그인 페이지
                 .antMatchers("/academics/**").permitAll()   // 학사일정 페이지
                 .antMatchers("/notices/**").permitAll()     // 공지사항 페이지
+                .antMatchers("/user/**").permitAll()        // 유저 정보 페이지
                 .anyRequest().authenticated()
                 .and()
                 // oauth 로그인 설정
