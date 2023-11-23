@@ -54,6 +54,8 @@ public class AcademicController {
                 .end_date(academicInfo.getEnd_date())
                 .title(academicInfo.getTitle())
                 .color_code(academicInfo.getColor_code())
+                .academic_id(academicId)
+                .message("successfully created.")
                 .build();
 
         return ResponseEntity.ok(myPageInfo);

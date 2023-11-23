@@ -38,4 +38,6 @@ public class MyPage {
     @Column
     private String memo;
 
+    @Column
+    private Long academic_id;
 }

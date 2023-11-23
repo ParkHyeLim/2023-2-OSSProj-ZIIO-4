@@ -16,6 +16,8 @@ public class MyPageDTO {
         private String color_code;
         private String url;
         private String memo;
+        private Long academic_id;
+        private String message;
     }
 
     @Getter
