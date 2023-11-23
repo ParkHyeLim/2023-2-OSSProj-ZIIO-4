@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TokenExceptionHandler {
+public class TokenException {
 
-    public ResponseEntity<String> handleExpiredToken() {
+    public ResponseEntity<String> toExpiredTokenResponse() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Token has expired");
     }
