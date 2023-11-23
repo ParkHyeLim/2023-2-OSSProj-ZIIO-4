@@ -12,19 +12,25 @@ import javax.persistence.Column;
 @Getter
 @Setter
 @Entity
-public class Mypage {
+public class MyPage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String user_email;
+
+    @Column(nullable = false)
+    private String start_date;
+
+    @Column
+    private String end_date;
 
     @Column(nullable = false)
     private String title;
 
     @Column
-    private String colorId;
+    private String color_code;
 
     @Column
     private String url;
@@ -32,6 +38,4 @@ public class Mypage {
     @Column
     private String memo;
 
-    @Column
-    private String date;
 }
