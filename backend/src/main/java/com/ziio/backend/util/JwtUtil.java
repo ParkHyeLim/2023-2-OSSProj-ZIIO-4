@@ -34,7 +34,8 @@ public class JwtUtil {
             log.info("Return User E-mail.");
             return body.getSubject(); 
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("Invalid token.");
+            // 토큰이 유효하지 않은 경우
+            log.warn("Invalid token.");
             return null;
         }
     }

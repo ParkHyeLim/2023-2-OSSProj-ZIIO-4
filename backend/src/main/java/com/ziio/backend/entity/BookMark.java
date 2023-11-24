@@ -12,7 +12,7 @@ import javax.persistence.Column;
 @Getter
 @Setter
 @Entity
-public class Bookmark {
+public class BookMark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
