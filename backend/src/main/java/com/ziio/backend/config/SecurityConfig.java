@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -22,22 +25,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors().configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 3000 port 접근 허용
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "OPTIONS"));
+                    config.setAllowedHeaders(Arrays.asList("*"));
+                    return config;
+                })
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
-                // 누구나 접근 가능한 엔드포인트
-                .antMatchers("/login/**").permitAll()       // 로그인 페이지
-                .antMatchers("/academics/**").permitAll()   // 학사일정 페이지
-                .antMatchers("/notices/**").permitAll()     // 공지사항 페이지
-                .antMatchers("/user/**").permitAll()        // 유저 정보 페이지
+                .antMatchers("/login/**").permitAll()
+                .antMatchers("/academics/**").permitAll()
+                .antMatchers("/notices/**").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                // oauth 로그인 설정
                 .oauth2Login()
-                // loginPage가 따로 없으면, 기본 페이지가 나옴
                 .userInfoEndpoint()
                 .userService(userService)
                 .and()
-                // 성공, 실패 핸들러 등록
                 .successHandler(oAuthLoginSuccessHandler)
                 .failureHandler(oAuthLoginFailureHandler);
     }
