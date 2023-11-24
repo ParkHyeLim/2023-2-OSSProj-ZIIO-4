@@ -25,6 +25,9 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     UserRepository userRepository;
     @Autowired
     JwtUtil jwtUtil;
+    final String REDIRECT_URI = "http://localhost:3000/login?jwt=";
+    final long TOKEN_EXPIRATION_TIME = 3600000; // 1시간 동안 유효한 토큰
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
@@ -36,13 +39,10 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         log.info("LOGIN SUCCESS : EMAIL - {}, NAME - {}", email, name);
 
         // Jwt 토큰 발급
-        String jwtToken = jwtUtil.generateToken(email, 3600000); // 1시간 동안 유효한 토큰
+        String jwtToken = jwtUtil.generateToken(email, TOKEN_EXPIRATION_TIME);
 
-        // Jwt를 헤더에 담음
-        response.setHeader("Authorization", "Bearer " + jwtToken);
-
-        // Email로 기존 유저 & 신규 유저인지 확인
-        // 1. 신규 유저인 경우 저장
+        // Email로 기존 사용자 & 신규 사용자인지 확인
+        // 1. 신규 사용자인 경우 저장
         if (!userService.isUserExistsByEmail(email)) {
             log.info("{} NOT EXISTS. REGISTER", email);
             User user = new User();
@@ -51,16 +51,15 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
             userService.save(user);
         }
-        // 2. 기존 유저인 경우 log만 출력
+        // 2. 기존 사용자인 경우 log만 출력
         else {
             User existUser = userRepository.findUserByEmail(email);
             Long id = existUser.getId();
             log.info("{} EXISTS. ID : {}", email, id);
         }
-        // 유저 리다이렉트 시, uri에 쿼리 파라미터로 jwt 토큰을 함께 보냄
-        String redirectUri = "http://localhost:3000/login?jwt=" + jwtToken;
+
+        // 사용자 리다이렉트 시, uri에 쿼리 파라미터로 jwt 토큰을 함께 보냄
+        String redirectUri = REDIRECT_URI + jwtToken;
         getRedirectStrategy().sendRedirect(request, response, redirectUri);
-        
-        super.onAuthenticationSuccess(request, response, authentication);
     }
 }

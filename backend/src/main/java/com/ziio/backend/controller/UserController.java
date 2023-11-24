@@ -27,13 +27,13 @@ public class UserController {
         final String userEmail = jwtUtil.getEmailFromToken(jwtToken);
         // 유저 이름
         final String userName = userService.getUserNameByEmail(userEmail);
-        // 응답 객체 생성
-        UserDTO.Info userinfo = UserDTO.Info.builder()
+        // 응답 객체 생성 및 반환
+        UserDTO.Info userInfo = UserDTO.Info.builder()
                                             .email(userEmail)
                                             .name(userName)
                                             .build();
-        // ResponseEntity에 응답 객체를 담아서 반환
-        return ResponseEntity.ok(userinfo);
+
+        return ResponseEntity.ok(userInfo);
     }
 
 }
