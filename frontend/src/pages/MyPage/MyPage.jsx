@@ -4,11 +4,13 @@ import styles from './MyPage.module.scss';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import { EventDetail, EventList } from './components';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginModalState, loginState } from '../../store/loginStore';
+import instance from '../../api/instance';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -17,13 +19,10 @@ const MyPage = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(loginModalState);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventDateStart, setEventDateStart] = useState('');
-  const [eventDateEnd, setEventDateEnd] = useState('');
-  const [eventMemo, setEventMemo] = useState('');
-  const [eventUrl, setEventUrl] = useState('');
-  const [eventColor, setEventColor] = useState('');
+  const [event, setEvent] = useState({ title: '', url: '', memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
+  const [user, setUser] = useState({}); // 유저 정보를 담는 객체
   const [showModal, setShowModal] = useState(false);
+  const apiKey = process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID;
 
   const sortEventsByDate = eventData => {
     return [...eventData].sort((a, b) => {
@@ -64,13 +63,24 @@ const MyPage = () => {
     // eventData의 구조에 따라 필요한 정보를 추출
     const { title, url, extendedProps, backgroundColor, start, end } = eventData;
 
-    setEventTitle(title);
-    setEventUrl(url);
-    setEventMemo(extendedProps ? extendedProps.memo : '');
-    setEventColor(backgroundColor);
-    setEventDateStart(start);
-    setEventDateEnd(end ? end : '');
-    console.log(eventData);
+    setEvent({
+      title,
+      url,
+      memo: extendedProps ? extendedProps.memo : '',
+      color: backgroundColor,
+      start,
+      end: end ? end : '',
+    });
+    // console.log(eventData);
+  };
+
+  const getUser = async () => {
+    try {
+      const response = await instance.get('/user');
+      setUser(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
   };
 
   useEffect(() => {
@@ -79,6 +89,7 @@ const MyPage = () => {
       navigate('/'); // 홈으로 리다이렉트
       setIsLoginModalOpen(true);
     }
+    getUser();
   }, []);
 
   return (
@@ -87,12 +98,12 @@ const MyPage = () => {
       <div className={styles.leftWrapper}>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail
-          eventTitle={eventTitle}
-          eventDateStart={eventDateStart}
-          eventDateEnd={eventDateEnd}
-          eventMemo={eventMemo}
-          eventUrl={eventUrl}
-          eventColor={eventColor}
+          eventTitle={event.title}
+          eventDateStart={event.start}
+          eventDateEnd={event.end}
+          eventMemo={event.memo}
+          eventUrl={event.url}
+          eventColor={event.color}
         />
       </div>
       <FullCalendar
@@ -104,15 +115,16 @@ const MyPage = () => {
           },
         }}
         initialView="dayGridMonth"
+        googleCalendarApiKey={apiKey}
         events={events}
-        plugins={[dayGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, interactionPlugin, googleCalendarPlugin]}
         headerToolbar={{
           left: '',
           center: 'prev title next',
           right: 'add',
         }}
         titleFormat={({ date }) => `${date.year}. ${date.month + 1}`}
-        // eventColor={'#f5a986'}
+        eventColor={'#f5a986'}
         editable={false}
         // selectable={true}
         displayEventTime={false}

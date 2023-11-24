@@ -4,8 +4,7 @@ import axios from 'axios';
 const getAuthToken = () => localStorage.getItem('ziio-token');
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_URL,
-  timeout: 1000,
+  baseURL: process.env.REACT_APP_SERVER_URL || 'http://localhost:8080', // Fallback URL
 });
 
 // 요청 인터셉터를 추가하여 요청이 전송되기 전에 실행됩니다.
