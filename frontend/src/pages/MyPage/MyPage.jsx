@@ -4,10 +4,8 @@ import styles from './MyPage.module.scss';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
-import EventDetail from './components/EventDetail';
+import { EventDetail, EventList } from './components';
 import { EventModal } from '../../components';
-import { calculateDDay } from '../../utils/dateUtils';
-import { EventList } from './components/EventList';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginModalState, loginState } from '../../store/loginStore';

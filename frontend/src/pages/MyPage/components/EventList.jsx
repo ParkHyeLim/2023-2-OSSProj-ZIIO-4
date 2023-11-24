@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '../MyPage.module.scss';
 import { calculateDDay } from '../../../utils/dateUtils';
 
-export const EventList = ({ listedEvents, handleEventClick }) => {
+const EventList = ({ listedEvents, handleEventClick }) => {
   return (
     <div className={styles.eventList}>
       {listedEvents.map(event => (
@@ -15,3 +15,5 @@ export const EventList = ({ listedEvents, handleEventClick }) => {
     </div>
   );
 };
+
+export default EventList;

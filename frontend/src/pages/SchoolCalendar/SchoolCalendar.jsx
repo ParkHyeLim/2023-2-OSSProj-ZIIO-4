@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
+import React, { useEffect, useRef, useState } from 'react';
+import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-import EventList from "./components/EventList";
-import EventDetail from "./components/EventDetail";
+import { EventDetail, EventList } from './components';
 import styles from './SchoolCalendar.module.scss';
-import { EventModal } from "../../components/EventModal/EventModal";
+import { EventModal } from '../../components';
 
 const SchoolCalendar = () => {
   const calendarRef = useRef(null);
@@ -22,7 +21,7 @@ const SchoolCalendar = () => {
 
   //localStorage에서 불러오는 거로 추후에는 백 연동 코드로 변경 예정
   useEffect(() => {
-    const data = localStorage.getItem("sample");
+    const data = localStorage.getItem('sample');
     const redata = data ? JSON.parse(data) : '';
     setEvents(redata);
     setListedEvents(redata);
@@ -43,19 +42,17 @@ const SchoolCalendar = () => {
     setEventDateStart(start);
     setEventDateEnd(end);
     console.log(title);
-
   };
 
-
   // 내 일정 추가(추후에는 DB에 보내기)
-  const saveEvent = (eventData) => {
+  const saveEvent = eventData => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
     }
 
-    localStorage.setItem("akakakak", JSON.stringify(eventData));
+    localStorage.setItem('akakakak', JSON.stringify(eventData));
     setShowModal(false);
   };
 
@@ -91,8 +88,8 @@ const SchoolCalendar = () => {
         eventClick={clickInfo => handleEventClick(clickInfo.event, clickInfo.jsEvent)}
         nextDayThreshold={'00:00:00'}
       />
-      {
-        showModal && <EventModal
+      {showModal && (
+        <EventModal
           modalTitle={'내 일정으로 추가'}
           prevData={{
             title: eventTitle,
@@ -103,9 +100,9 @@ const SchoolCalendar = () => {
           saveEvent={saveEvent}
           closeModal={() => setShowModal(!showModal)}
         />
-      }
+      )}
     </div>
   );
-}
+};
 
 export default SchoolCalendar;
