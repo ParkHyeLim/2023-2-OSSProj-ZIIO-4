@@ -1,6 +1,7 @@
 package com.ziio.backend.controller;
 
 import com.ziio.backend.dto.UserDTO;
+import com.ziio.backend.entity.User;
 import com.ziio.backend.service.UserService;
 import com.ziio.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,13 @@ public class UserController {
         String jwtToken = jwtUtil.getJwtTokenFromHeader(authorizationHeader);
         // 유저 이메일
         final String userEmail = jwtUtil.getEmailFromToken(jwtToken);
-        // 유저 이름
-        final String userName = userService.getUserNameByEmail(userEmail);
+        // 유저 정보 객체
+        final User user = userService.getUserInfoByEmail(userEmail);
         // 응답 객체 생성 및 반환
         UserDTO.Info userInfo = UserDTO.Info.builder()
                                             .email(userEmail)
-                                            .name(userName)
+                                            .name(user.getName())
+                                            .accessToken(user.getAccessToken())
                                             .build();
 
         return ResponseEntity.ok(userInfo);
