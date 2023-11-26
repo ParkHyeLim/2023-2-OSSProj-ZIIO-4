@@ -287,6 +287,7 @@ function MainNotice() {
         <div className={styles.itemList}>
           {TopData.map((value, index) => (
             <NoticeItem
+              key={index}
               item={value}
               idx={index}
               fixed={true}
@@ -296,6 +297,7 @@ function MainNotice() {
           ))}
           {Data.map((value, index) => (
             <NoticeItem
+              key={index}
               item={value}
               idx={index}
               fixed={false}
