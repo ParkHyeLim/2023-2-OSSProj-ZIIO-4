@@ -1,22 +1,32 @@
 .categoryContainer {
-  margin: 1rem 1.5rem 0 1.5rem;
+  width: 100%;
 
   .categoryButton {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 1rem 0;
+    margin-bottom: 0.8rem;
 
     .content {
+      width: 100%;
       display: flex;
+      align-items: center;
 
       .star {
-        margin: 0.4rem 1rem 0 0;
-        color: #FCD34D;
+        margin-right: 1rem;
+        color: #fcd34d;
       }
 
       div {
         font-size: 1.5rem;
+        margin-top: 0.1rem;
+      }
+
+      .close {
+        color: var(--gray-400);
+        font-weight: 700;
+        margin-top: 0.5rem;
+        margin-left: auto;
       }
     }
   }

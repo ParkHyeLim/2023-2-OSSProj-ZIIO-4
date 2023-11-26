@@ -6,16 +6,23 @@
   width: calc(100% - 2.4rem * 2);
   height: calc(100vh - 2.4rem * 2 - 6.8rem);
 
+  * {
+    font-weight: 500;
+  }
+
   .userContainer {
     width: 20%;
     height: 100%;
     border-radius: 15px;
     border: 1px solid var(--gray-200);
+    padding: 2.2rem 2.6rem;
 
     .text1 {
-      margin: 1.5rem 0 0 1.5rem;
-      font-size: 1.7rem;
-      font-weight: 700;
+      // margin: 1.5rem 0 0 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: 1.7rem;
     }
   }
 
@@ -34,58 +41,47 @@
       input {
         margin-right: 2rem;
         padding: 0 0 0 0.5rem;
-        width: 17rem;
+        width: 15.4rem;
         height: 3.5rem;
         border-radius: 7px;
         border: 1px solid var(--gray-300);
         font-family: var(--font-family);
-      }
-
-      input:focus {
-        border-color: initial;
-        background-color: initial;
-        color: initial;
-        box-shadow: none;
+        padding: 0 1rem;
       }
 
       .searchButton {
-        margin-right: 2rem;
+        width: 5.6rem;
+        height: 3.5rem;
+        margin-right: 1.6rem;
         padding: 0.7rem 1rem;
-        background-color: #ffffff;
+        background-color: var(--orange);
         border-radius: 7px;
-        border: 1px solid var(--gray-300);
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-family: var(--font-family);
-        color: var(--gray-700);
-      }
-
-      .searchButton:hover {
-        border: 1.5px solid var(--gray-400);
+        color: #ffffff;
+        cursor: pointer;
       }
 
       .bookmarkButton {
         display: flex;
-        justify-content: flex-start;
         align-items: center;
         padding: 0.7rem 1rem;
         background-color: #ffffff;
         border-radius: 7px;
         border: 1px solid var(--gray-300);
+        cursor: pointer;
 
-        .plusIcon {
-          margin: 0 0.5rem 0 0;
-          color: var(--gray-700);
+        .star {
+          margin-right: 0.5rem;
+          color: #fcd34d;
         }
 
         div {
-          font-size: 1.2rem;
+          font-size: 1.3rem;
           font-family: var(--font-family);
           color: var(--gray-700);
+          font-weight: 500;
         }
-      }
-
-      .bookmarkButton:hover {
-        border: 1.5px solid var(--gray-400);
       }
     }
 
