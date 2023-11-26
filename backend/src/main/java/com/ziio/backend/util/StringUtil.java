@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class StringUtil {
 
     // 000을 제외한 카테고리 앞 부분만 추출하는 메소드
-    public String createFindIdByCategoryId(String category_id) {
+    public String createParentIdByCategoryId(String category_id) {
         StringBuilder parentId = new StringBuilder();
         for (int i = 0; i < category_id.length(); i+=3) {
             String oneCategory = category_id.substring(i,i+3);

@@ -29,7 +29,7 @@ public class NoticeService {
 
     // 부모 카테고리 id와 키워드를 포함하는 공지사항을 찾아 반환하는 메소드
     public List<Notice> getNoticesByCategoryIdAndKeyword(String category_id, String keyword) {
-        String parentId = stringUtil.createFindIdByCategoryId(category_id);
+        String parentId = stringUtil.createParentIdByCategoryId(category_id);
 
         // parentId로 시작하는 공지사항 필터링
         List<Notice> filteredNotices = getAllNotices()
@@ -38,9 +38,15 @@ public class NoticeService {
                 .collect(Collectors.toList());
 
         // 키워드가 포함된 공지사항 필터링
-        return filteredNotices
-                .stream()
-                .filter(notice -> notice.getTitle().contains(keyword))
-                .collect(Collectors.toList());
+        if (keyword == null || keyword.isBlank()) {
+            // keyword가 없는 경우, parentId로 시작하는 모든 공지사항 반환
+            return filteredNotices;
+        } else {
+            // keyword가 있는 경우, 해당 키워드가 포함된 공지사항 반환
+            return filteredNotices
+                    .stream()
+                    .filter(notice -> notice.getTitle().contains(keyword))
+                    .collect(Collectors.toList());
+        }
     }
 }

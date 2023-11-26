@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -39,11 +39,11 @@ public class NoticeController {
     }
     
     // 부모 카테고리 id와 키워드를 포함하는 공지사항을 반환하는 메소드
-    @GetMapping("/search/{category_id}/{keyword}")
+    @GetMapping("/search")
     public ResponseEntity<List<Notice>> searchNoticesByCategoryIdAndKeyword(
-            @PathVariable("category_id") String categoryId,
-            @PathVariable("keyword") String keyword
-    ){
+            @RequestParam(name = "category_id") String categoryId,
+            @RequestParam(name = "keyword", required = false) String keyword
+    ) {
         List<Notice> notices = noticeService.getNoticesByCategoryIdAndKeyword(categoryId, keyword);
 
         return new ResponseEntity<>(notices, HttpStatus.OK);
