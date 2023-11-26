@@ -35,8 +35,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     final long TOKEN_EXPIRATION_TIME = 3600000; // 1시간 동안 유효한 토큰
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws ServletException, IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
 
         // 토큰에서 email, name 추출
@@ -51,8 +50,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     token.getName());
             OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
 
-            log.info("LOGIN SUCCESS: EMAIL - {}, NAME - {}, ACCESS TOKEN - {}", email, name,
-                    accessToken.getTokenValue());
+            log.info("LOGIN SUCCESS: EMAIL - {}, NAME - {}, ACCESS TOKEN - {}", email, name, accessToken.getTokenValue());
 
             // Email로 기존 사용자 & 신규 사용자인지 확인
             User user = userRepository.findUserByEmail(email);
