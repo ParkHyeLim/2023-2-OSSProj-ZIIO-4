@@ -26,4 +26,16 @@ instance.interceptors.request.use(
   },
 );
 
+instance.interceptors.response.use(
+  response => response,
+  error => {
+    // 토큰 만료 시
+    if (error.response.status === 401) {
+      localStorage.removeItem('ziio-token');
+      alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+      window.location.reload();
+    }
+  },
+);
+
 export default instance;
