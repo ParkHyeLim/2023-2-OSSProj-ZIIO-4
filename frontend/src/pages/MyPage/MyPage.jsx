@@ -78,6 +78,7 @@ const MyPage = () => {
     try {
       const response = await instance.get('/user');
       setUser(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -89,6 +90,7 @@ const MyPage = () => {
       navigate('/'); // 홈으로 리다이렉트
       setIsLoginModalOpen(true);
     }
+
     getUser();
   }, []);
 
