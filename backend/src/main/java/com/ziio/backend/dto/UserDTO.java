@@ -10,5 +10,6 @@ public class UserDTO {
     public static class Info {
         private String email;
         private String name;
+        private String accessToken;
     }
 }

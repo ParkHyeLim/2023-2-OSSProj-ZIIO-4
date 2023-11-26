@@ -25,7 +25,7 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     // 이메일로 사용자를 찾아 이름을 반환
-    public String getUserNameByEmail(String email) {
-        return userRepository.findUserByEmail(email).getName();
+    public User getUserInfoByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 }
