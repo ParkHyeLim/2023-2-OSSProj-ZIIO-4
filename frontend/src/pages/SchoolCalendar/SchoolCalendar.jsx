@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useQuery } from 'react-query';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,6 +7,23 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { EventDetail, EventList } from './components';
 import styles from './SchoolCalendar.module.scss';
 import { EventModal } from '../../components';
+import instance from '../../api/instance';
+
+const fetchProjects = async () => {
+  const { data } = await instance.get('/academics');
+  return data;
+}
+
+
+function formatDate(dateString) {
+  const parsedDate = new Date(dateString.replace(/\./g, '-'));
+  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(parsedDate.getDate())}`;
+  return formattedDate;
+}
+
+function padZero(number) {
+  return number.toString().padStart(2, '0');
+}
 
 const SchoolCalendar = () => {
   const calendarRef = useRef(null);
@@ -14,34 +32,53 @@ const SchoolCalendar = () => {
   const [eventTitle, setEventTitle] = useState('');
   const [eventDateStart, setEventDateStart] = useState('');
   const [eventDateEnd, setEventDateEnd] = useState('');
-  const [eventMemo, setEventMemo] = useState('');
-  const [eventUrl, setEventUrl] = useState('');
+  const [eventHost, setEventHost] = useState('');
   const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const state = useQuery('academics', fetchProjects);
 
-  //localStorage에서 불러오는 거로 추후에는 백 연동 코드로 변경 예정
   useEffect(() => {
-    const data = localStorage.getItem('sample');
-    const redata = data ? JSON.parse(data) : '';
-    setEvents(redata);
-    setListedEvents(redata);
-  }, []);
+    if (listedEvents.length === 0) {
+      if (state.isLoading) console.log("Loading");
+      else if (state.isError) console.log(state.error);
+      else {
+        const transformedEvents = state.data.map(item => {
+          const start = formatDate(item.start_date);
+          const end = formatDate(item.end_date);
+          return {
+            id: item.id,
+            title: item.title,
+            start: start,
+            end: end,
+            backgroundColor: item.color_code,
+            extendedProps: { host_department: item.host_department }
+          }
+        });
+        setEvents(transformedEvents);
+        setListedEvents(state.data);
+      }
+    }
+  }, [state]);
 
   const handleEventClick = (eventData, jsEvent) => {
     // jsEvent가 있으면 기본 동작 방지 (FullCalendar 이벤트에서만 적용)
     if (jsEvent) {
       jsEvent.preventDefault();
+      const { title, backgroundColor, extendedProps, start, end } = eventData;
+      setEventTitle(title);
+      setEventColor(backgroundColor);
+      setEventHost(extendedProps ? extendedProps.host_department : '');
+      setEventDateStart(start);
+      setEventDateEnd(end);
+    } else {
+      // eventData의 구조에 따라 필요한 정보를 추출
+      const { title, color_code, host_department, start_date, end_date } = eventData;
+      setEventTitle(title);
+      setEventColor(color_code);
+      setEventHost(host_department);
+      setEventDateStart(start_date);
+      setEventDateEnd(end_date);
     }
-
-    // eventData의 구조에 따라 필요한 정보를 추출
-    const { title, url, extendedProps, backgroundColor, start, end } = eventData;
-    setEventTitle(title);
-    setEventUrl(url);
-    setEventMemo(extendedProps ? extendedProps.memo : '');
-    setEventColor(backgroundColor);
-    setEventDateStart(start);
-    setEventDateEnd(end);
-    console.log(title);
   };
 
   // 내 일정 추가(추후에는 DB에 보내기)
@@ -59,13 +96,13 @@ const SchoolCalendar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.leftWrapper}>
+        <div>앞으로의 학사일정 목록</div>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail
           eventTitle={eventTitle}
           eventDateStart={eventDateStart}
           eventDateEnd={eventDateEnd}
-          eventMemo={eventMemo}
-          eventUrl={eventUrl}
+          eventHost={eventHost}
           eventColor={eventColor}
           onOpen={() => setShowModal(!showModal)}
         />

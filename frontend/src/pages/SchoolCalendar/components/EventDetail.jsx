@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import { formatDate } from '../../../utils/dateUtils';
 import { AiOutlinePlus } from "react-icons/ai";
 
-const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, eventUrl, eventColor, onOpen }) => {
+const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventHost, eventColor, onOpen }) => {
+  console.log("컴온", eventDateEnd);
   return (
     <div className={classNames(styles.eventWrapper, eventTitle === '' && styles.invisible)}>
       <div className={styles.titleWrapper}>
@@ -16,15 +17,10 @@ const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, even
           <div className={styles.subtitle}>기간</div>
         </div>
         <div className={styles.content}>
-          {eventDateStart === '' && eventDateEnd === '' ? (
-            '없음'
-          ) : (
-            <>
-              {formatDate(eventDateStart)} ~ {eventDateEnd ? formatDate(eventDateEnd) : formatDate(eventDateStart)}
-            </>
-          )}
+          {eventDateEnd ? `${formatDate(eventDateStart)} ~ ${formatDate(eventDateEnd)}` : `${formatDate(eventDateStart)}`}
         </div>
       </div>
+      {eventHost !== "" && <div className={styles.content}>{eventHost}</div>}
       <button className={styles.button} onClick={() => onOpen()}>
         <AiOutlinePlus className={styles.plusIcon} />
         내 일정 추가
