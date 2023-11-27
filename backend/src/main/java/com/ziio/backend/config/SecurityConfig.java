@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -25,11 +25,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // cors 관련 설정
                 .cors().configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 3000 port 접근 허용
-                    config.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "OPTIONS"));
-                    config.setAllowedHeaders(Arrays.asList("*"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedOrigins(List.of("http://localhost:3000")); // 3000 port 접근 허용
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setExposedHeaders(List.of("*"));
                     return config;
                 })
                 .and()
@@ -41,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                // 구글 OAuth 2.0 로그인 관련 설정
                 .oauth2Login()
                 .userInfoEndpoint()
                 .userService(userService)
