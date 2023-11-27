@@ -1,5 +1,6 @@
 package com.ziio.backend.controller;
 
+import com.ziio.backend.dto.AcademicDTO;
 import com.ziio.backend.dto.MyPageDTO;
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.service.AcademicService;
@@ -34,7 +35,7 @@ public class AcademicController {
     @PostMapping
     public ResponseEntity<MyPageDTO.Info> addAcademicToMyPage(
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody MyPageDTO.Request request) {
+            @RequestBody AcademicDTO.Request request) {
 
         // 학사일정 정보 가져오기
         Long academicId = request.getAcademic_id();
@@ -49,16 +50,16 @@ public class AcademicController {
 
         // 응답 객체 생성 및 반환
         MyPageDTO.Info myPageInfo = MyPageDTO.Info.builder()
+                .academic_id(academicId)
                 .user_email(userEmail)
                 .start_date(academicInfo.getStart_date())
                 .end_date(academicInfo.getEnd_date())
                 .title(academicInfo.getTitle())
                 .color_code(academicInfo.getColor_code())
-                .academic_id(academicId)
                 .message("successfully created.")
                 .build();
 
-        return ResponseEntity.ok(myPageInfo);
+        return new ResponseEntity<>(myPageInfo, HttpStatus.CREATED);
     }
 }
 
