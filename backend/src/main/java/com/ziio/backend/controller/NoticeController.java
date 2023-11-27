@@ -1,16 +1,17 @@
 package com.ziio.backend.controller;
 
+import com.ziio.backend.dto.MyPageDTO;
+import com.ziio.backend.dto.NoticeDTO;
 import com.ziio.backend.entity.Category;
 import com.ziio.backend.entity.Notice;
 import com.ziio.backend.service.CategoryService;
+import com.ziio.backend.service.MyPageService;
 import com.ziio.backend.service.NoticeService;
+import com.ziio.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,10 @@ public class NoticeController {
     private NoticeService noticeService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private MyPageService myPageService;
+    @Autowired
+    private JwtUtil jwtUtil ;
 
     // 모든 공지사항을 반환하는 메소드(= 공지사항 첫 화면)
     @GetMapping
@@ -47,5 +52,39 @@ public class NoticeController {
         List<Notice> notices = noticeService.getNoticesByCategoryIdAndKeyword(categoryId, keyword);
 
         return new ResponseEntity<>(notices, HttpStatus.OK);
+    }
+
+    // 특정 공지사항을 스크랩(마이페이지에 추가)하는 메소드
+    @PostMapping("/scraps")
+    public ResponseEntity<MyPageDTO.Info> addNoticeToMyPage(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody NoticeDTO.Request request) {
+
+        // 공지사항 정보 가져오기
+        Long noticeId = request.getNotice_id();
+        Notice noticeInfo = noticeService.getNoticeById(noticeId);
+
+        // 토큰에서 유저 이메일 가져오기
+        String jwtToken = jwtUtil.getJwtTokenFromHeader(authorizationHeader);
+        String userEmail = jwtUtil.getEmailFromToken(jwtToken);
+
+        // 마이페이지에 추가
+        myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
+
+        // 응답 객체 생성 및 반환
+        MyPageDTO.Info myPageInfo = MyPageDTO.Info.builder()
+                .notice_id(noticeId)
+                .category_id(noticeInfo.getCategory_id())
+                .user_email(userEmail)
+                .start_date(request.getStart_date())
+                .end_date(request.getEnd_date())
+                .title(noticeInfo.getTitle())
+                .url(noticeInfo.getUrl())
+                .color_code(request.getColor_code())
+                .memo(request.getMemo())
+                .message("successfully created.")
+                .build();
+
+        return new ResponseEntity<>(myPageInfo, HttpStatus.CREATED);
     }
 }
