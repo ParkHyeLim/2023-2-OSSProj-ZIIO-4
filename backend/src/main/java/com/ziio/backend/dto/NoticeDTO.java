@@ -8,6 +8,7 @@ public class NoticeDTO {
     @Setter
     public static class Request {
         private Long notice_id;
+        private Long academic_id;
         private String start_date;
         private String end_date;
         private String color_code;

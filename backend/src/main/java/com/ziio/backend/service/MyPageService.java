@@ -31,6 +31,7 @@ public class MyPageService {
             myPage.setStart_date(academic.getStart_date());
             myPage.setEnd_date(academic.getEnd_date());
             myPage.setTitle(academic.getTitle());
+
             myPage.setColor_code(academic.getColor_code());
             myPage.setAcademic_id(academic.getId());
 
@@ -63,10 +64,11 @@ public class MyPageService {
             throw new DuplicateRecordException("This notice is already added to the MyPage.");
         }
     }
+
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드
     public void removeNoticeFromMyPage(Long noticeId, String userEmail) {
         // 해당 공지사항이 마이페이지에 존재하는지 확인
-        MyPage myPage = myPageRepository.findByUserEmailAndNoticeId(userEmail , noticeId);
+        MyPage myPage = myPageRepository.findByUserEmailAndNoticeId(userEmail, noticeId);
 
         if (myPage != null) {
             // 존재한다면 삭제
@@ -74,6 +76,20 @@ public class MyPageService {
         } else {
             // 존재하지 않는 경우
             throw new NotFoundException("This notice does not exist in the MyPage.");
+        }
+    }
+
+    // 마이페이지에서 특정 학사일정을 삭제하는 메소드
+    public void removeAcademicFromMyPage(Long academicId, String userEmail) {
+        // 해당 공지사항이 마이페이지에 존재하는지 확인
+        MyPage myPage = myPageRepository.findByUserEmailAndAcademicId(userEmail, academicId);
+
+        if (myPage != null) {
+            // 존재한다면 삭제
+            myPageRepository.delete(myPage);
+        } else {
+            // 존재하지 않는 경우
+            throw new NotFoundException("This academic does not exist in the MyPage.");
         }
     }
 }
