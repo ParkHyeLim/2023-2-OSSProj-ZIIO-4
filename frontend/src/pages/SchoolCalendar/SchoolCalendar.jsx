@@ -97,7 +97,7 @@ const SchoolCalendar = () => {
   // 로그인 유무에 따른 일정 추가 모달 띄우기 동작
   const openShowModal = () => {
     const token = localStorage.getItem('ziio-token');
-    if (!token) setShowModal(!showModal);
+    if (token) setShowModal(!showModal);
     else alert("로그인이 필요한 기능입니다");
   }
 
