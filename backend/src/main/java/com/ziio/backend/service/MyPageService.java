@@ -5,6 +5,7 @@ import com.ziio.backend.entity.Academic;
 import com.ziio.backend.entity.MyPage;
 import com.ziio.backend.entity.Notice;
 import com.ziio.backend.exception.DuplicateRecordException;
+import com.ziio.backend.exception.NotFoundException;
 import com.ziio.backend.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,19 @@ public class MyPageService {
         } else {
             // 중복인 경우
             throw new DuplicateRecordException("This notice is already added to the MyPage.");
+        }
+    }
+    // 마이페이지에서 특정 공지사항을 삭제하는 메소드
+    public void removeNoticeFromMyPage(Long noticeId, String userEmail) {
+        // 해당 공지사항이 마이페이지에 존재하는지 확인
+        MyPage myPage = myPageRepository.findByUserEmailAndNoticeId(userEmail , noticeId);
+
+        if (myPage != null) {
+            // 존재한다면 삭제
+            myPageRepository.delete(myPage);
+        } else {
+            // 존재하지 않는 경우
+            throw new NotFoundException("This notice does not exist in the MyPage.");
         }
     }
 }

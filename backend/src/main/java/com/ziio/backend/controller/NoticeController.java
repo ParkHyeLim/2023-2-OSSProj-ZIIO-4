@@ -87,4 +87,27 @@ public class NoticeController {
 
         return new ResponseEntity<>(myPageInfo, HttpStatus.CREATED);
     }
+
+    // 특정 공지사항을 마이페이지에서 삭제하는 메소드
+    @DeleteMapping("/scraps")
+    public ResponseEntity<Map<String, String>> removeNoticeToMyPage(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody NoticeDTO.Request request) {
+
+        // 공지사항 정보 가져오기
+        Long noticeId = request.getNotice_id();
+
+        // 토큰에서 유저 이메일 가져오기
+        String jwtToken = jwtUtil.getJwtTokenFromHeader(authorizationHeader);
+        String userEmail = jwtUtil.getEmailFromToken(jwtToken);
+
+        // 마이페이지에서 삭제
+        myPageService.removeNoticeFromMyPage(noticeId, userEmail);
+
+        // 응답 객체 생성 및 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "successfully removed.");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
