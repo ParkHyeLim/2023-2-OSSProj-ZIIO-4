@@ -5,7 +5,7 @@ import { formatDate } from '../../../utils/dateUtils';
 import { AiOutlinePlus } from "react-icons/ai";
 
 const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventHost, eventColor, onOpen }) => {
-  console.log("컴온", eventDateEnd);
+
   return (
     <div className={classNames(styles.eventWrapper, eventTitle === '' && styles.invisible)}>
       <div className={styles.titleWrapper}>

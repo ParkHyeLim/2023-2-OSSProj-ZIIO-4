@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ modalTitle, saveEvent, closeModal, prevData }) => {
+export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData }) => {
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
   const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
@@ -48,7 +48,7 @@ export const EventModal = ({ modalTitle, saveEvent, closeModal, prevData }) => {
     }
 
     saveEvent({
-      id: Date.now(),
+      id: eventId,
       title,
       start: start,
       end: end,
