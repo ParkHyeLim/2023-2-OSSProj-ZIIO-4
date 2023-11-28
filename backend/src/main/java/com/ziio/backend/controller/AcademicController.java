@@ -1,7 +1,5 @@
 package com.ziio.backend.controller;
 
-import com.ziio.backend.dto.AcademicDTO;
-import com.ziio.backend.dto.MyPageDTO;
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.service.AcademicService;
 import com.ziio.backend.service.MyPageService;
@@ -9,7 +7,9 @@ import com.ziio.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class AcademicController {
         return new ResponseEntity<>(academics, HttpStatus.OK);
     }
 
-    // 특정 학사일정을 사용자의 마이페이지에 추가하는 메소드
+    /* 특정 학사일정을 사용자의 마이페이지에 추가하는 메소드 (API를 통합하여 사용하지 않음)
     @PostMapping
     public ResponseEntity<MyPageDTO.Info> addAcademicToMyPage(
             @RequestHeader("Authorization") String authorizationHeader,
@@ -61,6 +61,7 @@ public class AcademicController {
 
         return new ResponseEntity<>(myPageInfo, HttpStatus.CREATED);
     }
+     */
 }
 
 
