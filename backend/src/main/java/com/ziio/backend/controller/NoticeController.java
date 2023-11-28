@@ -100,15 +100,17 @@ public class NoticeController {
             // 정보 가져오기
             Academic academicInfo = academicService.getAcademicById(academicId);
             // 마이페이지에 추가
-            myPageService.addAcademicToMyPage(academicInfo, userEmail);
+            myPageService.addAcademicToMyPage(academicInfo, request, userEmail);
             // 응답 객체 생성 및 반환
             myPageInfo = MyPageDTO.Info.builder()
+                    .notice_id(null)
                     .academic_id(academicId)
                     .user_email(userEmail)
                     .start_date(academicInfo.getStart_date())
                     .end_date(academicInfo.getEnd_date())
-                    .title(academicInfo.getTitle())
-                    .color_code(academicInfo.getColor_code())
+                    .title(request.getTitle() == null ? academicInfo.getTitle() : request.getTitle())
+                    .color_code(request.getColor_code() == null ? academicInfo.getColor_code() : request.getColor_code())
+                    .memo(request.getMemo())
                     .message("successfully created.")
                     .build();
         }

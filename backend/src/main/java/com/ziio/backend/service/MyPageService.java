@@ -21,19 +21,19 @@ public class MyPageService {
     }
 
     // 마이페이지에 학사일정을 추가하는 메소드
-    public void addAcademicToMyPage(Academic academic, String userEmail) {
+    public void addAcademicToMyPage(Academic academic, NoticeDTO.Request request, String userEmail) {
         // 중복 체크
         long count = myPageRepository.countByUserEmailAndAcademicId(userEmail, academic.getId());
         // 중복이 아닌 경우
         if (count == 0) {
             MyPage myPage = new MyPage();
+            myPage.setAcademic_id(academic.getId());
             myPage.setUser_email(userEmail);
             myPage.setStart_date(academic.getStart_date());
             myPage.setEnd_date(academic.getEnd_date());
-            myPage.setTitle(academic.getTitle());
-
-            myPage.setColor_code(academic.getColor_code());
-            myPage.setAcademic_id(academic.getId());
+            myPage.setTitle(request.getTitle() == null ? academic.getTitle() : request.getTitle());
+            myPage.setColor_code(request.getColor_code() == null ? academic.getColor_code() : request.getColor_code());
+            myPage.setMemo(request.getMemo());
 
             myPageRepository.save(myPage);
         } else {
