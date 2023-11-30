@@ -17,10 +17,16 @@ public class MyPage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Long academic_id;
+
+    @Column
+    private Long notice_id;
+
     @Column(nullable = false)
     private String user_email;
 
-    @Column(nullable = false)
+    @Column
     private String start_date;
 
     @Column
@@ -38,6 +44,4 @@ public class MyPage {
     @Column
     private String memo;
 
-    @Column
-    private Long academic_id;
 }
