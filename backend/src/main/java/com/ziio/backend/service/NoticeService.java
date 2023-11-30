@@ -6,6 +6,7 @@ import com.ziio.backend.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,12 @@ public class NoticeService {
     // 모든 공지사항 정보를 반환하는 메소드
     public List<Notice> getAllNotices() {
         return noticeRepository.findAll();
+    }
+
+    // 특정 id의 공지사항을 반환하는 메소드
+    public Notice getNoticeById(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("Academic not found with id: " + noticeId));
     }
 
     // 부모 카테고리 id와 키워드를 포함하는 공지사항을 찾아 반환하는 메소드
