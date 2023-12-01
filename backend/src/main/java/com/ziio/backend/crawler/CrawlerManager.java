@@ -5,6 +5,8 @@ import com.ziio.backend.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class CrawlerManager {
     @Autowired
@@ -20,7 +22,7 @@ public class CrawlerManager {
     @Autowired
     private NoticeService noticeService;
 
-    // @PostConstruct
+    @PostConstruct
     public void runAllCrawlers() {
         // 카테고리와 공지사항 삭제
         categoryService.deleteAllCategories();

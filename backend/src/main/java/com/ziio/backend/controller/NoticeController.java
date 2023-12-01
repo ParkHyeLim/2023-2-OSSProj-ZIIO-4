@@ -69,7 +69,8 @@ public class NoticeController {
         MyPageDTO.Info myPageInfo = null;
 
         // 공지사항, 학사일정 아이디
-        Long noticeId = request.getNotice_id();
+        String noticeId = request.getNotice_id();
+        String categoryId = request.getCategory_id();
         Long academicId = request.getAcademic_id();
 
         // 토큰에서 유저 이메일 가져오기
@@ -79,7 +80,7 @@ public class NoticeController {
         // 1) 공지사항인 경우
         if (academicId == null) {
             // 정보 가져오기
-            Notice noticeInfo = noticeService.getNoticeById(noticeId);
+            Notice noticeInfo = noticeService.getNoticeByNoticeIdAndCategoryId(noticeId, categoryId);
             // 마이페이지에 추가
             myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
             // 응답 객체 생성 및 반환
@@ -126,8 +127,9 @@ public class NoticeController {
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody NoticeDTO.Request request) {
 
-        // 공지사항, 학사일정 아이디
-        Long noticeId = request.getNotice_id();
+        // 공지사항, 카테고리, 학사일정 아이디
+        String noticeId = request.getNotice_id();
+        String categoryId = request.getCategory_id();
         Long academicId = request.getAcademic_id();
 
         // 토큰에서 유저 이메일 가져오기
@@ -137,7 +139,7 @@ public class NoticeController {
         // 1) 공지사항인 경우
         if (academicId == null) {
             // 마이페이지에서 삭제
-            myPageService.removeNoticeFromMyPage(noticeId, userEmail);
+            myPageService.removeNoticeFromMyPage(noticeId, categoryId, userEmail);
         }
         // 2) 학사일정인 경우
         else {

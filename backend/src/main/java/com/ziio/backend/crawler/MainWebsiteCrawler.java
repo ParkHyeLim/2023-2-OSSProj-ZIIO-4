@@ -37,8 +37,11 @@ public class MainWebsiteCrawler {
         }
     // 카테고리 별로 크롤링
     private void getNoticeList(String categoryID, String categoryName, String noticeKind, int pageLimit) {
-        List<String> url_Infos = new ArrayList<>(); List<String> title_Infos = new ArrayList<>();
-        List<String> date_Infos = new ArrayList<>(); List<String> author_Infos = new ArrayList<>();
+        List<String> url_Infos = new ArrayList<>();
+        List<String> title_Infos = new ArrayList<>();
+        List<String> notice_id_Infos = new ArrayList<>();
+        List<String> date_Infos = new ArrayList<>();
+        List<String> author_Infos = new ArrayList<>();
         int topFixed = 0; // 상단 고정 공지 개수
 
         for (int pageNum = 1; pageNum <= pageLimit; pageNum++) {
@@ -47,7 +50,7 @@ public class MainWebsiteCrawler {
             try {
                 Document document = conn.get(); // HTML 구조를 불러와 할당
                 getNoticeURL(document, noticeKind, url_Infos, pageNum, topFixed);              // URL
-                topFixed = getNoticeTitle(document, title_Infos, pageNum, topFixed);           // 제목
+                topFixed = getNoticeTitle(document, notice_id_Infos, title_Infos, pageNum, topFixed); // 제목
                 getNoticeDateAndAuthor(document, date_Infos, author_Infos, pageNum, topFixed); // 게시일, 글 작성자
             } catch (IOException ignored) {
             }
@@ -55,6 +58,7 @@ public class MainWebsiteCrawler {
         // 메인 웹사이트 공지사항 DB 저장
         for (int i = 0; i < url_Infos.size(); i++) {
             Notice notice = new Notice();
+            notice.setNotice_id(notice_id_Infos.get(i));
             notice.setTitle(title_Infos.get(i));
             notice.setUrl(url_Infos.get(i));
             notice.setDate_posted(date_Infos.get(i));
@@ -62,7 +66,7 @@ public class MainWebsiteCrawler {
             notice.setCategory_id(categoryID);
             noticeService.save(notice);
         }
-        // 카테고리 공지사항 DB 저장
+        // 카테고리 DB 저장
         Category category = new Category();
         category.setCategory_id(categoryID);
         category.setName(categoryName);
@@ -87,18 +91,21 @@ public class MainWebsiteCrawler {
         }
     }
 
-    // 2. 제목
-    private int getNoticeTitle(Document document, List<String> title_Infos, int pageNum, int topFixed) {
+    // 2. 공지사항 번호, 제목
+    private int getNoticeTitle(Document document, List<String> notice_id_Infos, List<String> title_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그 조회
-        int index = 0; // 현 페이지에서 몇 번째 공지인지
 
-        for (Element top : boardList.select("li div.top")) { // li 태그 => div 클래스 top 태그 조회
+        int index = 0; // 현 페이지에서 몇 번째 공지인지
+        for (Element li : boardList.select("li")) { // li 태그 조회
             if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
-            // 2. 공지사항 제목 파싱
-            String title = top.select("p.tit").text();
+            // 2.1 공지사항 번호 크롤링
+            String notice_id = li.select("div.mark span.num").text();
+            notice_id_Infos.add(notice_id);
+            // 2.2 제목 크롤링
+            String title = li.select("div.top p.tit").text();
             // 상단 고정 공지 개수 파악
             if (title.startsWith("공지")) {
                 topFixed++;
@@ -114,13 +121,13 @@ public class MainWebsiteCrawler {
         Elements boardList = document.select("div.board_list ul"); // class명이 board_list인 ul 태그에 조회
         int index = 0; // 현 페이지에서 몇 번째 공지인지
 
-        for (Element li : boardList.select("li div.top")) { // li 태그 => div 클래스 top 태그 조회
+        for (Element top : boardList.select("li div.top")) { // li 태그 => div 클래스 top 태그 조회
             if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
             int cnt = 0; // 게시일과 저자를 구분하기 위함
-            for (Element span : li.select("div.info span")) { // div 클래스 info 태그 => span 태그 조회
+            for (Element span : top.select("div.info span")) { // div 클래스 info 태그 => span 태그 조회
                 if (cnt == 0) { // 3. 게시일
                     date_Infos.add(span.text());
                     cnt++;
