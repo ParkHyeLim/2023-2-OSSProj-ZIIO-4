@@ -1,31 +1,32 @@
 package com.ziio.backend.crawler;
 
-import com.ziio.backend.service.AcademicService;
 import com.ziio.backend.service.CategoryService;
-import com.ziio.backend.service.ColorService;
 import com.ziio.backend.service.NoticeService;
-import com.ziio.backend.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class CrawlerManager {
-    private final MainWebsiteCrawler mainWebsiteCrawler;
-    private final CollegeAndDepartmentWebsiteCrawler collegeAndDepartmentWebsiteCrawler;
-    private final EtcWebsiteCrawler etcWebsiteCrawler;
-    private final AcademicCalendarWebsiteCrawler academicCalendarWebsiteCrawler;
-
     @Autowired
-    public CrawlerManager(NoticeService noticeService, AcademicService academicService, CategoryService categoryService,
-                          ColorService colorService, RandomUtil randomUtil) {
-        this.mainWebsiteCrawler = new MainWebsiteCrawler(noticeService, categoryService);
-        this.collegeAndDepartmentWebsiteCrawler = new CollegeAndDepartmentWebsiteCrawler(noticeService, categoryService);
-        this.academicCalendarWebsiteCrawler = new AcademicCalendarWebsiteCrawler(academicService, colorService, randomUtil);
-        this.etcWebsiteCrawler = new EtcWebsiteCrawler(noticeService, categoryService);
-    }
+    private MainWebsiteCrawler mainWebsiteCrawler;
+    @Autowired
+    private CollegeAndDepartmentWebsiteCrawler collegeAndDepartmentWebsiteCrawler;
+    @Autowired
+    private EtcWebsiteCrawler etcWebsiteCrawler;
+    @Autowired
+    private AcademicCalendarWebsiteCrawler academicCalendarWebsiteCrawler;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private NoticeService noticeService;
 
-    //@PostConstruct
+    @PostConstruct
     public void runAllCrawlers() {
+        // 카테고리와 공지사항 삭제
+        categoryService.deleteAllCategories();
+        noticeService.deleteAllNotices();
         // 각 크롤러 실행
         mainWebsiteCrawler.crawl();
         collegeAndDepartmentWebsiteCrawler.crawl();

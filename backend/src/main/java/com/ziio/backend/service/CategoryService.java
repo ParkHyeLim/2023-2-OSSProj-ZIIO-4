@@ -24,5 +24,10 @@ public class CategoryService {
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    // 모든 카테고리를 삭제하는 메소드
+    public void deleteAllCategories() {
+        categoryRepository.deleteAll();
+    }
 }
 

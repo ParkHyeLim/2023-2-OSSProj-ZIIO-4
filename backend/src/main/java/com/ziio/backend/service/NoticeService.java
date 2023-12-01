@@ -56,4 +56,9 @@ public class NoticeService {
                     .collect(Collectors.toList());
         }
     }
+
+    // 모든 공지사항을 삭제하는 메소드
+    public void deleteAllNotices() {
+        noticeRepository.deleteAll();
+    }
 }
