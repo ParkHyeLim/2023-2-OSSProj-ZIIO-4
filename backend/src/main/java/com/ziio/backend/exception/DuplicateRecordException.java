@@ -8,7 +8,6 @@ public class DuplicateRecordException extends RuntimeException {
         super(message);
     }
 
-    //
     public ResponseEntity<String> toDuplicateRecordResponse() {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(getMessage());
     }
