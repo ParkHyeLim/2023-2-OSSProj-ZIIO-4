@@ -10,14 +10,14 @@ import { EventModal } from '../../components';
 import instance from '../../api/instance';
 import { useNavigate } from 'react-router-dom';
 
-const fetchProjects = async () => {
-  const { data } = await instance.get('/academics');
-  return data;
-}
-
-const postProjects = async (data) => {
-  const state = await instance.post('/notice/scraps', data);
-  console.log(state);
+const fetchProjects = async (planData) => {
+  if (planData === "") {
+    const { data } = await instance.get('/academics');
+    return data;
+  } else {
+    const { data } = await instance.post('/notice/scraps', planData);
+    return data;
+  }
 }
 
 function formatDate(dateString) {
@@ -42,8 +42,7 @@ const SchoolCalendar = () => {
   const [eventHost, setEventHost] = useState('');
   const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const { isLoading, isError, data, error } = useQuery('academics', fetchProjects);
-  const { isLoadingPost, isErrorPost, dataPost, errorPost } = useQuery('notice_scraps', postProjects);
+  const { data } = useQuery('academics', () => fetchProjects(""));
 
   useEffect(() => {
     if (data) {
@@ -62,12 +61,6 @@ const SchoolCalendar = () => {
       });
       setEvents(transformedEvents);
       setListedEvents(data);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (dataPost) {
-      navigate('/myPage');
     }
   }, [data]);
 
@@ -102,7 +95,7 @@ const SchoolCalendar = () => {
   }
 
   // 내 일정 추가(추후에는 DB에 보내기)
-  const saveEvent = (eventData) => {
+  const saveEvent = async (eventData) => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
@@ -118,17 +111,18 @@ const SchoolCalendar = () => {
     }
 
     const json = JSON.stringify(resultData);
-    postProjects(json);
+    const SearchData = fetchProjects(json);
+    try {
+      const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      if (result === "This academic is already added to the MyPage") alert("해당 학사일정이 이미 내 일정에 저장되어 있습니다.");
+      else {
+        const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
+        if (response) navigate('/myPage')
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
-
-
-  if (isLoading | isLoadingPost) {
-    return <span>Loading...</span>;
-  }
-
-  if (isError | isErrorPost) {
-    return <span>Error: {isErrorPost ? errorPost.message : error.message }</span>;
-  }
 
   return (
     <div className={styles.container}>
