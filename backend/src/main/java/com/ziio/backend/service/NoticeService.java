@@ -43,7 +43,10 @@ public class NoticeService {
         // parentId로 시작하는 공지사항 필터링
         List<Notice> filteredNotices = getAllNotices()
                 .stream()
-                .filter(notice -> notice.getCategory_id().startsWith(parentId))
+                .filter(notice ->
+                        notice.getNotice_id() != null
+                        && !notice.getNotice_id().isBlank()
+                        && notice.getCategory_id().startsWith(parentId))
                 .collect(Collectors.toList());
 
         // 키워드가 포함된 공지사항 필터링
