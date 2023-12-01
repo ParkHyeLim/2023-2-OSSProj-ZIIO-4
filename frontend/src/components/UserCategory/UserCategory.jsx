@@ -3,23 +3,31 @@ import { IoClose } from 'react-icons/io5';
 import { FaStar } from 'react-icons/fa';
 import styles from './UserCategory.module.scss';
 
-function BookmarkCategory({ categoryList }) {
-  const searchCategory = title => {
-    // onClick(title);
+function UserCategory({ categoryList, onClick, onDelete }) {
+  const [data, setDate] = useState([]);
+
+  useEffect(() => {
+    setDate(categoryList);
+  }, [categoryList])
+
+  const searchCategory = value => {
+    onClick(value);
   };
 
-  const deleteCategory = title => {
-    // onDelete(title);
+  const deleteCategory = id => {
+    onDelete(id);
   };
 
   return (
     <div className={styles.categoryContainer}>
-      {categoryList.map((value, index) => (
-        <div key={index} className={styles.categoryButton} onClick={searchCategory(value.name)}>
+      {data.map((value, index) => (
+        <div key={index} className={styles.categoryButton}>
           <div className={styles.content}>
             <FaStar size={16} className={styles.star} />
-            <div>{value.name}</div>
-            <IoClose size={13} onClick={deleteCategory(value.name)} className={styles.close} />
+            <div onClick={() => searchCategory(value)}>{value.name}</div>
+            <button className={styles.close}>
+              <IoClose size={13} onClick={() => deleteCategory(value.id)} />
+            </button>
           </div>
         </div>
       ))}
@@ -27,4 +35,4 @@ function BookmarkCategory({ categoryList }) {
   );
 }
 
-export default BookmarkCategory;
+export default UserCategory;
