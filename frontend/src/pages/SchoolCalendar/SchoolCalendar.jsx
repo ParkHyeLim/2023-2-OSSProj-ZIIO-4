@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useQuery } from 'react-query';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,68 +7,141 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { EventDetail, EventList } from './components';
 import styles from './SchoolCalendar.module.scss';
 import { EventModal } from '../../components';
+import instance from '../../api/instance';
+import { useNavigate } from 'react-router-dom';
+
+const fetchProjects = async () => {
+  const { data } = await instance.get('/academics');
+  return data;
+}
+
+const postProjects = async (data) => {
+  const state = await instance.post('/notice/scraps', data);
+  console.log(state);
+}
+
+function formatDate(dateString) {
+  const parsedDate = new Date(dateString.replace(/\./g, '-'));
+  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(parsedDate.getDate())}`;
+  return formattedDate;
+}
+
+function padZero(number) {
+  return number.toString().padStart(2, '0');
+}
 
 const SchoolCalendar = () => {
+  const navigate = useNavigate();
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]);
+  const [eventId, setEventId] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const [eventDateStart, setEventDateStart] = useState('');
   const [eventDateEnd, setEventDateEnd] = useState('');
-  const [eventMemo, setEventMemo] = useState('');
-  const [eventUrl, setEventUrl] = useState('');
+  const [eventHost, setEventHost] = useState('');
   const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const { isLoading, isError, data, error } = useQuery('academics', fetchProjects);
+  const { isLoadingPost, isErrorPost, dataPost, errorPost } = useQuery('notice_scraps', postProjects);
 
-  //localStorage에서 불러오는 거로 추후에는 백 연동 코드로 변경 예정
   useEffect(() => {
-    const data = localStorage.getItem('sample');
-    const redata = data ? JSON.parse(data) : '';
-    setEvents(redata);
-    setListedEvents(redata);
-  }, []);
+    if (data) {
+      const transformedEvents = data.map(item => {
+        console.log(item);
+        const start = formatDate(item.start_date);
+        const end = formatDate(item.end_date);
+        return {
+          id: item.id,
+          title: item.title,
+          start: start,
+          end: end,
+          backgroundColor: item.color_code,
+          extendedProps: { host_department: item.host_department }
+        }
+      });
+      setEvents(transformedEvents);
+      setListedEvents(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (dataPost) {
+      navigate('/myPage');
+    }
+  }, [data]);
 
   const handleEventClick = (eventData, jsEvent) => {
     // jsEvent가 있으면 기본 동작 방지 (FullCalendar 이벤트에서만 적용)
     if (jsEvent) {
       jsEvent.preventDefault();
+      const { id, title, backgroundColor, extendedProps, start, end } = eventData;
+      setEventId(id);
+      setEventTitle(title);
+      setEventColor(backgroundColor);
+      setEventHost(extendedProps ? extendedProps.host_department : '');
+      setEventDateStart(start);
+      setEventDateEnd(end);
+    } else {
+      // eventData의 구조에 따라 필요한 정보를 추출
+      const { id, title, color_code, host_department, start_date, end_date } = eventData;
+      setEventId(id);
+      setEventTitle(title);
+      setEventColor(color_code);
+      setEventHost(host_department);
+      setEventDateStart(start_date);
+      setEventDateEnd(end_date);
     }
-
-    // eventData의 구조에 따라 필요한 정보를 추출
-    const { title, url, extendedProps, backgroundColor, start, end } = eventData;
-    setEventTitle(title);
-    setEventUrl(url);
-    setEventMemo(extendedProps ? extendedProps.memo : '');
-    setEventColor(backgroundColor);
-    setEventDateStart(start);
-    setEventDateEnd(end);
-    console.log(title);
   };
 
+  // 로그인 유무에 따른 일정 추가 모달 띄우기 동작
+  const openShowModal = () => {
+    const token = localStorage.getItem('ziio-token');
+    if (token) setShowModal(!showModal);
+    else alert("로그인이 필요한 기능입니다");
+  }
+
   // 내 일정 추가(추후에는 DB에 보내기)
-  const saveEvent = eventData => {
+  const saveEvent = (eventData) => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
     }
 
-    localStorage.setItem('akakakak', JSON.stringify(eventData));
-    setShowModal(false);
+    const resultData = {
+      notice_id: eventData.id,
+      title: eventData.title,
+      memo: eventData.extendedProps.memo,
+      url: eventData.url,
+      color_code: eventData.backgroundColor,
+    }
+
+    const json = JSON.stringify(resultData);
+    postProjects(json);
   };
+
+
+  if (isLoading | isLoadingPost) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError | isErrorPost) {
+    return <span>Error: {isErrorPost ? errorPost.message : error.message }</span>;
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.leftWrapper}>
+        <div>앞으로의 학사일정 목록</div>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail
           eventTitle={eventTitle}
           eventDateStart={eventDateStart}
           eventDateEnd={eventDateEnd}
-          eventMemo={eventMemo}
-          eventUrl={eventUrl}
+          eventHost={eventHost}
           eventColor={eventColor}
-          onOpen={() => setShowModal(!showModal)}
+          onOpen={openShowModal}
         />
       </div>
       <FullCalendar
@@ -91,6 +165,7 @@ const SchoolCalendar = () => {
       {showModal && (
         <EventModal
           modalTitle={'내 일정으로 추가'}
+          eventId={eventId}
           prevData={{
             title: eventTitle,
             start: eventDateStart,
