@@ -34,6 +34,8 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     final String REDIRECT_URI = "http://localhost:3000/login?jwt=";
     final long TOKEN_EXPIRATION_TIME = 3600000; // 1시간 동안 유효한 토큰
 
+    // 이전 코드 생략
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
