@@ -50,6 +50,7 @@ public class MyPageService {
         if (count == 0) {
             MyPage myPage = new MyPage();
             myPage.setNotice_id(notice.getNotice_id());
+            myPage.setCategory_id(notice.getCategory_id());
             myPage.setUser_email(userEmail);
             myPage.setStart_date(request.getStart_date());
             myPage.setEnd_date(request.getEnd_date());
