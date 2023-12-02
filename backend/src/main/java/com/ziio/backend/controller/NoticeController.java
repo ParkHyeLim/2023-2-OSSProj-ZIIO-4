@@ -34,7 +34,7 @@ public class NoticeController {
     @Autowired
     private MyPageService myPageService;
     @Autowired
-    private JwtUtil jwtUtil ;
+    private JwtUtil jwtUtil;
 
     // 모든 일반 공지사항을 반환하는 메소드(= 공지사항 첫 화면)
     @GetMapping
@@ -68,7 +68,7 @@ public class NoticeController {
 
         MyPageDTO.Info myPageInfo = null;
 
-        // 공지사항, 학사일정 아이디
+        // 공지사항, 카테고리, 학사일정 아이디
         String noticeId = request.getNotice_id();
         String categoryId = request.getCategory_id();
         Long academicId = request.getAcademic_id();
