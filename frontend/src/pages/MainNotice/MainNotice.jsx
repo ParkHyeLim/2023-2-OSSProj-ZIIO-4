@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import styles from './MainNotice.module.scss';
-import BookmarkCategory from '../../components/UserCategory/UserCategory';
 import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
 import sampleCategories from '../../utils/category';
-import NoticeItem from '../../components/NoticeItem/NoticeItem';
 import { FaStar } from 'react-icons/fa';
+import instance from '../../api/instance';
+import UserCategory from '../../components/UserCategory/UserCategory';
+import Pagging from '../../components/Pagging/Pagging';
 
-const sample = [
-  {
-    name: '일반공지',
-    url: ['메인', '일반공지', ''],
-  },
-  {
-    name: '학사공지',
-    url: ['메인', '학사공지', ''],
-  },
-];
+const fetchProjects = async (categoryId, keyword) => {
+  if (categoryId !== "") {
+    const { data } = await instance.get(`/notices/search?category_id=${categoryId}&keyword=${keyword !== "" ? keyword : ""}`);
+    return data;
+  } else {
+    const { data } = await instance.get('/notices');
+    return data;
+  }
+}
 
 const sample2 = [
   {
@@ -32,99 +33,22 @@ const sample2 = [
   },
 ];
 
-const Data = [
-  {
-    announcement_id: '1254',
-    category_id: 0,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '학사공지',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1255',
-    category_id: 0,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '일반공지',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1258',
-    category_id: 3,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: 'SW융합교육원',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1259',
-    category_id: 1,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '불교학부',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1260',
-    category_id: 2,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '사학과',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-];
-
-const TopData = [
-  {
-    announcement_id: '1254',
-    category_id: 0,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '학사공지',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1255',
-    category_id: 0,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '일반공지',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-  {
-    announcement_id: '1256',
-    category_id: 1,
-    announcement_title: '[교과연계 협력학습] DoDream 학습동아리 최종 선정 팀 발표',
-    announcement_url: 'https://www.dongguk.edu/article/GENERALNOTICES/detail/26751176',
-    announcement_category: '학사공지',
-    announcement_date_posted: '2023. 09. 21',
-    announcement_author: '나윤주',
-  },
-];
-
 function MainNotice() {
-  const [categoryId, setCategoryId] = useState([{}]); // db에서 카테고리 id 전달 받기
-  const [filteredContents, setFilteredContents] = useState([{}]); // db에서 필터된 공지사항 전달 받기(첫: 메인-일반공지)
-  const [isClickedStar, setIsClickedStar] = useState(
-    Array(Data.length).fill(false), // 초기 상태는 모두 false // db랑 연동되면 북마크 사항 반영
-  );
+  const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
+  const [isClickedStar, setIsClickedStar] = useState([false]);
 
   const [isLogin, setIsLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isSearch, setIsSearch] = useState(true); // 검색 버튼 활성화/비활성화
 
-  const [category1, setCategory1] = useState('');
-  const [category2, setCategory2] = useState('');
+  const [category1, setCategory1] = useState('메인');
+  const [category2, setCategory2] = useState('일반공지');
   const [category3, setCategory3] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); // 검색어
+
+  // 검색 결과 notices
+  const [noticeList, setNoticeList] = useState([]);
+  const [topNoticeList, setTopNoticeList] = useState([]);
 
   // 검색 기록 or 즐겨찾기
   const [searchCategories, setSearchCategories] = useState([]); // 검색 기록
@@ -132,6 +56,36 @@ function MainNotice() {
 
   // 공지 스크랩
   const [focusIndex, setFocusIndex] = useState(0); // focus된 공지 index
+
+  const { data } = useQuery('notices', () => fetchProjects("", ""));
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setCategoryIdList(data.categories);
+      const formattedNotices = noticeFormat(data.notices);
+      setNoticeList(formattedNotices);
+      setIsClickedStar(Array(noticeList.length).fill(false));
+    }
+  }, [data]);
+
+  const noticeFormat = (data) => {
+    const newArray = data;
+    newArray.map((item) => {
+      const words = item.title.split(' ');
+      if (words.length > 0 && words[0].startsWith("공지")) {
+        const restOfWords = words.slice(1);
+        item.title = restOfWords.join(' ');
+        item.fixed = true;
+        // setTopNoticeList((prevList) => {
+        //   const isDuplicate = prevList.some((existingItem) => existingItem.id === item.id);
+        //   if (!isDuplicate) { return [...prevList, item]; }
+        //   else { return prevList; }
+        // });
+      }
+    })
+    return newArray;
+  }
 
   const handleCategories1Change = e => {
     setCategory1(e.target.value);
@@ -144,13 +98,108 @@ function MainNotice() {
     setCategory3(''); // 소분류 초기화
   };
 
-  const handleSearch = () => {
-    // 백으로 정보 보낼 함수
-    console.log([category1, category2, category3, searchQuery]);
+  const categotyIdSearch = (category1, category2, category3) => {
+    let searchCategory = category3 || category2 || category1;
+    if (searchCategory === "") {
+      searchCategory = category2 || category1;
+      return categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+    } else {
+      return categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+    }
+  }
+
+  // 사용자 검색 기능
+  const handleSearch = async () => {
+    const nowCategoryId = categotyIdSearch(category1, category2, category3);
+    let SearchData;
+    if (searchQuery === "") SearchData = fetchProjects(nowCategoryId, "");
+    else SearchData = fetchProjects(nowCategoryId, searchQuery)
+    try {
+      const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
+      setNoticeList(formattedNotices);
+    } catch (error) {
+      console.error('Error:', error);
+    }
     if (!isLogin) {
       addSearchList();
     }
   };
+
+  // 검색 기록(세션 불러오기)
+  useEffect(() => {
+    const isSessionData = sessionStorage.getItem('searchCategories');
+    const parseExistingData = isSessionData
+      ? JSON.parse(isSessionData)
+      : sessionStorage.setItem('searchCategories', JSON.stringify([]));
+    setSearchCategories(parseExistingData);
+  }, []);
+
+  // 검색 기록 (세션에 저장)
+  const addSearchList = () => {
+    if (category1 || category2 || category3) {
+      const categoryId = categotyIdSearch(category1, category2, category3);
+      const newSearch = {
+        name: category3 || category2,
+        url: {
+          category1,
+          category2,
+          category3,
+        },
+        id: categoryId,
+      };
+
+      const existingData = sessionStorage.getItem('searchCategories');
+      const parseExistingData = existingData ? JSON.parse(existingData) : [];
+      const isExist = parseExistingData.some(filter => filter.id === newSearch.id);
+
+      if (!isExist) {
+        parseExistingData.push(newSearch);
+        sessionStorage.setItem('searchCategories', JSON.stringify(parseExistingData));
+        setSearchCategories(parseExistingData);
+      }
+    }
+  };
+
+  // 검색 기록 삭제 (세션에서 내용 지우기)
+  const deleteSearchList = (id) => {
+    const existingData = sessionStorage.getItem('searchCategories');
+    const parseExistingData = existingData ? JSON.parse(existingData) : [];
+    const updatedData = parseExistingData.filter(item => item.id !== id);
+    sessionStorage.setItem('searchCategories', JSON.stringify(updatedData));
+    setSearchCategories(updatedData);
+  }
+
+  // 검색 기록에서 검색
+  const SearchListSearch = async (value) => {
+    const SearchData = fetchProjects(value.id, "");
+    try {
+      const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
+      setNoticeList(formattedNotices);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    if (searchQuery === "") {
+      const SearchData = fetchProjects(value.id, "");
+
+      try {
+        const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+        const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
+        setNoticeList(formattedNotices);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+
+    } else {
+      const SearchData = fetchProjects(value.id, searchQuery);
+      const formattedNotices = noticeFormat(SearchData);
+      // setNoticeList(formattedNotices);
+    }
+    setCategory1(value.url.category1);
+    setCategory2(value.url.category2);
+    setCategory3(value.url.category3);
+  }
 
   // 스크랩
   const changeClipStarList = idx => {
@@ -196,60 +245,24 @@ function MainNotice() {
     }
   };
 
-  // 검색 기록(세션 불러오기)
-  useEffect(() => {
-    // sessionStorage.clear();
-    const isSessionData = sessionStorage.getItem('searchCategories');
-    const parseExistingData = isSessionData
-      ? JSON.parse(isSessionData)
-      : sessionStorage.setItem('searchCategories', JSON.stringify([]));
-    setSearchCategories(parseExistingData);
-  }, []);
-
-  // 검색 기록 (세션에 저장)
-  const addSearchList = () => {
-    if (category1 || category2 || category3) {
-      const newSearch = {
-        name: category3 || category2,
-        url: {
-          category1,
-          category2,
-          category3,
-        },
-      };
-
-      // 세션에서 데이터를 가져온 뒤, 같은 이름이 없는지 확인
-      const existingData = sessionStorage.getItem('searchCategories');
-      const parseExistingData = existingData ? JSON.parse(existingData) : [];
-
-      // 같은 이름을 가진 항목이 이미 있는지 확인
-      const isExist = parseExistingData.some(filter => filter.name === newSearch.name);
-
-      if (!isExist) {
-        // 새로운 검색을 기존 데이터에 추가
-        parseExistingData.push(newSearch);
-
-        // 세션에 업데이트된 데이터 저장
-        sessionStorage.setItem('searchCategories', JSON.stringify(parseExistingData));
-
-        // 업데이트된 검색 기록 상태 설정
-        setSearchCategories(parseExistingData);
-      }
-    }
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
         {isLogin ? (
           <div>
             <div className={styles.text1}>즐겨찾기 공지사항</div>
-            <BookmarkCategory categoryList={bookmarkCategories} />
+            <UserCategory categoryList={bookmarkCategories}
+              onClick={SearchListSearch}
+              onDelete={deleteSearchList}
+            />
           </div>
         ) : (
           <div>
             <div className={styles.text1}>검색한 공지사항</div>
-            <BookmarkCategory categoryList={searchCategories} />
+            <UserCategory categoryList={searchCategories}
+              onClick={SearchListSearch}
+              onDelete={deleteSearchList}
+            />
           </div>
         )}
       </div>
@@ -261,17 +274,17 @@ function MainNotice() {
               placeholder="대분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => handleCategories1Change(e)}></DropDownComp>
+              onChange={e => handleCategories1Change(e)} />
             <DropDownComp
               placeholder="중분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => handleCategories2Change(e)}></DropDownComp>
+              onChange={e => handleCategories2Change(e)} />
             <DropDownComp
               placeholder="소분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => setCategory3(e.target.value)}></DropDownComp>
+              onChange={e => setCategory3(e.target.value)} />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             <button className={styles.searchButton} onClick={handleSearch} disabled={!isSearch}>
               검색
@@ -285,26 +298,7 @@ function MainNotice() {
         </div>
 
         <div className={styles.itemList}>
-          {TopData.map((value, index) => (
-            <NoticeItem
-              key={index}
-              item={value}
-              idx={index}
-              fixed={true}
-              clipStar={isClickedStar}
-              onStarClick={idx => changeClipStarList(idx)}
-            />
-          ))}
-          {Data.map((value, index) => (
-            <NoticeItem
-              key={index}
-              item={value}
-              idx={index}
-              fixed={false}
-              clipStar={isClickedStar}
-              onStarClick={idx => changeClipStarList(idx)}
-            />
-          ))}
+          <Pagging data={noticeList} noticeCategory={categoryIdList} isClickedStar={isClickedStar} changeClipStarList={idx => changeClipStarList(idx)} />
         </div>
       </div>
 

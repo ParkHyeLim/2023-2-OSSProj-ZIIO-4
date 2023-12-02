@@ -2,22 +2,29 @@ import React from "react";
 import styles from './NoticeItem.module.scss'; // 파일 경로를 실제 파일 위치에 맞게 수정
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 
-export default function AnnouncementItem({ fixed, item, idx, clipStar, onStarClick }) {
+export default function AnnouncementItem({ item, category, itemNumber, clipStar, onStarClick }) {
+
+  var categoryName = "";
+  if (Array.isArray(category)) {
+    const filteredCategories = category.filter((cat) => cat.category_id === item.category_id);
+    if (filteredCategories.length > 0) categoryName = filteredCategories[0].name;
+    else categoryName = "";
+  } else categoryName = "";
 
   const bookmarkComponent = (
     <>
-      {clipStar[idx] ?
+      {clipStar[itemNumber] ?
         <BsBookmarkFill
           className={styles.bookmarkIcon}
           size={15}
           style={{ margin: "0.3rem 0 0 1.5rem" }}
-          onClick={() => onStarClick(idx)} />
+          onClick={() => onStarClick(item.id)} />
         :
         <BsBookmark
           className={styles.regBookmarkIcon}
           size={15}
           style={{ margin: "0.3rem 0 0 1.5rem" }}
-          onClick={() => onStarClick(idx)} />
+          onClick={() => onStarClick(item.id)} />
       }
     </>
   )
@@ -25,30 +32,29 @@ export default function AnnouncementItem({ fixed, item, idx, clipStar, onStarCli
   return (
     <div className={styles.container}>
 
-
-      {fixed ? (
+      {item.fixed ? (
         <>
           <div className={styles.leftContainer}>
             {bookmarkComponent}
             <div className={`${styles.announcementIdDefault} ${styles.announcementId} `}>
               공지
             </div>
-            <a href={item.announcement_url} target="_blank" rel="noopener noreferrer">
+            <a href={item.url} target="_blank" rel="noopener noreferrer">
               <div className={`${styles.announcementTitleDefault} ${styles.announcementTitle}`}>
-                {item.announcement_title}
+                {item.title}
               </div>
             </a>
           </div>
 
           <div className={styles.rightContainer}>
             <div className={`${styles.announcementCategoryDefault} ${styles.announcementCategory}`}>
-              {item.announcement_category}
+              {categoryName}
             </div>
             <div className={`${styles.announcementDatePostedDefault} ${styles.announcementDatePosted}`}>
-              {item.announcement_date_posted}
+              {item.date_posted}
             </div>
             <div className={`${styles.announcementAuthorDefault} ${styles.announcementAuthor}`}>
-              {item.announcement_author}
+              {item.author}
             </div>
           </div>
         </>
@@ -57,24 +63,24 @@ export default function AnnouncementItem({ fixed, item, idx, clipStar, onStarCli
           <div className={styles.leftContainer}>
             {bookmarkComponent}
             <div className={styles.announcementIdDefault}>
-              {item.announcement_id}
+              {itemNumber}
             </div>
-            <a href={item.announcement_url} target="_blank" rel="noopener noreferrer">
+            <a href={item.url} target="_blank" rel="noopener noreferrer">
               <div className={`${styles.announcementTitleDefault}`}>
-                {item.announcement_title}
+                {item.title}
               </div>
             </a>
           </div>
 
           <div className={styles.rightContainer}>
             <div className={`${styles.announcementCategoryDefault}`}>
-              {item.announcement_category}
+              {categoryName}
             </div>
             <div className={`${styles.announcementDatePostedDefault}`}>
-              {item.announcement_date_posted}
+              {item.date_posted}
             </div>
             <div className={`${styles.announcementAuthorDefault}`}>
-              {item.announcement_author}
+              {item.author}
             </div>
           </div>
         </>

@@ -33,7 +33,12 @@ instance.interceptors.response.use(
     if (error.response.status === 401) {
       localStorage.removeItem('ziio-token');
       alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
-      window.location.reload();
+
+      // 페이지를 다시 로드하면서 무한 렌더링을 방지합니다.
+      if (!window.location.reloadInProgress) {
+        window.location.reloadInProgress = true;
+        window.location.reload();
+      }
     }
     
     return Promise.reject(error);
