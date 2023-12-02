@@ -10,6 +10,8 @@ import com.ziio.backend.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MyPageService {
 
@@ -96,6 +98,11 @@ public class MyPageService {
             // 존재하지 않는 경우
             throw new NotFoundException("This academic does not exist in the MyPage.");
         }
+    }
+
+    // 특정 사용자의 마이페이지를 모두 반환하는 메소드
+    public List<MyPage> getAllMyPagesByUserEmail(String userEmail) {
+        return myPageRepository.findByUserEmail(userEmail);
     }
 }
 
