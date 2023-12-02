@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ziio.backend.constants.CrawlingInfos.MAIN_ALL_INFOS;
+
 @RestController
 @RequestMapping("/notices")
 public class NoticeController {
@@ -34,14 +36,14 @@ public class NoticeController {
     @Autowired
     private JwtUtil jwtUtil ;
 
-    // 모든 공지사항을 반환하는 메소드(= 공지사항 첫 화면)
+    // 모든 일반 공지사항을 반환하는 메소드(= 공지사항 첫 화면)
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllNotices() {
-        List<Notice> notices = noticeService.getAllNotices();
+    public ResponseEntity<Map<String, Object>> getGeneralNotices() {
+        List<Notice> generalNotices = noticeService.getNoticesByCategoryIdAndKeyword(MAIN_ALL_INFOS[0][0], null);
         List<Category> categories = categoryService.getAllCategories();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("notices", notices);
+        response.put("notices", generalNotices);
         response.put("categories", categories);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
