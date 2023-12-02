@@ -39,6 +39,7 @@ public class CollegeAndDepartmentWebsiteCrawler {
     private void getNoticeList(String categoryID, String categoryName, String noticeKind, String noticeNum, int pageLimit) {
         List<String> url_Infos = new ArrayList<>();
         List<String> title_Infos = new ArrayList<>();
+        List<String> notice_id_Infos = new ArrayList<>();
         List<String> date_Infos = new ArrayList<>();
         List<String> author_Infos = new ArrayList<>();
         int topFixed = 0; // 상단 고정 공지 개수
@@ -49,14 +50,15 @@ public class CollegeAndDepartmentWebsiteCrawler {
             try {
                 Document document = conn.get(); // HTML 구조를 불러와 할당
                 topFixed = getNoticeURL(document, noticeKind, noticeNum, url_Infos, pageNum, topFixed); // URL
-                getNoticeTitle(document, title_Infos, pageNum, topFixed);                      // 제목
+                getNoticeTitle(document, title_Infos, notice_id_Infos, pageNum, topFixed);                      // 제목
                 getNoticeDateAndAuthor(document, date_Infos, author_Infos, pageNum, topFixed); // 게시일, 글 작성자
             } catch (IOException ignored) {
             }
         }
-        // 메인 웹사이트 공지사항 DB 저장
+        // 단과대 & 학과 웹사이트 공지사항 DB 저장
         for (int i = 0; i < url_Infos.size(); i++) {
             Notice notice = new Notice();
+            notice.setNotice_id(notice_id_Infos.get(i));
             notice.setTitle(title_Infos.get(i));
             notice.setUrl(url_Infos.get(i));
             notice.setDate_posted(date_Infos.get(i));
@@ -64,7 +66,7 @@ public class CollegeAndDepartmentWebsiteCrawler {
             notice.setCategory_id(categoryID);
             noticeService.save(notice);
         }
-        // 카테고리 공지사항 DB 저장
+        // 카테고리 DB 저장
         Category category = new Category();
         category.setCategory_id(categoryID);
         category.setName(categoryName);
@@ -100,17 +102,20 @@ public class CollegeAndDepartmentWebsiteCrawler {
         return topFixed;
     }
 
-    // 2. 제목
-    private void getNoticeTitle(Document document, List<String> title_Infos, int pageNum, int topFixed) {
+    // 2. 공지사항 번호, 제목
+    private void getNoticeTitle(Document document, List<String> title_Infos, List<String> notice_id_Infos, int pageNum, int topFixed) {
         Elements boardList = document.select("table.board tbody"); // table태그 class명 board => tbody 태그 조회
-        int index = 0; // 현 페이지에서 몇 번째 공지인지
 
+        int index = 0; // 현 페이지에서 몇 번째 공지인지
         for (Element tr : boardList.select("tr")) { // tr 태그 조회
             if (pageNum > 1 && topFixed > index) { // 중복 제거
                 index++;
                 continue;
             }
-            // 2. 공지사항 제목 파싱
+            // 2.1. 공지사항 번호 크롤링
+            String notice_id = tr.select("td.td_num span.num").text(); // td 태그 class명 td_num
+            notice_id_Infos.add(notice_id);
+            // 2.2 제목 크롤링
             String title = tr.select("td.td_tit a").text(); // td 태그 class명 td_tit
             title_Infos.add(title);
             index++;

@@ -20,7 +20,7 @@ public class CrawlerManager {
     @Autowired
     private NoticeService noticeService;
 
-    // @PostConstruct
+    //@PostConstruct
     public void runAllCrawlers() {
         // 카테고리와 공지사항 삭제
         categoryService.deleteAllCategories();

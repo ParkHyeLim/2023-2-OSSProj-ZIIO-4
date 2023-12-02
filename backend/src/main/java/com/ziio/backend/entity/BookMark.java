@@ -18,9 +18,12 @@ public class BookMark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String userEmail;
+    @Column(nullable = false)
+    private String user_email;
 
     @Column(nullable = false)
-    private Long categoryId;
+    private String category_id;
+
+    @Column(nullable = false)
+    private String category_name;
 }
