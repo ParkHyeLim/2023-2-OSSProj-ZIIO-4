@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/academics/**").permitAll()
                 .antMatchers("/notices/**").permitAll()
                 .antMatchers("/bookmarks/**").permitAll()
+                .antMatchers("/mypages/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 구글 OAuth 2.0 로그인 관련 설정
