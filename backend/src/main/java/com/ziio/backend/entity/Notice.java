@@ -11,7 +11,10 @@ import javax.persistence.*;
 public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id 자동 +1
-    private Long notice_id;
+    private Long id;
+
+    @Column
+    private String notice_id;
 
     @Column(nullable = false)
     private String category_id;

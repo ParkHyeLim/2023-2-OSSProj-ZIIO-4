@@ -39,9 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login/**").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .antMatchers("/academics/**").permitAll()
                 .antMatchers("/notices/**").permitAll()
-                .antMatchers("/user/**").permitAll()
+                .antMatchers("/bookmarks/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 구글 OAuth 2.0 로그인 관련 설정

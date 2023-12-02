@@ -8,7 +8,7 @@ public class MyPageDTO {
     @Getter
     @Builder
     public static class Info {
-        private Long notice_id;
+        private String notice_id;
         private Long academic_id;
         private String category_id;
         private String user_email;
