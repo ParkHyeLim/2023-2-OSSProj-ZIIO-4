@@ -39,7 +39,7 @@ public class ScrapController {
         String jwtToken = jwtUtil.getJwtTokenFromHeader(authorizationHeader);
         String userEmail = jwtUtil.getEmailFromToken(jwtToken);
 
-        // id 리스트
+        // 스크랩 목록
         List<Long> userScrapIds = myPageService.getScrapIdsByUserEmail(userEmail);
 
         // 응답 객체 생성 및 반환
