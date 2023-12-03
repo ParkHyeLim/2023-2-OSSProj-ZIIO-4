@@ -24,7 +24,7 @@ public class MyPageService {
     }
 
     // 마이페이지에 학사일정을 추가하는 메소드
-    public void addAcademicToMyPage(Academic academic, NoticeDTO.Request request, String userEmail) {
+    public Long addAcademicToMyPage(Academic academic, NoticeDTO.Request request, String userEmail) {
         // 중복 체크
         long count = myPageRepository.countByUserEmailAndAcademicId(userEmail, academic.getId());
         // 중복이 아닌 경우
@@ -43,10 +43,12 @@ public class MyPageService {
             // 중복인 경우
             throw new DuplicateRecordException("This academic is already added to the MyPage.");
         }
+
+        return myPageRepository.findByUserEmailAndAcademicId(userEmail, academic.getId()).getMy_page_id();
     }
 
-    // 마이페이지에 특정 공지사항을 추가하는 메소드
-    public void addNoticeToMyPage(Notice notice, NoticeDTO.Request request, String userEmail) {
+    // 마이페이지에 공지사항을 추가하는 메소드
+    public Long addNoticeToMyPage(Notice notice, NoticeDTO.Request request, String userEmail) {
         // 중복 체크
         long count = myPageRepository.countByUserEmailAndNoticeIdAndCategoryId(userEmail, request.getNotice_id(), request.getCategory_id());
         // 중복이 아닌 경우
@@ -67,6 +69,8 @@ public class MyPageService {
             // 중복인 경우
             throw new DuplicateRecordException("This notice is already added to the MyPage.");
         }
+
+        return myPageRepository.findByUserEmailAndNoticeIdAndCategoryId(userEmail, request.getNotice_id(), request.getCategory_id()).getMy_page_id();
     }
 
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드

@@ -82,9 +82,10 @@ public class NoticeController {
             // 정보 가져오기
             Notice noticeInfo = noticeService.getNoticeByNoticeIdAndCategoryId(noticeId, categoryId);
             // 마이페이지에 추가
-            myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
+            long myPageId = myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
             // 응답 객체 생성 및 반환
             myPageInfo = MyPageDTO.Info.builder()
+                    .my_page_id(myPageId)
                     .notice_id(noticeId)
                     .academic_id(null)
                     .category_id(noticeInfo.getCategory_id())
@@ -103,9 +104,10 @@ public class NoticeController {
             // 정보 가져오기
             Academic academicInfo = academicService.getAcademicById(academicId);
             // 마이페이지에 추가
-            myPageService.addAcademicToMyPage(academicInfo, request, userEmail);
+            long myPageId = myPageService.addAcademicToMyPage(academicInfo, request, userEmail);
             // 응답 객체 생성 및 반환
             myPageInfo = MyPageDTO.Info.builder()
+                    .my_page_id(myPageId)
                     .notice_id(null)
                     .academic_id(academicId)
                     .user_email(userEmail)
