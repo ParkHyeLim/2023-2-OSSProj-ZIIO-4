@@ -122,14 +122,7 @@ const MyPage = () => {
       {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
       <div className={styles.leftWrapper}>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
-        <EventDetail
-          eventTitle={event.title}
-          eventDateStart={event.start}
-          eventDateEnd={event.end}
-          eventMemo={event.memo}
-          eventUrl={event.url}
-          eventColor={event.color}
-        />
+        <EventDetail event={event} />
       </div>
       <FullCalendar
         ref={calendarRef}
