@@ -13,6 +13,7 @@ import instance from '../../api/instance';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { getUser } from '../../api/userAPI';
+import { sortEventsByDate } from '../../utils/dateUtils';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -22,19 +23,9 @@ const MyPage = () => {
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
   const [event, setEvent] = useState({ title: '', url: '', memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
-  // const [user, setUser] = useState({}); // 유저 정보를 담는 객체
   const [showModal, setShowModal] = useState(false);
 
   const userData = useQuery('events', () => getUser());
-
-  const sortEventsByDate = eventData => {
-    return [...eventData].sort((a, b) => {
-      const today = new Date();
-      const diffA = today - new Date(a.end);
-      const diffB = today - new Date(b.end);
-      return diffB - diffA;
-    });
-  };
 
   const handleAddEventClick = () => {
     setShowModal(true);
@@ -114,7 +105,7 @@ const MyPage = () => {
     }
   }, []);
 
-  console.log(userData);
+  // console.log(userData);
 
   return (
     <div className={styles.container}>
