@@ -1,5 +1,6 @@
 package com.ziio.backend.service;
 
+import com.ziio.backend.dto.MyPageDTO;
 import com.ziio.backend.dto.NoticeDTO;
 import com.ziio.backend.entity.Academic;
 import com.ziio.backend.entity.MyPage;
@@ -9,6 +10,8 @@ import com.ziio.backend.exception.NotFoundException;
 import com.ziio.backend.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MyPageService {
@@ -96,6 +99,44 @@ public class MyPageService {
             // 존재하지 않는 경우
             throw new NotFoundException("This academic does not exist in the MyPage.");
         }
+    }
+
+    // 특정 사용자의 마이페이지를 모두 반환하는 메소드
+    public List<MyPage> getAllMyPagesByUserEmail(String userEmail) {
+        return myPageRepository.findByUserEmail(userEmail);
+    }
+
+    // 특정 사용자의 마이페이지를 업데이트하는 메소드
+    public MyPage updateMyPage(Long myPageId, MyPageDTO.Request request, String userEmail) {
+        // 업데이트할 마이페이지 찾기
+        MyPage myPage = myPageRepository.findById(myPageId)
+                .orElseThrow(() -> new NotFoundException("MyPage not found with ID: " + myPageId));
+
+        // 사용자가 해당 마이페이지를 소유하고 있는지 확인
+        if (!myPage.getUser_email().equals(userEmail)) {
+            throw new NotFoundException("MyPage not found for the user with ID: " + myPageId);
+        }
+
+        // 업데이트할 필드 설정
+        if (request.getTitle() != null) {
+            myPage.setTitle(request.getTitle());
+        }
+        if (request.getStart_date() != null) {
+            myPage.setStart_date(request.getStart_date());
+        }
+        if (request.getEnd_date() != null) {
+            myPage.setEnd_date(request.getEnd_date());
+        }
+        if (request.getColor_code() != null) {
+            myPage.setColor_code(request.getColor_code());
+        }
+        if (request.getMemo() != null) {
+            myPage.setMemo(request.getMemo());
+        }
+
+        myPageRepository.save(myPage);
+
+        return myPage;
     }
 }
 

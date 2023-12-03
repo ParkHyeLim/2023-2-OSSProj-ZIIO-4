@@ -15,7 +15,7 @@ import javax.persistence.Column;
 public class MyPage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long my_page_id;
 
     @Column
     private Long academic_id;
