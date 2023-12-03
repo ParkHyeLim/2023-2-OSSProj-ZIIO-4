@@ -110,7 +110,7 @@ public class MyPageService {
         return myPageRepository.findByUserEmail(userEmail);
     }
 
-    // 특정 사용자의 마이페이지를 업데이트하는 메소드
+    // 특정 사용자의 마이페이지를 수정하는 메소드
     public MyPage updateMyPage(Long myPageId, MyPageDTO.Request request, String userEmail) {
         // 업데이트할 마이페이지 찾기
         MyPage myPage = myPageRepository.findById(myPageId)
@@ -128,15 +128,11 @@ public class MyPageService {
         if (request.getStart_date() != null) {
             myPage.setStart_date(request.getStart_date());
         }
-        if (request.getEnd_date() != null) {
-            myPage.setEnd_date(request.getEnd_date());
-        }
-        if (request.getColor_code() != null) {
-            myPage.setColor_code(request.getColor_code());
-        }
-        if (request.getMemo() != null) {
-            myPage.setMemo(request.getMemo());
-        }
+        // 종료 일자, url, 색상, 메모는 null값 허용
+        myPage.setEnd_date(request.getEnd_date());
+        myPage.setUrl(request.getUrl());
+        myPage.setColor_code(request.getColor_code());
+        myPage.setMemo(request.getMemo());
 
         myPageRepository.save(myPage);
 
