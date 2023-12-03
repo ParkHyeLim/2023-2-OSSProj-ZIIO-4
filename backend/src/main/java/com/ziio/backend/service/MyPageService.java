@@ -11,16 +11,34 @@ import com.ziio.backend.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MyPageService {
 
-    private final MyPageRepository myPageRepository;
-
     @Autowired
-    public MyPageService(MyPageRepository myPageRepository) {
-        this.myPageRepository = myPageRepository;
+    private NoticeService noticeService;
+    @Autowired
+    private MyPageRepository myPageRepository;
+
+    // 특정 사용자의 스크랩된 공지사항 id를 반환하는 메소드
+    public List<Long> getScrapIdsByUserEmail(String userEmail) {
+
+        // 사용자의 스크랩 목록
+        List<MyPage> userScraps = getAllMyPagesByUserEmail(userEmail);
+
+        List<Long> userScrapIds = new ArrayList<>();
+        // 스크랩된 공지사항 id 목록
+        for (MyPage scrap : userScraps) {
+            // 학사일정은 제외
+            if (scrap.getAcademic_id() == null) {
+                Notice notice = noticeService.getNoticeByNoticeIdAndCategoryId(scrap.getNotice_id(), scrap.getCategory_id());
+                userScrapIds.add(notice.getId());
+            }
+        }
+
+        return userScrapIds;
     }
 
     // 마이페이지에 학사일정을 추가하는 메소드
