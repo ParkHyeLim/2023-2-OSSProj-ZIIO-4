@@ -4,13 +4,13 @@ import styles from './MyPage.module.scss';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
-import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import { EventDetail, EventList } from './components';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginModalState, loginState } from '../../store/loginStore';
 import instance from '../../api/instance';
+import axios from 'axios';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -22,7 +22,6 @@ const MyPage = () => {
   const [event, setEvent] = useState({ title: '', url: '', memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
   const [user, setUser] = useState({}); // 유저 정보를 담는 객체
   const [showModal, setShowModal] = useState(false);
-  const apiKey = process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID;
 
   const sortEventsByDate = eventData => {
     return [...eventData].sort((a, b) => {
@@ -48,6 +47,35 @@ const MyPage = () => {
     const sortedEvents = sortEventsByDate(updatedEvents);
     setListedEvents(sortedEvents.filter(event => new Date(event.end) >= new Date() || event.end === ''));
     setShowModal(false);
+
+    // 구글 캘린더에 일정 추가
+    createGoogleEvent(eventData);
+  };
+
+  const createGoogleEvent = async eventData => {
+    const { title, memo, start, end } = eventData;
+    const event = {
+      summary: title,
+      description: memo,
+      start: {
+        dateTime: start,
+        timeZone: 'Asia/Seoul',
+      },
+      end: {
+        dateTime: end,
+        timeZone: 'Asia/Seoul',
+      },
+      colorId: 5,
+      status: 'confirmed',
+      visibility: 'private',
+    };
+
+    const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    });
+    console.log(response);
   };
 
   const closeModal = () => {
@@ -117,16 +145,14 @@ const MyPage = () => {
           },
         }}
         initialView="dayGridMonth"
-        googleCalendarApiKey={apiKey}
         events={events}
-        plugins={[dayGridPlugin, interactionPlugin, googleCalendarPlugin]}
+        plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: '',
           center: 'prev title next',
           right: 'add',
         }}
         titleFormat={({ date }) => `${date.year}. ${date.month + 1}`}
-        eventColor={'#f5a986'}
         editable={false}
         // selectable={true}
         displayEventTime={false}
