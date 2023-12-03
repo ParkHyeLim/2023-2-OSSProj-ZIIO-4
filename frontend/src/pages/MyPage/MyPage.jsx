@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { getUser } from '../../api/userAPI';
 import { sortEventsByDate } from '../../utils/dateUtils';
+import { getMyEvents } from '../../api/mypageAPI';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -25,7 +26,12 @@ const MyPage = () => {
   const [event, setEvent] = useState({ title: '', url: '', memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
   const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
 
-  const userData = useQuery('events', () => getUser());
+  const { data: userData } = useQuery('user', () => getUser());
+  const { data: eventsData } = useQuery('events', () => getMyEvents(), {
+    onSuccess: data => {
+      console.log('my events', eventsData);
+    },
+  });
 
   // 일정 추가 버튼을 눌렀을 때 일정 추가 모달을 보여주는 함수
   const handleAddEventClick = () => {
@@ -70,7 +76,7 @@ const MyPage = () => {
 
     const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
       headers: {
-        Authorization: `Bearer ${userData.data.accessToken}`,
+        Authorization: `Bearer ${userData.accessToken}`,
       },
     });
     console.log(response);
