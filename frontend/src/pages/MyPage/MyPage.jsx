@@ -11,6 +11,8 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginModalState, loginState } from '../../store/loginStore';
 import instance from '../../api/instance';
 import axios from 'axios';
+import { useQuery } from 'react-query';
+import { getUser } from '../../api/userAPI';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -20,8 +22,10 @@ const MyPage = () => {
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
   const [event, setEvent] = useState({ title: '', url: '', memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
-  const [user, setUser] = useState({}); // 유저 정보를 담는 객체
+  // const [user, setUser] = useState({}); // 유저 정보를 담는 객체
   const [showModal, setShowModal] = useState(false);
+
+  const userData = useQuery('events', () => getUser());
 
   const sortEventsByDate = eventData => {
     return [...eventData].sort((a, b) => {
@@ -72,7 +76,7 @@ const MyPage = () => {
 
     const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
       headers: {
-        Authorization: `Bearer ${user.accessToken}`,
+        Authorization: `Bearer ${userData.data.accessToken}`,
       },
     });
     console.log(response);
@@ -102,25 +106,15 @@ const MyPage = () => {
     // console.log(eventData);
   };
 
-  const getUser = async () => {
-    try {
-      const response = await instance.get('/user');
-      setUser(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
-
   useEffect(() => {
     if (!isLoggedin) {
       alert('로그인이 필요한 서비스입니다.');
       navigate('/'); // 홈으로 리다이렉트
       setIsLoginModalOpen(true);
     }
-
-    getUser();
   }, []);
+
+  console.log(userData);
 
   return (
     <div className={styles.container}>
