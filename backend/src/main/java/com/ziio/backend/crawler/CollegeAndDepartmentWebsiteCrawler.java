@@ -58,7 +58,7 @@ public class CollegeAndDepartmentWebsiteCrawler {
         // 단과대 & 학과 웹사이트 공지사항 DB 저장
         for (int i = 0; i < url_Infos.size(); i++) {
             Notice notice = new Notice();
-            notice.setNotice_id(notice_id_Infos.get(i));
+            notice.setNotice_id(notice_id_Infos.get(i).isEmpty() ? null : Long.parseLong(notice_id_Infos.get(i)));
             notice.setTitle(title_Infos.get(i));
             notice.setUrl(url_Infos.get(i));
             notice.setDate_posted(date_Infos.get(i));

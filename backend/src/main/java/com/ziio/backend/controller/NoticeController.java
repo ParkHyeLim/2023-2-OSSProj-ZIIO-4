@@ -36,7 +36,7 @@ public class NoticeController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // 모든 일반 공지사항을 반환하는 메소드(= 공지사항 첫 화면)
+    // 모든 일반 공지사항과 카테고리 목록을 반환하는 메소드(= 공지사항 첫 화면)
     @GetMapping
     public ResponseEntity<Map<String, Object>> getGeneralNotices() {
         List<Notice> generalNotices = noticeService.getNoticesByCategoryIdAndKeyword(MAIN_ALL_INFOS[0][0], null);
@@ -69,7 +69,7 @@ public class NoticeController {
         MyPageDTO.Info myPageInfo = null;
 
         // 공지사항, 카테고리, 학사일정 아이디
-        String noticeId = request.getNotice_id();
+        Long noticeId = request.getNotice_id();
         String categoryId = request.getCategory_id();
         Long academicId = request.getAcademic_id();
 
@@ -128,7 +128,7 @@ public class NoticeController {
             @RequestBody NoticeDTO.Request request) {
 
         // 공지사항, 카테고리, 학사일정 아이디
-        String noticeId = request.getNotice_id();
+        Long noticeId = request.getNotice_id();
         String categoryId = request.getCategory_id();
         Long academicId = request.getAcademic_id();
 

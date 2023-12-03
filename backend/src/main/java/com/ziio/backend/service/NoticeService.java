@@ -28,7 +28,7 @@ public class NoticeService {
     }
 
     // 특정 공지사항을 반환하는 메소드
-    public Notice getNoticeByNoticeIdAndCategoryId(String noticeId, String categoryId) {
+    public Notice getNoticeByNoticeIdAndCategoryId(Long noticeId, String categoryId) {
         if (noticeId == null || categoryId == null) {
             throw new IllegalArgumentException("Notice ID and Category ID cannot be null.");
         }

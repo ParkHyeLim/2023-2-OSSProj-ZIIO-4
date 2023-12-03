@@ -70,7 +70,7 @@ public class MyPageService {
     }
 
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드
-    public void removeNoticeFromMyPage(String noticeId, String categoryId, String userEmail) {
+    public void removeNoticeFromMyPage(Long noticeId, String categoryId, String userEmail) {
         if (noticeId == null || categoryId == null) {
             throw new IllegalArgumentException("Notice ID and Category ID cannot be null.");
         }
