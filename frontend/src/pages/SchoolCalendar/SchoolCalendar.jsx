@@ -15,13 +15,13 @@ const fetchProjects = async (planData) => {
     const { data } = await instance.get('/academics');
     return data;
   } else {
-    const { data } = await instance.post('/notice/scraps', planData);
+    const { data } = await instance.post('/scraps', planData);
     return data;
   }
 }
 
 function formatDate(dateString) {
-  const parsedDate = new Date(dateString.replace(/\./g, '-'));
+  const parsedDate = new Date(dateString);
   const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(parsedDate.getDate())}`;
   return formattedDate;
 }
@@ -47,7 +47,6 @@ const SchoolCalendar = () => {
   useEffect(() => {
     if (data) {
       const transformedEvents = data.map(item => {
-        console.log(item);
         const start = formatDate(item.start_date);
         const end = formatDate(item.end_date);
         return {
@@ -127,7 +126,7 @@ const SchoolCalendar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.leftWrapper}>
-        <div>앞으로의 학사일정 목록</div>
+        <div className={styles.text1}>다음 학사일정 목록</div>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail
           eventTitle={eventTitle}
