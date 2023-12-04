@@ -2,7 +2,7 @@ import React from "react";
 import styles from './NoticeItem.module.scss'; // 파일 경로를 실제 파일 위치에 맞게 수정
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 
-export default function AnnouncementItem({ item, category, itemNumber, clipStar, onStarClick }) {
+export default function AnnouncementItem({ item, category, itemNumber, onClipClick }) {
 
   var categoryName = "";
   if (Array.isArray(category)) {
@@ -13,18 +13,21 @@ export default function AnnouncementItem({ item, category, itemNumber, clipStar,
 
   const bookmarkComponent = (
     <>
-      {clipStar[itemNumber] ?
+      {item.isClip ?
         <BsBookmarkFill
           className={styles.bookmarkIcon}
           size={15}
           style={{ margin: "0.3rem 0 0 1.5rem" }}
-          onClick={() => onStarClick(item.id)} />
+          onClick={() => {
+            const response = window.confirm("마이페이지에 저장된 스크랩 및 등록한 일정까지 삭제됩니다. 정말 삭제하시겠습니까?");
+            if (response) onClipClick({ type: "delete", value: item.notice_id })
+          }} />
         :
         <BsBookmark
           className={styles.regBookmarkIcon}
           size={15}
           style={{ margin: "0.3rem 0 0 1.5rem" }}
-          onClick={() => onStarClick(item.id)} />
+          onClick={() => onClipClick({ type: "add", value: item })} />
       }
     </>
   )

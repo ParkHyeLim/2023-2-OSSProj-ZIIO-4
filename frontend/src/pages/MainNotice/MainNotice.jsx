@@ -6,40 +6,106 @@ import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
-import sampleCategories from '../../utils/category';
+import sampleCategories, { categoryList } from '../../utils/category';
 import { FaStar } from 'react-icons/fa';
 import instance from '../../api/instance';
 import UserCategory from '../../components/UserCategory/UserCategory';
 import Pagging from '../../components/Pagging/Pagging';
+import { EventModal } from '../../components';
+import { useNavigate } from 'react-router-dom';
 
-const fetchProjects = async (categoryId, keyword) => {
-  if (categoryId !== "") {
-    const { data } = await instance.get(`/notices/search?category_id=${categoryId}&keyword=${keyword !== "" ? keyword : ""}`);
-    return data;
-  } else {
-    const { data } = await instance.get('/notices');
-    return data;
+const fetchProjects = async (type, value1, value2) => {
+  let response;
+  switch (type) {
+    case "search":
+      response = await instance.get(`/notices/search?category_id=${value1}&keyword=${value2 !== "" ? value2 : ""}`);
+      return response.data;
+    case "addBookmark":
+      response = await instance.post(`/bookmarks`, { "category_id": value1 });
+      return response.data;
+    case "deleteBookmark":
+      response = await instance.delete(`/bookmarks`, { data: { "category_id": value1 } });
+      return response.data;
+    case "getScraps":
+      response = await instance.get('/scraps');
+      return response.data;
+    case "addEventsScraps":
+      response = await instance.post(`/scraps`, value1);
+      return response.data;
+    case "deleteScraps":
+      response = await instance.delete(`/notices/scraps`, value1);
+      return response.data;
+    default:
+      response = await instance.get('/notices');
+      const getBookmarkList = await instance.get('/bookmarks');
+      const getScrapsList = await instance.get('/scraps');
+      return { ...response.data, bookmarks: getBookmarkList.data, scraps: getScrapsList.data };
+  }
+};
+
+const addBookmark = async (id) => {
+  const bookmarkData = fetchProjects("addBookmark", id, "");
+  try {
+    const result = await bookmarkData;
+    if (result.message === "successfully created.") return result;
+  } catch (error) {
+    if (error.response.data === "This category is already added to the Bookmark.") return "fail";
   }
 }
 
-const sample2 = [
-  {
-    name: '불교학과',
-    url: ['단과대', '불교학부', '불교학과'],
-  },
-  {
-    name: '사학과',
-    url: ['단과대', '문과대학', '사학과'],
-  },
-];
+const deleteBookmark = async (id) => {
+  const bookmarkData = fetchProjects("deleteBookmark", id, "");
+  try {
+    const result = await bookmarkData;
+    if (result.message === "successfully removed.") return id;
+    console.log(result);
+  } catch (error) {
+    if (error.response.data === "This category does not exist in the Bookmark.") return "fail";
+  }
+}
+
+const getScraps = async () => {
+  const scrapsData = fetchProjects("getScraps", "", "");
+  try {
+    const result = await scrapsData;
+    if (result) return result;
+  } catch (error) {
+    if (error.response.data === "Notice ID and Category ID cannot be null") return "fail";
+  }
+}
+
+const deleteScraps = async (item) => {
+  const scrapsData = fetchProjects("deleteScraps", item, "");
+  try {
+    const result = await scrapsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+    if (result.message === "successfully remove") return "success";
+    else console.log(result);
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
+}
+
+const addEventsScraps = async (item) => {
+  const scrapsData = fetchProjects("addEventsScraps", item, "");
+  try {
+    const result = await scrapsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+    if (result.message === "successfully remove") return "success";
+    else console.log(result);
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
+}
+
+// const clipSample = [{ notice_id: "123", category_id: "100100000" }];
 
 function MainNotice() {
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
-  const [isClickedStar, setIsClickedStar] = useState([false]);
 
   const [isLogin, setIsLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isSearch, setIsSearch] = useState(true); // 검색 버튼 활성화/비활성화
+  const [isOpenEventModal, setIsOpenEventModal] = useState(false);
 
   const [category1, setCategory1] = useState('메인');
   const [category2, setCategory2] = useState('일반공지');
@@ -48,40 +114,62 @@ function MainNotice() {
 
   // 검색 결과 notices
   const [noticeList, setNoticeList] = useState([]);
-  const [topNoticeList, setTopNoticeList] = useState([]);
 
   // 검색 기록 or 즐겨찾기
   const [searchCategories, setSearchCategories] = useState([]); // 검색 기록
-  const [bookmarkCategories, setBookmarkCategories] = useState(sample2); // 즐겨찾기
+  const [bookmarkCategories, setBookmarkCategories] = useState([]); // 즐겨찾기
 
   // 공지 스크랩
-  const [focusIndex, setFocusIndex] = useState(0); // focus된 공지 index
+  const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
+  const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index
 
-  const { data } = useQuery('notices', () => fetchProjects("", ""));
+  const { data } = useQuery('notices', () => fetchProjects("", "", ""));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isSessionData = sessionStorage.getItem('searchCategories');
+    const parseExistingData = isSessionData
+      ? JSON.parse(isSessionData)
+      : sessionStorage.setItem('searchCategories', JSON.stringify([]));
+    setSearchCategories(parseExistingData);
+    const isToken = localStorage.getItem('ziio-token');
+    if (isToken) setIsLogin(true);
+  }, []);
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setCategoryIdList(data.categories);
-      const formattedNotices = noticeFormat(data.notices);
+      const formattedNotices = noticeFormat(data.notices, data.scraps);
       setNoticeList(formattedNotices);
-      setIsClickedStar(Array(noticeList.length).fill(false));
+      const getBookmarkData = data.bookmarks;
+      getBookmarkData.map((item) => {
+        const selectedCategory = (categoryList.filter((category) => category.name === item.name)[0]?.categoryList) || [];
+        const result = {
+          name: item.category_name,
+          url: {
+            category1: selectedCategory[0],
+            category2: selectedCategory[1],
+            category3: selectedCategory[2],
+          },
+          id: item.category_id
+        }
+        const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === result.id);
+        if (!isDuplicate) setBookmarkCategories((prev) => [...prev, result])
+      })
     }
   }, [data]);
 
-  const noticeFormat = (data) => {
+  const noticeFormat = (data, scraps) => {
     const newArray = data;
     newArray.map((item) => {
       const words = item.title.split(' ');
       if (words.length > 0 && words[0].startsWith("공지")) {
         const restOfWords = words.slice(1);
         item.title = restOfWords.join(' ');
-        item.fixed = true;
-        // setTopNoticeList((prevList) => {
-        //   const isDuplicate = prevList.some((existingItem) => existingItem.id === item.id);
-        //   if (!isDuplicate) { return [...prevList, item]; }
-        //   else { return prevList; }
-        // });
+        item.fixed = item.notice_id === null ? true : false;
+      }
+      if (Array.isArray(scraps)) {
+        item.isClip = scraps.some((clip) => clip.id === item.id);
       }
     })
     return newArray;
@@ -102,9 +190,13 @@ function MainNotice() {
     let searchCategory = category3 || category2 || category1;
     if (searchCategory === "") {
       searchCategory = category2 || category1;
-      return categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      setSelectedCategory(result)
+      return result;
     } else {
-      return categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      setSelectedCategory(result)
+      return result;
     }
   }
 
@@ -112,8 +204,8 @@ function MainNotice() {
   const handleSearch = async () => {
     const nowCategoryId = categotyIdSearch(category1, category2, category3);
     let SearchData;
-    if (searchQuery === "") SearchData = fetchProjects(nowCategoryId, "");
-    else SearchData = fetchProjects(nowCategoryId, searchQuery)
+    if (searchQuery === "") SearchData = fetchProjects("search", nowCategoryId, "");
+    else SearchData = fetchProjects("search", nowCategoryId, searchQuery)
     try {
       const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
       const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
@@ -125,15 +217,6 @@ function MainNotice() {
       addSearchList();
     }
   };
-
-  // 검색 기록(세션 불러오기)
-  useEffect(() => {
-    const isSessionData = sessionStorage.getItem('searchCategories');
-    const parseExistingData = isSessionData
-      ? JSON.parse(isSessionData)
-      : sessionStorage.setItem('searchCategories', JSON.stringify([]));
-    setSearchCategories(parseExistingData);
-  }, []);
 
   // 검색 기록 (세션에 저장)
   const addSearchList = () => {
@@ -170,9 +253,47 @@ function MainNotice() {
     setSearchCategories(updatedData);
   }
 
-  // 검색 기록에서 검색
-  const SearchListSearch = async (value) => {
-    const SearchData = fetchProjects(value.id, "");
+  // 즐겨찾기
+  // 즐겨찾기 추가
+  const handleAddBookmark = async () => {
+    if (!isLogin) alert("로그인이 필요한 기능입니다.");
+    else {
+      if (category1 || category2 || category3) {
+        const result = await addBookmark(selectedCategory);
+
+        if (result === "fail") alert("이미 등록된 카테고리입니다.");
+        else if (result === "error") alert("즐겨찾기 추가를 다시 시도주세요.");
+        else if (result && result.category_id) {
+          const newBookmark = {
+            name: category3 || category2,
+            url: {
+              category1,
+              category2,
+              category3,
+            },
+            id: result.category_id,
+          };
+          setBookmarkCategories(prev => [...prev, newBookmark]);
+        }
+      }
+    }
+  };
+
+  // 즐겨찾기 삭제(db에 id 전달)
+  const handleDeleteBookmark = async (id) => {
+    const result = await deleteBookmark(id);
+    if (result === "fail") alert("해당 카테고리는 즐겨찾기로 등록되지 않은 카테고리입니다.");
+    else if (result === "error") alert("즐겨찾기 삭제를 다시 시도해주세요.");
+    else {
+      const newArray = bookmarkCategories.filter((item) => item.id !== result)
+      setBookmarkCategories(newArray);
+      // get하기
+    };
+  }
+
+  // 기록에서 검색
+  const ListSearch = async (value) => {
+    const SearchData = fetchProjects("search", value.id, "");
     try {
       const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
       const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
@@ -180,68 +301,53 @@ function MainNotice() {
     } catch (error) {
       console.error('Error:', error);
     }
-    if (searchQuery === "") {
-      const SearchData = fetchProjects(value.id, "");
-
-      try {
-        const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-        const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
-        setNoticeList(formattedNotices);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-
-    } else {
-      const SearchData = fetchProjects(value.id, searchQuery);
-      const formattedNotices = noticeFormat(SearchData);
-      // setNoticeList(formattedNotices);
-    }
     setCategory1(value.url.category1);
     setCategory2(value.url.category2);
     setCategory3(value.url.category3);
   }
 
   // 스크랩
-  const changeClipStarList = idx => {
-    setIsClickedStar(prevIsStarred => {
-      const updatedIsStarred = [...prevIsStarred];
-      updatedIsStarred[idx] = !prevIsStarred[idx];
-      return updatedIsStarred;
-    });
-    setFocusIndex(idx);
-    setIsOpen(!isOpen);
-  };
-
-  // 즐겨찾기
-  // 즐겨찾기 추가
-  const handleAddBookmark = () => {
-    console.log(bookmarkCategories);
-    if (category1 || category2 || category3) {
-      const newBookmark = {
-        name: category3 || category2,
-        url: {
-          category1,
-          category2,
-          category3,
-        },
-      };
-
-      // 같은 이름을 가진 항목이 이미 있는지 확인
-      if (isLogin) {
-        const hasDuplicate = bookmarkCategories.some(bookmark => bookmark.name === newBookmark.name);
-        if (!hasDuplicate) {
-          // 같은 이름이 없는 경우에만 추가
-          setBookmarkCategories([...bookmarkCategories, newBookmark]);
-        }
+  const changeClipStarNotice = (item) => {
+    if (!isLogin) alert("로그인이 필요한 기능입니다");
+    else {
+      if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value) }
+      else {
+        const result = deleteScraps({ notice_id: item, category_id: selectedCategory })
+        if (result === "success") alert("스크랩이 취소되었습니다")
       }
+      const scrapsData = getScraps();
+      const formattedNotices = noticeFormat(noticeList, scrapsData);
+      setNoticeList(formattedNotices);
     }
-  };
+  }
 
-  // 즐겨찾기 삭제(db에 id 전달)
-  const handleDeleteBookmark = title => {
-    if (isLogin) {
-      const updatedBookmarkCategories = bookmarkCategories.filter(bookmark => bookmark.name !== title);
-      setBookmarkCategories(updatedBookmarkCategories);
+  // 일정 등록
+  const saveEvent = async (eventData) => {
+    if (eventData.end) {
+      const endDate = new Date(eventData.end);
+      endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
+      eventData.end = endDate;
+    }
+
+    const resultData = {
+      notice_id: eventData.id,
+      category_id: selectedCategory,
+      title: eventData.title,
+      memo: eventData.extendedProps.memo,
+      url: eventData.url,
+      color_code: eventData.backgroundColor,
+    }
+
+    const json = JSON.stringify(resultData);
+    const EventsData = addEventsScraps(json);
+    try {
+      const result = await EventsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      if (result === "success") {
+        const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
+        if (response) navigate('/myPage')
+      } else if (result === "fail") alert("잘못된 데이터 형태입니다. 다시 스크랩을 시도해주세요.");
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -252,15 +358,15 @@ function MainNotice() {
           <div>
             <div className={styles.text1}>즐겨찾기 공지사항</div>
             <UserCategory categoryList={bookmarkCategories}
-              onClick={SearchListSearch}
-              onDelete={deleteSearchList}
+              onClick={ListSearch}
+              onDelete={handleDeleteBookmark}
             />
           </div>
         ) : (
           <div>
             <div className={styles.text1}>검색한 공지사항</div>
             <UserCategory categoryList={searchCategories}
-              onClick={SearchListSearch}
+              onClick={ListSearch}
               onDelete={deleteSearchList}
             />
           </div>
@@ -286,7 +392,7 @@ function MainNotice() {
               fillterData={[category1, category2, category3]}
               onChange={e => setCategory3(e.target.value)} />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-            <button className={styles.searchButton} onClick={handleSearch} disabled={!isSearch}>
+            <button className={styles.searchButton} onClick={handleSearch}>
               검색
             </button>
           </div>
@@ -298,14 +404,28 @@ function MainNotice() {
         </div>
 
         <div className={styles.itemList}>
-          <Pagging data={noticeList} noticeCategory={categoryIdList} isClickedStar={isClickedStar} changeClipStarList={idx => changeClipStarList(idx)} />
+          <Pagging data={noticeList} noticeCategory={categoryIdList} changeClipStarNotice={item => changeClipStarNotice(item)} />
         </div>
       </div>
 
-      {/* <button onClick={() => setIsOpen(!isOpen)}>open</button> */}
-      {isLogin
+      {!isLogin
         ? isOpen && <LoginModal onModalClose={() => setIsOpen(!isOpen)} />
-        : isOpen && <ClipModal onModalClose={() => setIsOpen(!isOpen)} />}
+        : isOpen && <ClipModal
+          noticeId={selectedNotice.notice_id}
+          categoryId={selectedCategory}
+          onModalClose={() => setIsOpen(!isOpen)}
+          openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }} />
+      }
+      {isOpenEventModal && <EventModal
+        modalTitle={'내 일정으로 추가'}
+        eventId={selectedNotice.notice_id}
+        prevData={{
+          title: selectedNotice.title,
+          start: selectedNotice.date_posted,
+          url: selectedNotice.url,
+        }}
+        saveEvent={saveEvent}
+        closeModal={() => setIsOpenEventModal(!isOpenEventModal)} />}
     </div>
   );
 }
