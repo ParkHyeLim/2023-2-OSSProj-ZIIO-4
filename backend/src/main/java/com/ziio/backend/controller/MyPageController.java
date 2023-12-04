@@ -36,7 +36,7 @@ public class MyPageController {
     }
 
     // 사용자의 요청에 따라 일정을 수정하는 메소드
-    @PatchMapping
+    @PatchMapping("/edits")
     public ResponseEntity<MyPageDTO.Info> updateMyPage(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody MyPageDTO.Request request) {

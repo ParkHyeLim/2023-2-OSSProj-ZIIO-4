@@ -14,7 +14,7 @@ public class Notice {
     private Long id;
 
     @Column
-    private String notice_id;
+    private Long notice_id;
 
     @Column(nullable = false)
     private String category_id;

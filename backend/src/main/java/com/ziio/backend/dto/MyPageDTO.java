@@ -10,7 +10,7 @@ public class MyPageDTO {
     @Builder
     public static class Info {
         private Long my_page_id;
-        private String notice_id;
+        private Long notice_id;
         private Long academic_id;
         private String category_id;
         private String user_email;
