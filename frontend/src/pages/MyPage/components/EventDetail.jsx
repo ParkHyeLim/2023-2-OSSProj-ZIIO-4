@@ -1,26 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../MyPage.module.scss';
 import classNames from 'classnames';
 import editIcon from '../../../assets/icons/edit.svg';
 import { formatDate } from '../../../utils/dateUtils';
+import { EventModal } from '../../../components';
 
-const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, eventUrl, eventColor }) => {
+const EventDetail = ({ event }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false); // 일정 편집 모달의 열림/닫힘 상태
+
   return (
-    <div className={classNames(styles.eventWrapper, eventTitle === '' && styles.invisible)}>
+    <div className={classNames(styles.eventWrapper, event.title === '' && styles.invisible)}>
       <div className={styles.titleWrapper}>
-        <div className={styles.eventColor} style={{ backgroundColor: eventColor }} />
-        <div className={styles.title}>{eventTitle}</div>
+        <div className={styles.eventColor} style={{ backgroundColor: event.color }} />
+        <div className={styles.title}>{event.title}</div>
       </div>
       <div className={styles.row}>
         <div className={styles.subtitleWrapper}>
           <div className={styles.subtitle}>기간</div>
         </div>
         <div className={styles.content}>
-          {eventDateStart === '' && eventDateEnd === '' ? (
+          {event.start === '' && event.end === '' ? (
             '없음'
           ) : (
             <>
-              {formatDate(eventDateStart)} ~ {eventDateEnd ? formatDate(eventDateEnd) : formatDate(eventDateStart)}
+              {formatDate(event.start)} ~ {event.end ? formatDate(event.end) : formatDate(event.start)}
             </>
           )}
         </div>
@@ -29,26 +32,36 @@ const EventDetail = ({ eventTitle, eventDateStart, eventDateEnd, eventMemo, even
         <div className={styles.subtitleWrapper}>
           <div className={styles.subtitle}>메모</div>
         </div>
-        <div className={styles.content}>{eventMemo ? eventMemo : '없음'}</div>
+        <div className={styles.content}>{event.memo ? event.memo : '없음'}</div>
       </div>
       <div className={styles.row}>
         <div className={styles.subtitleWrapper}>
           <div className={styles.subtitle}>URL</div>
         </div>
         <div className={styles.content}>
-          {eventUrl ? (
-            <a href={eventUrl} target="_blank" rel="noreferrer">
-              {eventUrl}
+          {event.url ? (
+            <a href={event.url} target="_blank" rel="noreferrer">
+              {event.url}
             </a>
           ) : (
             '없음'
           )}
         </div>
       </div>
-      <button className={styles.button}>
+      <button className={styles.button} onClick={() => setIsModalOpen(true)}>
         <img src={editIcon} alt="edit" className={styles.icon} />
         일정 편집
       </button>
+      {/* 일정 편집 모달 */}
+      {isModalOpen && (
+        <EventModal
+          modalTitle={'일정 편집'}
+          saveEvent={() => {}}
+          closeModal={() => setIsModalOpen(false)}
+          prevData={event}
+          isDelteActive={true}
+        />
+      )}
     </div>
   );
 };

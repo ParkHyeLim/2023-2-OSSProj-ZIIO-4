@@ -5,11 +5,11 @@ import closeIcon from '../../assets/icons/close.svg';
 import { ConfigProvider, DatePicker } from 'antd';
 import { colors } from '../../constants/eventColors';
 import classNames from 'classnames';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData }) => {
+export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDelteActive }) => {
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
   const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
@@ -114,7 +114,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               <RangePicker
                 defaultValue={prevData ? [dayjs(start), dayjs(end)] : null}
                 onChange={dates => {
-                  console.log(dates)
+                  console.log(dates);
                   if (dates.length === 2) {
                     // 첫 번째 날짜의 시, 분, 초를 0으로 설정
                     const startDate = new Date(dates[0].$d);
@@ -146,9 +146,16 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               ))}
             </div>
           </div>
-          <button type="submit" className={styles.button}>
-            일정 추가
-          </button>
+          <div className={styles.buttonWrapper}>
+            <button type="submit" className={styles.button}>
+              저장
+            </button>
+            {isDelteActive && (
+              <button type="button" className={styles.removeButton}>
+                삭제
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </ConfigProvider>

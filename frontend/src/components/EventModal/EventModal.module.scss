@@ -93,6 +93,13 @@
   width: 38.5rem;
 }
 
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .button {
   display: flex;
   align-self: stretch;
@@ -104,6 +111,18 @@
   color: #fff;
   margin-top: auto;
   margin-left: auto;
+  cursor: pointer;
+}
+
+.removeButton {
+  display: flex;
+  padding: 0.6rem 1rem;
+  align-items: center;
+  border: 1px solid var(--gray-200, #e5e7eb);
+  border-radius: 0.5rem;
+  background: var(--Color-2, #fff);
+  color: var(--gray-800, #1f2937);
+  font-weight: 500;
   cursor: pointer;
 }
 

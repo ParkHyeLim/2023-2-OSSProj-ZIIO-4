@@ -41,3 +41,12 @@ export const formatDate = dateString => {
   }
   return `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
 };
+
+export const sortEventsByDate = eventData => {
+  return [...eventData].sort((a, b) => {
+    const today = new Date();
+    const diffA = today - new Date(a.end);
+    const diffB = today - new Date(b.end);
+    return diffB - diffA;
+  });
+};
