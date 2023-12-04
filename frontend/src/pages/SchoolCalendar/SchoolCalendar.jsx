@@ -15,7 +15,7 @@ const fetchProjects = async (planData) => {
     const { data } = await instance.get('/academics');
     return data;
   } else {
-    const { data } = await instance.post('/mypages', planData);
+    const { data } = await instance.post('/scraps', planData);
     return data;
   }
 }

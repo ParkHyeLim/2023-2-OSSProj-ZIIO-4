@@ -31,7 +31,7 @@ const fetchProjects = async (type, value1, value2) => {
       return response.data;
     case "addEventsScraps":
       console.log(value1);
-      response = await instance.post(`/mypages`, value1);
+      response = await instance.post(`/scraps`, value1);
       return response.data;
     case "deleteScraps":
       response = await instance.delete(`/scraps`, value1);
