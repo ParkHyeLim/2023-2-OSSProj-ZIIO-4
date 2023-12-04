@@ -11,20 +11,38 @@ import com.ziio.backend.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MyPageService {
 
-    private final MyPageRepository myPageRepository;
-
     @Autowired
-    public MyPageService(MyPageRepository myPageRepository) {
-        this.myPageRepository = myPageRepository;
+    private NoticeService noticeService;
+    @Autowired
+    private MyPageRepository myPageRepository;
+
+    // 특정 사용자의 스크랩된 공지사항 id를 반환하는 메소드
+    public List<Long> getScrapIdsByUserEmail(String userEmail) {
+
+        // 사용자의 스크랩 목록
+        List<MyPage> userScraps = getAllMyPagesByUserEmail(userEmail);
+
+        List<Long> userScrapIds = new ArrayList<>();
+        // 스크랩된 공지사항 id 목록
+        for (MyPage scrap : userScraps) {
+            // 학사일정은 제외
+            if (scrap.getAcademic_id() == null) {
+                Notice notice = noticeService.getNoticeByNoticeIdAndCategoryId(scrap.getNotice_id(), scrap.getCategory_id());
+                userScrapIds.add(notice.getId());
+            }
+        }
+
+        return userScrapIds;
     }
 
     // 마이페이지에 학사일정을 추가하는 메소드
-    public void addAcademicToMyPage(Academic academic, NoticeDTO.Request request, String userEmail) {
+    public Long addAcademicToMyPage(Academic academic, NoticeDTO.Request request, String userEmail) {
         // 중복 체크
         long count = myPageRepository.countByUserEmailAndAcademicId(userEmail, academic.getId());
         // 중복이 아닌 경우
@@ -43,10 +61,12 @@ public class MyPageService {
             // 중복인 경우
             throw new DuplicateRecordException("This academic is already added to the MyPage.");
         }
+
+        return myPageRepository.findByUserEmailAndAcademicId(userEmail, academic.getId()).getMy_page_id();
     }
 
-    // 마이페이지에 특정 공지사항을 추가하는 메소드
-    public void addNoticeToMyPage(Notice notice, NoticeDTO.Request request, String userEmail) {
+    // 마이페이지에 공지사항을 추가하는 메소드
+    public Long addNoticeToMyPage(Notice notice, NoticeDTO.Request request, String userEmail) {
         // 중복 체크
         long count = myPageRepository.countByUserEmailAndNoticeIdAndCategoryId(userEmail, request.getNotice_id(), request.getCategory_id());
         // 중복이 아닌 경우
@@ -67,10 +87,12 @@ public class MyPageService {
             // 중복인 경우
             throw new DuplicateRecordException("This notice is already added to the MyPage.");
         }
+
+        return myPageRepository.findByUserEmailAndNoticeIdAndCategoryId(userEmail, request.getNotice_id(), request.getCategory_id()).getMy_page_id();
     }
 
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드
-    public void removeNoticeFromMyPage(String noticeId, String categoryId, String userEmail) {
+    public void removeNoticeFromMyPage(Long noticeId, String categoryId, String userEmail) {
         if (noticeId == null || categoryId == null) {
             throw new IllegalArgumentException("Notice ID and Category ID cannot be null.");
         }
@@ -106,7 +128,7 @@ public class MyPageService {
         return myPageRepository.findByUserEmail(userEmail);
     }
 
-    // 특정 사용자의 마이페이지를 업데이트하는 메소드
+    // 특정 사용자의 마이페이지를 수정하는 메소드
     public MyPage updateMyPage(Long myPageId, MyPageDTO.Request request, String userEmail) {
         // 업데이트할 마이페이지 찾기
         MyPage myPage = myPageRepository.findById(myPageId)
@@ -124,15 +146,11 @@ public class MyPageService {
         if (request.getStart_date() != null) {
             myPage.setStart_date(request.getStart_date());
         }
-        if (request.getEnd_date() != null) {
-            myPage.setEnd_date(request.getEnd_date());
-        }
-        if (request.getColor_code() != null) {
-            myPage.setColor_code(request.getColor_code());
-        }
-        if (request.getMemo() != null) {
-            myPage.setMemo(request.getMemo());
-        }
+        // 종료 일자, url, 색상, 메모는 null값 허용
+        myPage.setEnd_date(request.getEnd_date());
+        myPage.setUrl(request.getUrl());
+        myPage.setColor_code(request.getColor_code());
+        myPage.setMemo(request.getMemo());
 
         myPageRepository.save(myPage);
 

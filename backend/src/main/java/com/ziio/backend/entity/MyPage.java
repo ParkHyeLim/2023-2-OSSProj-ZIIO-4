@@ -21,7 +21,7 @@ public class MyPage {
     private Long academic_id;
 
     @Column
-    private String notice_id;
+    private Long notice_id;
 
     @Column
     private String category_id;

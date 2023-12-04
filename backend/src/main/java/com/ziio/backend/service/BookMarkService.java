@@ -9,13 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class BookMarkService {
     @Autowired
     private BookMarkRepository bookMarkRepository;
-    @Autowired
-    private CategoryService categoryService;
+
+    // 특정 사용자의 북마크 목록을 반환하는 메소드
+    public List<BookMark> getBookMarks(String userEmail) {
+
+        return bookMarkRepository.getBookMarksByuserEmail(userEmail);
+    }
 
     // 특정 사용자의 즐겨찾기를 등록하는 메소드
     public void addCategoryToBookMark(String userEmail, Category category) {
