@@ -20,11 +20,10 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal }) => {
       category_id: categoryId
     }
 
-    console.log(resultData);
     const SearchData = fetchProjects(resultData);
     try {
       const result = await SearchData;
-      console.log(result);
+      if (result) onModalClose(false);
     } catch (error) {
       console.error('Error:', error);
     }

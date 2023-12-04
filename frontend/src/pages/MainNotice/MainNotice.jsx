@@ -30,10 +30,11 @@ const fetchProjects = async (type, value1, value2) => {
       response = await instance.get('/scraps');
       return response.data;
     case "addEventsScraps":
+      console.log(value1);
       response = await instance.post(`/scraps`, value1);
       return response.data;
     case "deleteScraps":
-      response = await instance.delete(`/notices/scraps`, value1);
+      response = await instance.delete(`/scraps`, value1);
       return response.data;
     default:
       response = await instance.get('/notices');
@@ -167,6 +168,14 @@ function MainNotice() {
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      const scrapsData = getScraps();
+      const formattedNotices = noticeFormat(noticeList, scrapsData);
+      setNoticeList(formattedNotices);
+    }
+  }, [isOpen]);
 
   const noticeFormat = (data, scraps) => {
     const newArray = data;
@@ -326,9 +335,6 @@ function MainNotice() {
         const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
         if (result === "success") alert("스크랩이 취소되었습니다")
       }
-      const scrapsData = getScraps();
-      const formattedNotices = noticeFormat(noticeList, scrapsData);
-      setNoticeList(formattedNotices);
     }
   }
 
@@ -344,7 +350,7 @@ function MainNotice() {
       notice_id: eventData.id,
       category_id: selectedCategory,
       title: eventData.title,
-      memo: eventData.extendedProps.memo,
+      memo: eventData.extendedProps.memo === undefined ? null : eventData.extendedProps.memo,
       url: eventData.url,
       color_code: eventData.backgroundColor,
     }
