@@ -37,9 +37,13 @@ const fetchProjects = async (type, value1, value2) => {
       return response.data;
     default:
       response = await instance.get('/notices');
-      const getBookmarkList = await instance.get('/bookmarks');
-      const getScrapsList = await instance.get('/scraps');
-      return { ...response.data, bookmarks: getBookmarkList.data, scraps: getScrapsList.data };
+      const isToken = localStorage.getItem("ziio-token");
+      if (isToken) {
+        const getBookmarkList = await instance.get('/bookmarks');
+        const getScrapsList = await instance.get('/scraps');
+        return { ...response.data, bookmarks: getBookmarkList.data, scraps: getScrapsList.data };
+      }
+      return response.data;
   }
 };
 
@@ -121,7 +125,7 @@ function MainNotice() {
 
   // 공지 스크랩
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
-  const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index
+  const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index  
 
   const { data } = useQuery('notices', () => fetchProjects("", "", ""));
   const navigate = useNavigate();
@@ -138,24 +142,29 @@ function MainNotice() {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       setCategoryIdList(data.categories);
-      const formattedNotices = noticeFormat(data.notices, data.scraps);
+      let formattedNotices;
+      if (data.scraps) formattedNotices = noticeFormat(data.notices, data.scraps);
+      else formattedNotices = noticeFormat(data.notices);
       setNoticeList(formattedNotices);
-      const getBookmarkData = data.bookmarks;
-      getBookmarkData.map((item) => {
-        const selectedCategory = (categoryList.filter((category) => category.name === item.name)[0]?.categoryList) || [];
-        const result = {
-          name: item.category_name,
-          url: {
-            category1: selectedCategory[0],
-            category2: selectedCategory[1],
-            category3: selectedCategory[2],
-          },
-          id: item.category_id
-        }
-        const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === result.id);
-        if (!isDuplicate) setBookmarkCategories((prev) => [...prev, result])
-      })
+      if (data.bookmarks) {
+        const getBookmarkData = data.bookmarks;
+        getBookmarkData.map((item) => {
+          const selectedCategory = (categoryList.filter((category) => category.name === item.name)[0]?.categoryList) || [];
+          const result = {
+            name: item.category_name,
+            url: {
+              category1: selectedCategory[0],
+              category2: selectedCategory[1],
+              category3: selectedCategory[2],
+            },
+            id: item.category_id
+          }
+          const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === result.id);
+          if (!isDuplicate) setBookmarkCategories((prev) => [...prev, result])
+        })
+      }
     }
   }, [data]);
 
@@ -168,8 +177,10 @@ function MainNotice() {
         item.title = restOfWords.join(' ');
         item.fixed = item.notice_id === null ? true : false;
       }
-      if (Array.isArray(scraps)) {
+      if (scraps && Array.isArray(scraps)) {
         item.isClip = scraps.some((clip) => clip.id === item.id);
+      } else {
+        item.isClip = false;
       }
     })
     return newArray;
@@ -191,11 +202,11 @@ function MainNotice() {
     if (searchCategory === "") {
       searchCategory = category2 || category1;
       const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
-      setSelectedCategory(result)
+      setSelectedCategory(result);
       return result;
     } else {
       const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
-      setSelectedCategory(result)
+      setSelectedCategory(result);
       return result;
     }
   }
@@ -310,9 +321,9 @@ function MainNotice() {
   const changeClipStarNotice = (item) => {
     if (!isLogin) alert("로그인이 필요한 기능입니다");
     else {
-      if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value) }
+      if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value); setSelectedCategory(item.value.category_id) }
       else {
-        const result = deleteScraps({ notice_id: item, category_id: selectedCategory })
+        const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
         if (result === "success") alert("스크랩이 취소되었습니다")
       }
       const scrapsData = getScraps();
@@ -338,8 +349,7 @@ function MainNotice() {
       color_code: eventData.backgroundColor,
     }
 
-    const json = JSON.stringify(resultData);
-    const EventsData = addEventsScraps(json);
+    const EventsData = addEventsScraps(resultData);
     try {
       const result = await EventsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
       if (result === "success") {
