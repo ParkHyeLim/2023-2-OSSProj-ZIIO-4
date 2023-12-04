@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import styles from './Pagging.module.scss';
 import NoticeItem from '../NoticeItem/NoticeItem';
 
-const Pagging = ({ data, noticeCategory, isClickedStar, changeClipStarList }) => {
+const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
   const [noticeData, setNoticeData] = useState([]);
   const [nowData, setNowData] = useState([{ author: "", category_id: "", date_posted: "", id: 0, title: "", url: "" }]);
   const [nowPage, setNowPage] = useState(1);
@@ -76,9 +76,8 @@ const Pagging = ({ data, noticeCategory, isClickedStar, changeClipStarList }) =>
           key={index}
           item={value}
           itemNumber={index - nowFixedNuber + 1}
-          clipStar={isClickedStar}
           category={noticeCategory}
-          onStarClick={idx => changeClipStarList(idx)}
+          onClipClick={item => changeClipStarNotice(item)}
         />
       ))}
     </div>

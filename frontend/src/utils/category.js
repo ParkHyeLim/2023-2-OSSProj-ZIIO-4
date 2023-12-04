@@ -126,11 +126,105 @@ const categories = [
 
 export default categories;
 
-const categories_id = [
-  { category_name: '일반공지', category_id: '100100000' },
-  { category_name: '학사공지', category_id: '100200000' },
-  { category_name: '학술공지', category_id: '100400000' },
-  { category_name: '불교학부', category_id: '200100101' },
+export const categoryList = [
+  {
+    name: "메인",
+    categoryList: ["메인", "", ""]
+  },
+  {
+    name: "단과대",
+    categoryList: ["단과대", "", ""]
+  },
+  {
+    name: "기타",
+    categoryList: ["기타", "", ""]
+  },
+  {
+    name: "일반공지",
+    categoryList: ["메인", "일반공지", ""]
+  },
+  {
+    name: "학사공지",
+    categoryList: ["메인", "학사공지", ""]
+  },
+  {
+    name: "장학공지",
+    categoryList: ["메인", "장학공지", ""]
+  },
+  {
+    name: "학술공지",
+    categoryList: ["메인", "학술공지", ""]
+  },
+  {
+    name: "불교대학",
+    categoryList: ["단과대", "불교대학", ""]
+  },
+  {
+    name: "문과대학",
+    categoryList: ["단과대", "문과대학", ""]
+  },
+  {
+    name: "이과대학",
+    categoryList: ["단과대", "이과대학", ""]
+  },
+  {
+    name: "법과대학",
+    categoryList: ["단과대", "법과대학", ""]
+  },
+  {
+    name: "사회과학대학",
+    categoryList: ["단과대", "사회과학대학", ""]
+  },
+  {
+    name: "경영대학",
+    categoryList: ["단과대", "경영대학", ""]
+  },
+  {
+    name: "경찰사법대학",
+    categoryList: ["단과대", "경찰사법대학", ""]
+  },
+  {
+    name: "바이오시스템대학",
+    categoryList: ["단과대", "바이오시스템대학", ""]
+  },
+  {
+    name: "AI융합대학",
+    categoryList: ["단과대", "AI융합대학", ""]
+  },
+  {
+    name: "공과대학",
+    categoryList: ["단과대", "공과대학", ""]
+  },
+  {
+    name: "사범대학",
+    categoryList: ["단과대", "사범대학", ""]
+  },
+  {
+    name: "약학대학",
+    categoryList: ["단과대", "약학대학", ""]
+  },
+  {
+    name: "미래융합대학",
+    categoryList: ["단과대", "미래융합대학", ""]
+  },
+  {
+    name: "다르마칼리지",
+    categoryList: ["단과대", "다르마칼리지", ""]
+  },
+  {
+    name: "예술대학",
+    categoryList: ["단과대", "예술대학", ""]
+  },
+  {
+    name: "동국대학교 IT융합교육센터",
+    categoryList: ["기타", "동국대학교 IT융합교육센터", ""]
+  },
+  {
+    name: "동국대학교 고양캠퍼스 미래융합교육원",
+    categoryList: ["기타", "동국대학교 고양캠퍼스 미래융합교육원", ""]
+  },
+  {
+    name: "동국대학교 미래융합교육원",
+    categoryList: ["기타", "동국대학교 미래융합교육원", ""]
+  },
 ];
-
-export { categories_id };
