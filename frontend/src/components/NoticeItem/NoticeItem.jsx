@@ -20,14 +20,18 @@ export default function AnnouncementItem({ item, category, itemNumber, onClipCli
           style={{ margin: "0.3rem 0 0 1.5rem" }}
           onClick={() => {
             const response = window.confirm("마이페이지에 저장된 스크랩 및 등록한 일정까지 삭제됩니다. 정말 삭제하시겠습니까?");
-            if (response) onClipClick({ type: "delete", value: item.notice_id })
+            if (response) onClipClick({ type: "delete", value: item })
           }} />
         :
         <BsBookmark
           className={styles.regBookmarkIcon}
           size={15}
           style={{ margin: "0.3rem 0 0 1.5rem" }}
-          onClick={() => onClipClick({ type: "add", value: item })} />
+          onClick={() => {
+            const isToken = localStorage.getItem("ziio-token");
+            if (isToken) onClipClick({ type: "add", value: item })
+            else alert("로그인이 필요한 기능입니다")
+          }} />
       }
     </>
   )
