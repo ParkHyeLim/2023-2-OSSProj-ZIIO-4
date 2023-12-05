@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDelteActive }) => {
+export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive }) => {
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
   const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
@@ -17,6 +17,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
   const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
   const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
+  const location = window.location.pathname;
 
   const handleMouseDownInside = () => {
     setIsMouseDownInside(true);
@@ -98,16 +99,18 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               className={styles.input}
             />
           </div>
-          <div>
-            <label className={styles.label}>URL</label>
-            <input
-              type="text"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              placeholder="URL을 입력해주세요"
-              className={styles.input}
-            />
-          </div>
+          {location !== '/myPage' && (
+            <div>
+              <label className={styles.label}>URL</label>
+              <input
+                type="text"
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                placeholder="URL을 입력해주세요"
+                className={styles.input}
+              />
+            </div>
+          )}
           <div>
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
@@ -150,7 +153,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
             <button type="submit" className={styles.button}>
               저장
             </button>
-            {isDelteActive && (
+            {isDeleteActive && (
               <button type="button" className={styles.removeButton}>
                 삭제
               </button>

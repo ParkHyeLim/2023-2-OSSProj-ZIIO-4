@@ -8,10 +8,14 @@ import { EventModal } from '../../../components';
 const EventDetail = ({ event }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 일정 편집 모달의 열림/닫힘 상태
 
+  console.log('eventdetail', event);
   return (
     <div className={classNames(styles.eventWrapper, event.title === '' && styles.invisible)}>
       <div className={styles.titleWrapper}>
-        <div className={styles.eventColor} style={{ backgroundColor: event.color }} />
+        <div
+          className={styles.eventColor}
+          style={{ backgroundColor: event.color || event.backgroundColor || event.color_code }}
+        />
         <div className={styles.title}>{event.title}</div>
       </div>
       <div className={styles.row}>
@@ -19,7 +23,7 @@ const EventDetail = ({ event }) => {
           <div className={styles.subtitle}>기간</div>
         </div>
         <div className={styles.content}>
-          {event.start === '' && event.end === '' ? (
+          {event.start == null || event.end == null ? (
             '없음'
           ) : (
             <>
@@ -39,12 +43,12 @@ const EventDetail = ({ event }) => {
           <div className={styles.subtitle}>URL</div>
         </div>
         <div className={styles.content}>
-          {event.url ? (
+          {!event.url || event.url === 'null' ? (
+            '없음'
+          ) : (
             <a href={event.url} target="_blank" rel="noreferrer">
               {event.url}
             </a>
-          ) : (
-            '없음'
           )}
         </div>
       </div>
@@ -59,7 +63,7 @@ const EventDetail = ({ event }) => {
           saveEvent={() => {}}
           closeModal={() => setIsModalOpen(false)}
           prevData={event}
-          isDelteActive={true}
+          isDeleteActive={true}
         />
       )}
     </div>
