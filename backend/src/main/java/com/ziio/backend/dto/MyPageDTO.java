@@ -58,4 +58,10 @@ public class MyPageDTO {
         private String memo;
         private String message;
     }
+
+    @Getter
+    @Builder
+    public static class DeleteResponse {
+        private String message;
+    }
 }
