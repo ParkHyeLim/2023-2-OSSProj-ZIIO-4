@@ -5,6 +5,8 @@ import com.ziio.backend.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class CrawlerManager {
     @Autowired
