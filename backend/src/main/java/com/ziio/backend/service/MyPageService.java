@@ -128,7 +128,14 @@ public class MyPageService {
 
         // 마이페이지에서 삭제
         MyPage myPage = myPageRepository.findByUserEmailAndMyPageId(userEmail, myPageId);
-        myPageRepository.delete(myPage);
+
+        if (myPage != null) {
+            // 존재한다면 삭제
+            myPageRepository.delete(myPage);
+        } else {
+            // 존재하지 않는 경우
+            throw new NotFoundException("This schedule does not exist in the MyPage.");
+        }
 
         // 응답 객체 생성 및 반환
         return MyPageDTO.DeleteResponse.builder()
