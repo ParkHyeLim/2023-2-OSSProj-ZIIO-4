@@ -25,6 +25,10 @@ public interface MyPageRepository extends JpaRepository<MyPage, Long> {
     @Query("SELECT mp FROM MyPage mp WHERE mp.user_email = :userEmail AND mp.academic_id = :academicId")
     MyPage findByUserEmailAndAcademicId(@Param("userEmail") String userEmail, @Param("academicId") Long academicId);
 
+    // 사용자의 이메일과 마이페이지 id로 찾아 정보를 반환하는 메소드
+    @Query("SELECT mp FROM MyPage mp WHERE mp.user_email = :userEmail AND mp.my_page_id = :myPageId")
+    MyPage findByUserEmailAndMyPageId(@Param("userEmail") String userEmail, @Param("myPageId") Long myPageId);
+
     // 사용자의 이메일에 해당하는 모든 마이페이지 정보 반환
     @Query("SELECT mp FROM MyPage mp WHERE mp.user_email = :userEmail")
     List<MyPage> findByUserEmail(@Param("userEmail") String userEmail);

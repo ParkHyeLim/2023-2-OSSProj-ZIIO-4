@@ -91,6 +91,58 @@ public class MyPageService {
         return myPageRepository.findByUserEmailAndNoticeIdAndCategoryId(userEmail, request.getNotice_id(), request.getCategory_id()).getMy_page_id();
     }
 
+    // 마이페이지에 개인 일정을 추가하는 메소드
+    public MyPageDTO.PostResponse addMyPage(MyPageDTO.Request request, String userEmail) {
+
+        // 마이페이지에 저장
+        MyPage myPage = new MyPage();
+        myPage.setTitle(request.getTitle());
+        myPage.setStart_date(request.getStart_date());
+        myPage.setEnd_date(request.getEnd_date());
+        myPage.setUrl(request.getUrl());
+        myPage.setColor_code(request.getColor_code());
+        myPage.setMemo(request.getMemo());
+        myPage.setUser_email(userEmail);
+        myPageRepository.save(myPage);
+
+        // 마이페이지에서 my_page_id 찾기
+        Long myPageId = myPage.getMy_page_id();
+
+        // 응답 객체 생성 및 반환
+        MyPageDTO.PostResponse addedMyPageResponse = MyPageDTO.PostResponse.builder()
+                .my_page_id(myPageId)
+                .start_date(myPage.getStart_date())
+                .end_date(myPage.getEnd_date())
+                .title(myPage.getTitle())
+                .url(myPage.getUrl())
+                .color_code(myPage.getColor_code())
+                .memo(myPage.getMemo())
+                .message("successfully added.")
+                .build();
+
+        return addedMyPageResponse;
+    }
+
+    // 마이페이지에서 개인 일정을 삭제하는 메소드
+    public MyPageDTO.DeleteResponse removeMyPage(Long myPageId, String userEmail) {
+
+        // 마이페이지에서 삭제
+        MyPage myPage = myPageRepository.findByUserEmailAndMyPageId(userEmail, myPageId);
+
+        if (myPage != null) {
+            // 존재한다면 삭제
+            myPageRepository.delete(myPage);
+        } else {
+            // 존재하지 않는 경우
+            throw new NotFoundException("This schedule does not exist in the MyPage.");
+        }
+
+        // 응답 객체 생성 및 반환
+        return MyPageDTO.DeleteResponse.builder()
+                .message("successfully removed.")
+                .build();
+    }
+
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드
     public void removeNoticeFromMyPage(Long noticeId, String categoryId, String userEmail) {
         if (noticeId == null || categoryId == null) {

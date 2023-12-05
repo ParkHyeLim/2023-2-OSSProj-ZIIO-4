@@ -33,4 +33,35 @@ public class MyPageDTO {
         private String color_code;
         private String memo;
     }
+
+    @Getter
+    @Builder
+    public static class GetResponse {
+        private Long my_page_id;
+        private String start_date;
+        private String end_date;
+        private String title;
+        private String url;
+        private String color_code;
+        private String memo;
+    }
+
+    @Getter
+    @Builder
+    public static class PostResponse {
+        private Long my_page_id;
+        private String start_date;
+        private String end_date;
+        private String title;
+        private String url;
+        private String color_code;
+        private String memo;
+        private String message;
+    }
+
+    @Getter
+    @Builder
+    public static class DeleteResponse {
+        private String message;
+    }
 }
