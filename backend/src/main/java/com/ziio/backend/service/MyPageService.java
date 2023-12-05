@@ -123,6 +123,19 @@ public class MyPageService {
         return addedMyPageResponse;
     }
 
+    // 마이페이지에서 개인 일정을 삭제하는 메소드
+    public MyPageDTO.DeleteResponse removeMyPage(Long myPageId, String userEmail) {
+
+        // 마이페이지에서 삭제
+        MyPage myPage = myPageRepository.findByUserEmailAndMyPageId(userEmail, myPageId);
+        myPageRepository.delete(myPage);
+
+        // 응답 객체 생성 및 반환
+        return MyPageDTO.DeleteResponse.builder()
+                .message("successfully removed.")
+                .build();
+    }
+
     // 마이페이지에서 특정 공지사항을 삭제하는 메소드
     public void removeNoticeFromMyPage(Long noticeId, String categoryId, String userEmail) {
         if (noticeId == null || categoryId == null) {

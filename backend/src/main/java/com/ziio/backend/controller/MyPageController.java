@@ -67,6 +67,26 @@ public class MyPageController {
         return new ResponseEntity<>(myPageService.addMyPage(request, userEmail), HttpStatus.CREATED);
     }
 
+    // 사용자의 개인 일정을 삭제하는 메소드
+    @DeleteMapping
+    public ResponseEntity<MyPageDTO.DeleteResponse> removeMyPage(
+        @RequestHeader("Authorization") String authorizationHeader,
+        @RequestBody MyPageDTO.Request request) {
+
+        // 토큰에서 유저 이메일 가져오기
+        String jwtToken = jwtUtil.getJwtTokenFromHeader(authorizationHeader);
+        String userEmail = jwtUtil.getEmailFromToken(jwtToken);
+
+        // 마이페이지 id는 필수값
+        if (request.getMy_page_id() == null) {
+            throw new IllegalArgumentException("MyPage ID cannot be null.");
+        }
+        Long myPageId = request.getMy_page_id();
+
+        // 삭제 및 응답 객체 반환
+        return new ResponseEntity<>(myPageService.removeMyPage(myPageId, userEmail), HttpStatus.OK);
+    }
+
     // 사용자의 요청에 따라 일정을 수정하는 메소드
     @PatchMapping
     public ResponseEntity<MyPageDTO.PostResponse> updateMyPage(
