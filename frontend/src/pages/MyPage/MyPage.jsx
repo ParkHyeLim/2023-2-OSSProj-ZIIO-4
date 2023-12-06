@@ -62,7 +62,7 @@ const MyPage = () => {
   // ListedEvents를 업데이트하는 함수
   function updateListedEvents(sortedEvents) {
     setListedEvents(
-      sortedEvents.filter(event => new Date(event.end) >= new Date() || event.end == null || event.start == null),
+      sortedEvents?.filter(event => new Date(event.end) >= new Date() || event.end == null || event.start == null),
     );
   }
 
