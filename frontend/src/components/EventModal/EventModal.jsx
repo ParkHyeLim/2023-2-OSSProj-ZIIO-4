@@ -6,10 +6,15 @@ import { ConfigProvider, DatePicker } from 'antd';
 import { colors } from '../../constants/eventColors';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import { useMutation, useQueryClient } from 'react-query';
+import { deleteMyEvent } from '../../api/mypageAPI';
 
 const { RangePicker } = DatePicker;
 
-export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDelteActive }) => {
+// prevData: 1 depth
+export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive, clearEvent }) => {
+  const queryClient = useQueryClient();
+  const mypageId = prevData ? prevData.my_page_id : null;
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
   const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
@@ -17,6 +22,25 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
   const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
   const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
+  const { mutate: deleteMutate } = useMutation(eventId => deleteMyEvent(eventId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('events');
+    },
+  });
+  // const location = window.location.pathname;
+
+  const deleteEvent = mypageId => {
+    // 삭제할건지 물어보기
+    if (!window.confirm('일정을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    deleteMutate(mypageId);
+    closeModal();
+    clearEvent();
+
+    alert('삭제되었습니다.');
+  };
 
   const handleMouseDownInside = () => {
     setIsMouseDownInside(true);
@@ -42,20 +66,22 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
       return;
     }
 
-    if ((start !== '' || end !== '') && color === '') {
+    if ((start !== '' || end !== '') && color == null) {
       alert('색상을 선택해주세요');
       return;
     }
 
+    // 풀캘린더 전용 데이터 포맷으로 변환
     saveEvent({
       id: eventId,
       title,
-      start: start,
-      end: end,
+      start,
+      end,
       url,
       backgroundColor: color,
       extendedProps: {
         memo,
+        my_page_id: mypageId,
       },
     });
   };
@@ -98,21 +124,23 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               className={styles.input}
             />
           </div>
-          <div>
-            <label className={styles.label}>URL</label>
-            <input
-              type="text"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              placeholder="URL을 입력해주세요"
-              className={styles.input}
-            />
-          </div>
+          {url && url !== 'null' && (
+            <div>
+              <label className={styles.label}>URL</label>
+              <input
+                type="text"
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                placeholder="URL을 입력해주세요"
+                className={styles.input}
+              />
+            </div>
+          )}
           <div>
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
               <RangePicker
-                defaultValue={prevData ? [dayjs(start), dayjs(end)] : null}
+                defaultValue={prevData ? [dayjs(start), dayjs(end)] : [dayjs(new Date()), dayjs(new Date())]}
                 onChange={dates => {
                   console.log(dates);
                   if (dates.length === 2) {
@@ -120,9 +148,9 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
                     const startDate = new Date(dates[0].$d);
                     startDate.setHours(0, 0, 0, 0);
 
-                    // 두 번째 날짜의 시, 분, 초를 0으로 설정
+                    // 두 번째 날짜의 시, 분, 초를 23:59:59.999로 설정
                     const endDate = new Date(dates[1].$d);
-                    endDate.setHours(0, 0, 0, 0);
+                    endDate.setHours(23, 59, 59, 999);
 
                     setStart(startDate);
                     setEnd(endDate);
@@ -150,8 +178,8 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
             <button type="submit" className={styles.button}>
               저장
             </button>
-            {isDelteActive && (
-              <button type="button" className={styles.removeButton}>
+            {isDeleteActive && (
+              <button type="button" className={styles.removeButton} onClick={() => deleteEvent(mypageId)}>
                 삭제
               </button>
             )}

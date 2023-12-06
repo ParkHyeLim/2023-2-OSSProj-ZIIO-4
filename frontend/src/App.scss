@@ -44,6 +44,21 @@
   padding: 0;
   margin: 0;
   scroll-behavior: smooth;
+
+  // WebKit 기반 브라우저를 위한 스크롤바 스타일
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    width: 10px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--gray-200); // gray-200 색상
+    border-radius: 10px;
+  }
 }
 
 html {
