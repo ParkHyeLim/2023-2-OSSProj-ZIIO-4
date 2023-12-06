@@ -35,6 +35,7 @@ const SchoolCalendar = () => {
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]);
+  const [eventPostId, setEventPostId] = useState('');
   const [eventId, setEventId] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const [eventDateStart, setEventDateStart] = useState('');
@@ -160,6 +161,7 @@ const SchoolCalendar = () => {
           modalTitle={'내 일정으로 추가'}
           eventId={eventId}
           prevData={{
+            post: eventPostId,
             title: eventTitle,
             start: eventDateStart,
             end: eventDateEnd,

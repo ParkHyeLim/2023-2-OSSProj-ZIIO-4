@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
 
 import styles from './MainNotice.module.scss';
 import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
+import loading from '../../assets/images/Loding.gif'
 import sampleCategories, { categoryList } from '../../utils/category';
 import { FaStar } from 'react-icons/fa';
 import UserCategory from '../../components/UserCategory/UserCategory';
@@ -54,28 +56,30 @@ function MainNotice() {
 
   useEffect(() => {
     if (noticeList.length === 0 && data) {
-      console.log(data);
+      setBookmarkCategories([]);
       setCategoryIdList(data.categories);
       setScrapsList(data.scraps);
       let formattedNotices;
       if (data.scraps) formattedNotices = noticeFormat(data.notices, data.scraps);
       else formattedNotices = noticeFormat(data.notices);
       setNoticeList(formattedNotices);
-      if (data.bookmarks) {
+      if (data.bookmarks && bookmarkCategories.length === 0) {
         const getBookmarkData = data.bookmarks;
-        getBookmarkData.map((item) => {
-          const selectedCategory = (categoryList.filter((category) => category.name === item.name)[0]?.categoryList) || [];
-          const result = {
-            name: item.category_name,
-            url: {
-              category1: selectedCategory[0],
-              category2: selectedCategory[1],
-              category3: selectedCategory[2],
-            },
-            id: item.category_id
+        getBookmarkData.forEach((item) => {
+          const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === item.category_id);
+          if (!isDuplicate) {
+            const selectedCategory = (categoryList.filter((category) => category.name === item.category_name)[0]?.categoryList) || [];
+            const result = {
+              name: item.category_name,
+              url: {
+                category1: selectedCategory[0],
+                category2: selectedCategory[1],
+                category3: selectedCategory[2],
+              },
+              id: item.category_id
+            }
+            setBookmarkCategories((prev) => [...prev, result]);
           }
-          const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === result.id);
-          if (!isDuplicate) setBookmarkCategories((prev) => [...prev, result])
         })
       }
     }
@@ -139,7 +143,6 @@ function MainNotice() {
       else searchResult = await getSearchNotice(nowCategoryId, searchQuery);
       if (searchResult !== "error") {
         const formattedNotices = noticeFormat(searchResult, scrapsList);
-        console.log("컴온", formattedNotices);
         setNoticeList(formattedNotices);
       }
       else alert("검색을 다시 시도해주세요.");
@@ -255,23 +258,22 @@ function MainNotice() {
   // 스크랩 반영
   const reloadScraps = async () => {
     const scrapsData = await getScraps();
-    if (scrapsData) { setScrapsList(scrapsData); setIsScraps(!isScraps)}
+    if (scrapsData) { setScrapsList(scrapsData); setIsScraps(!isScraps) }
   }
 
 
   // 일정 등록
   const saveEvent = async (eventData) => {
-    console.log("작성", eventData);
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
-    }
+    } 
 
     const resultData = {
       notice_id: eventData.id,
-      start_date: eventData.start,
-      end_date: eventData.end,
+      start_date: dayjs(eventData.start).format('YYYY.MM.DD'),
+      end_date: dayjs(eventData.end).format('YYYY.MM.DD'),
       category_id: selectedCategory,
       title: eventData.title,
       memo: eventData.extendedProps.memo === undefined ? null : eventData.extendedProps.memo,
@@ -281,7 +283,7 @@ function MainNotice() {
 
     const EventsData = addEventsScraps(resultData);
     try {
-      const result = await EventsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      const result = await EventsData;
       if (result === "success") {
         const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
         if (response) navigate('/myPage')
@@ -347,7 +349,10 @@ function MainNotice() {
 
         <div className={styles.itemList}>
           {isLoading ?
-            <div>공지사항을 불러오는 중입니다.</div>
+            <div className={styles.loadingContainer} >
+              <img className={styles.loadingImage} src={loading} alt="공지사항을 불러오는 중입니다" />
+              <div className={styles.loadingText} >공지사항을 불러오는 중입니다.</div>
+            </div>
             :
             <Pagging data={noticeList} noticeCategory={categoryIdList} changeClipStarNotice={item => changeClipStarNotice(item)} />
           }
@@ -361,7 +366,7 @@ function MainNotice() {
           categoryId={selectedCategory}
           onModalClose={() => setIsOpen(!isOpen)}
           openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }}
-          onReloadScraps={(item) => reloadScraps(item)}
+          onReloadScraps={reloadScraps}
         />
       }
       {isOpenEventModal && <EventModal

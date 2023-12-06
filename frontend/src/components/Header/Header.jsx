@@ -21,6 +21,7 @@ export const Header = () => {
       if (result) {
         localStorage.removeItem('ziio-token');
         setIsLoggedin(false);
+        window.location.reload()
       }
     } else {
       setIsModalOpen(true);
