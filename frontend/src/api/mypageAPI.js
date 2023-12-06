@@ -46,3 +46,17 @@ export const updateMyEvent = async eventData => {
     console.error('Error updating event:', error);
   }
 };
+
+export const deleteMyEvent = async id => {
+  try {
+    const response = await instance.delete('/mypages', {
+      data: {
+        my_page_id: id,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting event:', error);
+  }
+};

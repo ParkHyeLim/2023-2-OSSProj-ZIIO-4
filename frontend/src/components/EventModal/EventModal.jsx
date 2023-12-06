@@ -6,11 +6,15 @@ import { ConfigProvider, DatePicker } from 'antd';
 import { colors } from '../../constants/eventColors';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import { useMutation, useQueryClient } from 'react-query';
+import { deleteMyEvent } from '../../api/mypageAPI';
 
 const { RangePicker } = DatePicker;
 
 // prevData: 1 depth
 export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive }) => {
+  const queryClient = useQueryClient();
+  const mypageId = prevData ? prevData.my_page_id : null;
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
   const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
@@ -18,7 +22,24 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
   const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
   const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
+  const { mutate: deleteMutate } = useMutation(eventId => deleteMyEvent(eventId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('events');
+    },
+  });
   // const location = window.location.pathname;
+
+  const deleteEvent = mypageId => {
+    // 삭제할건지 물어보기
+    if (!window.confirm('일정을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    deleteMutate(mypageId);
+    closeModal();
+
+    alert('삭제되었습니다.');
+  };
 
   const handleMouseDownInside = () => {
     setIsMouseDownInside(true);
@@ -59,7 +80,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
       backgroundColor: color,
       extendedProps: {
         memo,
-        my_page_id: prevData ? prevData.my_page_id : null,
+        my_page_id: mypageId,
       },
     });
   };
@@ -157,7 +178,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               저장
             </button>
             {isDeleteActive && (
-              <button type="button" className={styles.removeButton}>
+              <button type="button" className={styles.removeButton} onClick={() => deleteEvent(mypageId)}>
                 삭제
               </button>
             )}
