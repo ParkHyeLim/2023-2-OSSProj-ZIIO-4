@@ -264,7 +264,6 @@ function MainNotice() {
 
   // 일정 등록
   const saveEvent = async (eventData) => {
-    console.log("작성", eventData);
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
@@ -367,7 +366,7 @@ function MainNotice() {
           categoryId={selectedCategory}
           onModalClose={() => setIsOpen(!isOpen)}
           openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }}
-          onReloadScraps={(item) => reloadScraps(item)}
+          onReloadScraps={reloadScraps}
         />
       }
       {isOpenEventModal && <EventModal
