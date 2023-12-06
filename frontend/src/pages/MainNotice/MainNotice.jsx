@@ -1,115 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
 
 import styles from './MainNotice.module.scss';
 import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
+import loading from '../../assets/images/Loding.gif'
 import sampleCategories, { categoryList } from '../../utils/category';
 import { FaStar } from 'react-icons/fa';
-import instance from '../../api/instance';
 import UserCategory from '../../components/UserCategory/UserCategory';
 import Pagging from '../../components/Pagging/Pagging';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router-dom';
-
-const fetchProjects = async (type, value1, value2) => {
-  let response;
-  switch (type) {
-    case "search":
-      response = await instance.get(`/notices/search?category_id=${value1}&keyword=${value2 !== "" ? value2 : ""}`);
-      return response.data;
-    case "addBookmark":
-      response = await instance.post(`/bookmarks`, { "category_id": value1 });
-      return response.data;
-    case "deleteBookmark":
-      response = await instance.delete(`/bookmarks`, { data: { "category_id": value1 } });
-      return response.data;
-    case "getScraps":
-      response = await instance.get('/scraps');
-      return response.data;
-    case "addEventsScraps":
-      console.log(value1);
-      response = await instance.post(`/scraps`, value1);
-      return response.data;
-    case "deleteScraps":
-      response = await instance.delete(`/scraps`, value1);
-      return response.data;
-    default:
-      response = await instance.get('/notices');
-      const isToken = localStorage.getItem("ziio-token");
-      if (isToken) {
-        const getBookmarkList = await instance.get('/bookmarks');
-        const getScrapsList = await instance.get('/scraps');
-        return { ...response.data, bookmarks: getBookmarkList.data, scraps: getScrapsList.data };
-      }
-      return response.data;
-  }
-};
-
-const addBookmark = async (id) => {
-  const bookmarkData = fetchProjects("addBookmark", id, "");
-  try {
-    const result = await bookmarkData;
-    if (result.message === "successfully created.") return result;
-  } catch (error) {
-    if (error.response.data === "This category is already added to the Bookmark.") return "fail";
-  }
-}
-
-const deleteBookmark = async (id) => {
-  const bookmarkData = fetchProjects("deleteBookmark", id, "");
-  try {
-    const result = await bookmarkData;
-    if (result.message === "successfully removed.") return id;
-    console.log(result);
-  } catch (error) {
-    if (error.response.data === "This category does not exist in the Bookmark.") return "fail";
-  }
-}
-
-const getScraps = async () => {
-  const scrapsData = fetchProjects("getScraps", "", "");
-  try {
-    const result = await scrapsData;
-    if (result) return result;
-  } catch (error) {
-    if (error.response.data === "Notice ID and Category ID cannot be null") return "fail";
-  }
-}
-
-const deleteScraps = async (item) => {
-  const scrapsData = fetchProjects("deleteScraps", item, "");
-  try {
-    const result = await scrapsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-    if (result.message === "successfully remove") return "success";
-    else console.log(result);
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-}
-
-const addEventsScraps = async (item) => {
-  const scrapsData = fetchProjects("addEventsScraps", item, "");
-  try {
-    const result = await scrapsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-    if (result.message === "successfully remove") return "success";
-    else console.log(result);
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-}
-
-// const clipSample = [{ notice_id: "123", category_id: "100100000" }];
+import { addBookmark, addEventsScraps, deleteBookmark, deleteScraps, getNotice, getScraps, getSearchNotice } from '../../api/userAPI';
 
 function MainNotice() {
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
   const [isLogin, setIsLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isScraps, setIsScraps] = useState(false);
   const [isOpenEventModal, setIsOpenEventModal] = useState(false);
 
   const [category1, setCategory1] = useState('메인');
@@ -123,12 +35,13 @@ function MainNotice() {
   // 검색 기록 or 즐겨찾기
   const [searchCategories, setSearchCategories] = useState([]); // 검색 기록
   const [bookmarkCategories, setBookmarkCategories] = useState([]); // 즐겨찾기
+  const [scrapsList, setScrapsList] = useState([]); // 스크랩
 
   // 공지 스크랩
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
   const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index  
 
-  const { data } = useQuery('notices', () => fetchProjects("", "", ""));
+  const { isLoading, data } = useQuery('notices', getNotice);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -142,46 +55,47 @@ function MainNotice() {
   }, []);
 
   useEffect(() => {
-    if (data) {
-      console.log(data);
+    if (noticeList.length === 0 && data) {
+      setBookmarkCategories([]);
       setCategoryIdList(data.categories);
+      setScrapsList(data.scraps);
       let formattedNotices;
       if (data.scraps) formattedNotices = noticeFormat(data.notices, data.scraps);
       else formattedNotices = noticeFormat(data.notices);
       setNoticeList(formattedNotices);
-      if (data.bookmarks) {
+      if (data.bookmarks && bookmarkCategories.length === 0) {
         const getBookmarkData = data.bookmarks;
-        getBookmarkData.map((item) => {
-          const selectedCategory = (categoryList.filter((category) => category.name === item.name)[0]?.categoryList) || [];
-          const result = {
-            name: item.category_name,
-            url: {
-              category1: selectedCategory[0],
-              category2: selectedCategory[1],
-              category3: selectedCategory[2],
-            },
-            id: item.category_id
+        getBookmarkData.forEach((item) => {
+          const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === item.category_id);
+          if (!isDuplicate) {
+            const selectedCategory = (categoryList.filter((category) => category.name === item.category_name)[0]?.categoryList) || [];
+            const result = {
+              name: item.category_name,
+              url: {
+                category1: selectedCategory[0],
+                category2: selectedCategory[1],
+                category3: selectedCategory[2],
+              },
+              id: item.category_id
+            }
+            setBookmarkCategories((prev) => [...prev, result]);
           }
-          const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === result.id);
-          if (!isDuplicate) setBookmarkCategories((prev) => [...prev, result])
         })
       }
     }
   }, [data]);
 
   useEffect(() => {
-    if (!isOpen) {
-      const scrapsData = getScraps();
-      const formattedNotices = noticeFormat(noticeList, scrapsData);
-      setNoticeList(formattedNotices);
+    if (isScraps) {
+      handleSearch();
     }
-  }, [isOpen]);
+  }, [isScraps]);
 
   const noticeFormat = (data, scraps) => {
     const newArray = data;
     newArray.map((item) => {
       const words = item.title.split(' ');
-      if (words.length > 0 && words[0].startsWith("공지")) {
+      if (words.length > 0 && item.notice_id === null) {
         const restOfWords = words.slice(1);
         item.title = restOfWords.join(' ');
         item.fixed = item.notice_id === null ? true : false;
@@ -222,18 +136,19 @@ function MainNotice() {
 
   // 사용자 검색 기능
   const handleSearch = async () => {
+    let searchResult;
     const nowCategoryId = categotyIdSearch(category1, category2, category3);
-    let SearchData;
-    if (searchQuery === "") SearchData = fetchProjects("search", nowCategoryId, "");
-    else SearchData = fetchProjects("search", nowCategoryId, searchQuery)
     try {
-      const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-      const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
-      setNoticeList(formattedNotices);
+      if (searchQuery === "") searchResult = await getSearchNotice(nowCategoryId, "");
+      else searchResult = await getSearchNotice(nowCategoryId, searchQuery);
+      if (searchResult !== "error") {
+        const formattedNotices = noticeFormat(searchResult, scrapsList);
+        setNoticeList(formattedNotices);
+      }
+      else alert("검색을 다시 시도해주세요.");
     } catch (error) {
-      console.error('Error:', error);
-    }
-    if (!isLogin) {
+      alert("검색 중 오류가 발생했습니다.");
+    } finally {
       addSearchList();
     }
   };
@@ -293,7 +208,11 @@ function MainNotice() {
             },
             id: result.category_id,
           };
-          setBookmarkCategories(prev => [...prev, newBookmark]);
+          setBookmarkCategories(prev => {
+            if (!prev.some(category => category.id === newBookmark.id)) return [...prev, newBookmark];
+            return prev;
+          });
+
         }
       }
     }
@@ -307,23 +226,20 @@ function MainNotice() {
     else {
       const newArray = bookmarkCategories.filter((item) => item.id !== result)
       setBookmarkCategories(newArray);
-      // get하기
     };
   }
 
   // 기록에서 검색
   const ListSearch = async (value) => {
-    const SearchData = fetchProjects("search", value.id, "");
-    try {
-      const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-      const formattedNotices = noticeFormat(result)// 이제 result에 PromiseResult가 들어 있습니다.
+    const SearchData = await getSearchNotice(value.id, "");
+    if (SearchData === "error") alert("검색을 다시 시도해주세요.");
+    else {
+      const formattedNotices = noticeFormat(SearchData);
       setNoticeList(formattedNotices);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-    setCategory1(value.url.category1);
-    setCategory2(value.url.category2);
-    setCategory3(value.url.category3);
+      setCategory1(value.url.category1);
+      setCategory2(value.url.category2);
+      setCategory3(value.url.category3);
+    };
   }
 
   // 스크랩
@@ -333,21 +249,32 @@ function MainNotice() {
       if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value); setSelectedCategory(item.value.category_id) }
       else {
         const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
-        if (result === "success") alert("스크랩이 취소되었습니다")
+        if (result === "success") { alert("스크랩이 취소되었습니다"); reloadScraps(); }
+        else if (result === "fail") alert("삭제할 해당 스크랩이 없습니다");
       }
     }
   }
 
+  // 스크랩 반영
+  const reloadScraps = async () => {
+    const scrapsData = await getScraps();
+    if (scrapsData) { setScrapsList(scrapsData); setIsScraps(!isScraps) }
+  }
+
+
   // 일정 등록
   const saveEvent = async (eventData) => {
+    console.log("작성", eventData);
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
-    }
+    } 
 
     const resultData = {
       notice_id: eventData.id,
+      start_date: dayjs(eventData.start).format('YYYY.MM.DD'),
+      end_date: dayjs(eventData.end).format('YYYY.MM.DD'),
       category_id: selectedCategory,
       title: eventData.title,
       memo: eventData.extendedProps.memo === undefined ? null : eventData.extendedProps.memo,
@@ -357,14 +284,16 @@ function MainNotice() {
 
     const EventsData = addEventsScraps(resultData);
     try {
-      const result = await EventsData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
+      const result = await EventsData;
       if (result === "success") {
         const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
         if (response) navigate('/myPage')
+        else reloadScraps();
       } else if (result === "fail") alert("잘못된 데이터 형태입니다. 다시 스크랩을 시도해주세요.");
     } catch (error) {
       console.error('Error:', error);
     }
+    setIsOpenEventModal(!isOpenEventModal);
   };
 
   return (
@@ -420,7 +349,14 @@ function MainNotice() {
         </div>
 
         <div className={styles.itemList}>
-          <Pagging data={noticeList} noticeCategory={categoryIdList} changeClipStarNotice={item => changeClipStarNotice(item)} />
+          {isLoading ?
+            <div className={styles.loadingContainer} >
+              <img className={styles.loadingImage} src={loading} alt="공지사항을 불러오는 중입니다" />
+              <div className={styles.loadingText} >공지사항을 불러오는 중입니다.</div>
+            </div>
+            :
+            <Pagging data={noticeList} noticeCategory={categoryIdList} changeClipStarNotice={item => changeClipStarNotice(item)} />
+          }
         </div>
       </div>
 
@@ -430,7 +366,9 @@ function MainNotice() {
           noticeId={selectedNotice.notice_id}
           categoryId={selectedCategory}
           onModalClose={() => setIsOpen(!isOpen)}
-          openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }} />
+          openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }}
+          onReloadScraps={(item) => reloadScraps(item)}
+        />
       }
       {isOpenEventModal && <EventModal
         modalTitle={'내 일정으로 추가'}
