@@ -88,6 +88,7 @@ const EventDetail = ({ event, clearEvent }) => {
             end: event.end ? event.end : new Date(Date.now()),
           }}
           isDeleteActive={true}
+          clearEvent={clearEvent}
         />
       )}
     </div>

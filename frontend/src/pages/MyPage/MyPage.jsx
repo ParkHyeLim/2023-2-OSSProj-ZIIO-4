@@ -22,7 +22,7 @@ const MyPage = () => {
   const isLoggedin = useRecoilValue(loginState);
   const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(loginModalState);
   const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
-  const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '' }); // 선택된 이벤트 정보를 담는 객체
+  const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' }); // 선택된 이벤트 정보를 담는 객체
   const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
   const queryClient = useQueryClient();
 
@@ -45,15 +45,14 @@ const MyPage = () => {
   });
   const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
     onSuccess: () => {
-      setEvent({});
+      clearEvent();
       queryClient.invalidateQueries('events');
     },
   });
 
-  // 현재 eventDetail을 지우는 함수
-  const clearEvent = () => {
-    setEvent({});
-  };
+  function clearEvent() {
+    setEvent({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' });
+  }
 
   // 일정 추가 버튼을 눌렀을 때 일정 추가 모달을 보여주는 함수
   const handleAddEventClick = () => {
@@ -76,17 +75,8 @@ const MyPage = () => {
       eventData.end = endDate;
     }
 
-    // Add the event to FullCalendar
-    // const updatedEvents = [...events, eventData];
-    // setEvents(updatedEvents);
     addEvent(eventData);
-
-    // // Use updateListedEvents for updating listedEvents
-    // updateListedEvents(sortEventsByDate(updatedEvents));
-
     setShowModal(false);
-
-    // Add the event to Google Calendar
     createGoogleEvent(eventData);
   };
 
@@ -155,9 +145,7 @@ const MyPage = () => {
 
   return (
     <div className={styles.container}>
-      {showModal && (
-        <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} clearEvent={clearEvent} />
-      )}
+      {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
       <div className={styles.leftWrapper}>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
         <EventDetail event={event} clearEvent={clearEvent} />
