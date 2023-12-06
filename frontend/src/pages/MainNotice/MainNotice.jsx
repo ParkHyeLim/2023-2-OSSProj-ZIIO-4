@@ -92,7 +92,7 @@ function MainNotice() {
   }, [isScraps]);
 
   const noticeFormat = (data, scraps) => {
-    const newArray = data;
+    const newArray = data || [];
     newArray.map((item) => {
       const words = item.title.split(' ');
       if (words.length > 0 && item.notice_id === null) {
