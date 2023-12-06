@@ -12,44 +12,50 @@ export const getUser = async () => {
 };
 
 export const getNotice = async () => {
-  const response = await instance.get('/notices');
-  const isToken = localStorage.getItem("ziio-token");
-  if (isToken) {
-    const getBookmarkList = await instance.get('/bookmarks');
-    const getScrapsList = await instance.get('/scraps');
-    return { ...response.data, bookmarks: getBookmarkList.data, scraps: getScrapsList.data };
+  try {
+    const response = await instance.get('/notices');
+    const isToken = localStorage.getItem('ziio-token');
+    if (isToken) {
+      const getBookmarkList = await instance.get('/bookmarks');
+      // const getScrapsList = await instance.get('/scraps');
+      return { ...response.data, bookmarks: getBookmarkList.data };
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
   }
-  return response.data;
 };
 
 export const getSearchNotice = async (id, keyword) => {
   try {
-    const { data } = await instance.get(`/notices/search?category_id=${id}&keyword=${keyword !== "" ? keyword : ""}`);
+    const { data } = await instance.get(`/notices/search?category_id=${id}&keyword=${keyword !== '' ? keyword : ''}`);
     const result = await data;
     if (result !== undefined) return result;
-  } catch (error) { return "error"; }
-}
-
-export const addBookmark = async (id) => {
-  try {
-    const { data } = await instance.post(`/bookmarks`, { "category_id": id });
-    const result = await data;
-    if (result.message === "successfully created.") return result;
   } catch (error) {
-    if (error.response.data === "This category is already added to the Bookmark.") return "fail";
+    return 'error';
   }
-}
+};
 
-export const deleteBookmark = async (id) => {
-  const { data } = await instance.delete(`/bookmarks`, { data: { "category_id": id } });
+export const addBookmark = async id => {
+  try {
+    const { data } = await instance.post(`/bookmarks`, { category_id: id });
+    const result = await data;
+    if (result.message === 'successfully created.') return result;
+  } catch (error) {
+    if (error.response.data === 'This category is already added to the Bookmark.') return 'fail';
+  }
+};
+
+export const deleteBookmark = async id => {
+  const { data } = await instance.delete(`/bookmarks`, { data: { category_id: id } });
   try {
     const result = await data;
-    if (result.message === "successfully removed.") return id;
+    if (result.message === 'successfully removed.') return id;
     console.log(result);
   } catch (error) {
-    if (error.response.data === "This category does not exist in the Bookmark.") return "fail";
+    if (error.response.data === 'This category does not exist in the Bookmark.') return 'fail';
   }
-}
+};
 
 export const getScraps = async () => {
   const { data } = await instance.get('/scraps');
@@ -57,38 +63,38 @@ export const getScraps = async () => {
     const result = await data;
     if (result) return result;
   } catch (error) {
-    return "error";
+    return 'error';
   }
-}
+};
 
-export const addScraps = async (item) => {
+export const addScraps = async item => {
   try {
     const { data } = await instance.post('/scraps', item);
     const result = await data;
-    if (result) return "success";
+    if (result) return 'success';
   } catch (error) {
-    if (error.response.status === 409) alert("이미 스크랩한 공지사항입니다.");;
+    if (error.response.status === 409) alert('이미 스크랩한 공지사항입니다.');
   }
-}
+};
 
-export const deleteScraps = async (item) => {
+export const deleteScraps = async item => {
   try {
     const { data } = await instance.delete(`/scraps`, { data: item });
     const result = await data;
-    if (result.message === "successfully removed.") return "success";
+    if (result.message === 'successfully removed.') return 'success';
     else console.log(result);
   } catch (error) {
-    if (error.response.status === 400) return "fail";
+    if (error.response.status === 400) return 'fail';
   }
-}
+};
 
-export const addEventsScraps = async (item) => {
+export const addEventsScraps = async item => {
   const { data } = await instance.post(`/scraps`, item);
   try {
     const result = await data;
-    if (result.message === "successfully remove") return "success";
+    if (result.message === 'successfully remove') return 'success';
     else console.log(result);
   } catch (error) {
-    return "error";
+    return 'error';
   }
-}
+};

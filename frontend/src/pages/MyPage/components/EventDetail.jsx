@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import styles from '../MyPage.module.scss';
 import classNames from 'classnames';
 import editIcon from '../../../assets/icons/edit.svg';
+import closeIcon from '../../../assets/icons/close.svg';
 import { formatDate } from '../../../utils/dateUtils';
 import { EventModal } from '../../../components';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateMyEvent } from '../../../api/mypageAPI';
+import { useMediaQuery } from 'react-responsive';
 
 const EventDetail = ({ event, clearEvent }) => {
+  const isMax1150px = useMediaQuery({ query: '(max-width: 1150px)' });
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false); // 일정 편집 모달의 열림/닫힘 상태
   const { mutate: updateEvent } = useMutation(event => updateMyEvent(event), {
@@ -31,16 +34,32 @@ const EventDetail = ({ event, clearEvent }) => {
 
   return (
     <div className={classNames(styles.eventWrapper, event.title === '' && styles.invisible)}>
-      <div className={styles.titleWrapper}>
-        <div
-          className={styles.eventColor}
-          style={{
-            backgroundColor:
-              event.color !== (null || 'null') && (event.color || event.backgroundColor || event.color_code),
-          }}
-        />
-        <div className={styles.title}>{event.title}</div>
-      </div>
+      {isMax1150px ? (
+        <div className={styles.titleWrapper}>
+          <div
+            className={styles.eventColor}
+            style={{
+              backgroundColor:
+                event.color !== (null || 'null') && (event.color || event.backgroundColor || event.color_code),
+            }}
+          />
+          <div className={styles.title}>{event.title}</div>
+          <button className={styles.closeButton} onClick={clearEvent}>
+            <img src={closeIcon} alt="close" onClick={clearEvent} />
+          </button>
+        </div>
+      ) : (
+        <div className={styles.titleWrapper}>
+          <div
+            className={styles.eventColor}
+            style={{
+              backgroundColor:
+                event.color !== (null || 'null') && (event.color || event.backgroundColor || event.color_code),
+            }}
+          />
+          <div className={styles.title}>{event.title}</div>
+        </div>
+      )}
       <div className={styles.row}>
         <div className={styles.subtitleWrapper}>
           <div className={styles.subtitle}>기간</div>

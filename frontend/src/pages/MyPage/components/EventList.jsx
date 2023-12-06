@@ -5,7 +5,7 @@ import { calculateDDay } from '../../../utils/dateUtils';
 const EventList = ({ listedEvents, handleEventClick }) => {
   return (
     <div className={styles.eventList}>
-      {listedEvents.map(event => (
+      {listedEvents?.map(event => (
         <div key={event.defId} className={styles.eventListRow} onClick={() => handleEventClick(event)}>
           <div className={styles.eventColor} style={{ backgroundColor: event.color }}></div>
           <div className={styles.eventText}>{event.title}</div>
