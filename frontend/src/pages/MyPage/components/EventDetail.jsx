@@ -34,7 +34,10 @@ const EventDetail = ({ event, clearEvent }) => {
       <div className={styles.titleWrapper}>
         <div
           className={styles.eventColor}
-          style={{ backgroundColor: event.color || event.backgroundColor || event.color_code }}
+          style={{
+            backgroundColor:
+              event.color !== (null || 'null') && (event.color || event.backgroundColor || event.color_code),
+          }}
         />
         <div className={styles.title}>{event.title}</div>
       </div>

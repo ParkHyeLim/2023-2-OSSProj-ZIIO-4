@@ -169,6 +169,7 @@ const MyPage = () => {
         titleFormat={({ date }) => `${date.year}. ${date.month + 1}`}
         editable={false}
         // selectable={true}
+        eventColor={'#e5e7eb'}
         displayEventTime={false}
         eventClick={clickInfo => handleEventClick(clickInfo.event, clickInfo.jsEvent)}
         nextDayThreshold={'00:00:00'}

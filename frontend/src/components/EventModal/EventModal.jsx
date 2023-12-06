@@ -66,7 +66,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
       return;
     }
 
-    if ((start !== '' || end !== '') && color === '') {
+    if ((start !== '' || end !== '') && color == null) {
       alert('색상을 선택해주세요');
       return;
     }
