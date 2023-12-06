@@ -124,7 +124,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               className={styles.input}
             />
           </div>
-          {url && (
+          {url && url !== 'null' && (
             <div>
               <label className={styles.label}>URL</label>
               <input
