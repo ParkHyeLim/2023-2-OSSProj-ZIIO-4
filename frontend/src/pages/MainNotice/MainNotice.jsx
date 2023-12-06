@@ -149,6 +149,7 @@ function MainNotice() {
       }
       else alert("검색을 다시 시도해주세요.");
     } catch (error) {
+      console.log(error);
       alert("검색 중 오류가 발생했습니다.");
     } finally {
       addSearchList();
