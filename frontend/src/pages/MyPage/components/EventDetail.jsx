@@ -7,7 +7,7 @@ import { EventModal } from '../../../components';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateMyEvent } from '../../../api/mypageAPI';
 
-const EventDetail = ({ event }) => {
+const EventDetail = ({ event, clearEvent }) => {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false); // 일정 편집 모달의 열림/닫힘 상태
   const { mutate: updateEvent } = useMutation(event => updateMyEvent(event), {
@@ -25,6 +25,7 @@ const EventDetail = ({ event }) => {
     }
 
     updateEvent(eventData);
+    clearEvent();
     setIsModalOpen(false);
   };
 

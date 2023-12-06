@@ -12,7 +12,7 @@ import { deleteMyEvent } from '../../api/mypageAPI';
 const { RangePicker } = DatePicker;
 
 // prevData: 1 depth
-export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive }) => {
+export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive, clearEvent }) => {
   const queryClient = useQueryClient();
   const mypageId = prevData ? prevData.my_page_id : null;
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
@@ -37,6 +37,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
 
     deleteMutate(mypageId);
     closeModal();
+    clearEvent();
 
     alert('삭제되었습니다.');
   };

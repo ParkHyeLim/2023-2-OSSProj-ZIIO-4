@@ -50,6 +50,11 @@ const MyPage = () => {
     },
   });
 
+  // 현재 eventDetail을 지우는 함수
+  const clearEvent = () => {
+    setEvent({});
+  };
+
   // 일정 추가 버튼을 눌렀을 때 일정 추가 모달을 보여주는 함수
   const handleAddEventClick = () => {
     setShowModal(true);
@@ -150,10 +155,12 @@ const MyPage = () => {
 
   return (
     <div className={styles.container}>
-      {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
+      {showModal && (
+        <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} clearEvent={clearEvent} />
+      )}
       <div className={styles.leftWrapper}>
         <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
-        <EventDetail event={event} />
+        <EventDetail event={event} clearEvent={clearEvent} />
       </div>
       <FullCalendar
         ref={calendarRef}
