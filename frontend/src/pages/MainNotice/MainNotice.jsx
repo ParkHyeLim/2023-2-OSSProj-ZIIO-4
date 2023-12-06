@@ -91,7 +91,7 @@ function MainNotice() {
     }
   }, [isScraps]);
 
-  const noticeFormat = (data, scraps) => {
+  const noticeFormat = (data, scraps) => {  
     const newArray = data || [];
     newArray.map((item) => {
       const words = item.title.split(' ');
@@ -124,12 +124,14 @@ function MainNotice() {
     let searchCategory = category3 || category2 || category1;
     if (searchCategory === "") {
       searchCategory = category2 || category1;
-      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
-      setSelectedCategory(result);
+      const result = Array.isArray(categoryIdList) && categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0
+  ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id
+  : [];setSelectedCategory(result);
       return result;
     } else {
-      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
-      setSelectedCategory(result);
+      const result = Array.isArray(categoryIdList) && categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0
+  ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id
+  : [];setSelectedCategory(result);
       return result;
     }
   }
