@@ -1,0 +1,131 @@
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2.4rem;
+  width: calc(100% - 2.4rem * 2);
+  height: calc(100vh - 2.4rem * 2 - 6.8rem);
+
+  * {
+    font-weight: 500;
+  }
+
+  .userContainer {
+    width: 20%;
+    height: 100%;
+    border-radius: 15px;
+    border: 1px solid var(--gray-200);
+    padding: 2.2rem 2.6rem;
+
+    .text1 {
+      // margin: 1.5rem 0 0 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: 1.7rem;
+    }
+  }
+
+  .noticeContainer {
+    width: 80%;
+    height: 100%;
+    border-radius: 15px;
+    border: 1px solid var(--gray-200);
+
+    .fillterContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 3rem;
+
+      input {
+        margin-right: 2rem;
+        padding: 0 0 0 0.5rem;
+        width: 15.4rem;
+        height: 3.5rem;
+        border-radius: 7px;
+        border: 1px solid var(--gray-300);
+        font-family: var(--font-family);
+        padding: 0 1rem;
+      }
+
+      .searchButton {
+        width: 5.6rem;
+        height: 3.5rem;
+        margin-right: 1.6rem;
+        padding: 0.7rem 1rem;
+        background-color: var(--orange);
+        border-radius: 7px;
+        font-size: 1.3rem;
+        font-family: var(--font-family);
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      .bookmarkButton {
+        display: flex;
+        align-items: center;
+        padding: 0.7rem 1rem;
+        background-color: #ffffff;
+        border-radius: 7px;
+        border: 1px solid var(--gray-300);
+        cursor: pointer;
+
+        .star {
+          margin-right: 0.5rem;
+          color: #fcd34d;
+        }
+
+        div {
+          font-size: 1.3rem;
+          font-family: var(--font-family);
+          color: var(--gray-700);
+          font-weight: 500;
+        }
+      }
+    }
+
+    .itemList {
+      width: 98%;
+      margin: 0 2.5rem 0 1rem;
+    }
+  }
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  position: absolute;
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+  text-align: center;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+
+  .loadingImage {
+    width: 5rem;
+  }
+
+  .loadingText {
+    font-size: 1.5rem;
+  }
+}

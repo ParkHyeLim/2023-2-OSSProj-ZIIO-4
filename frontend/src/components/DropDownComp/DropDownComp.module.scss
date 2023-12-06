@@ -1,0 +1,17 @@
+.SelectionBox {
+  margin-right: 1.6rem;
+  width: 12.6rem;
+  height: 3.5rem;
+  border-radius: 7px;
+  border-color: var(--gray-300);
+  padding: 0 1rem;
+  cursor: pointer;
+}
+
+.SelectionText {
+  padding: auto;
+  font-size: 13px;
+  color: #374151;
+  font-family: var(--font-family);
+  font-weight: 500;
+}
