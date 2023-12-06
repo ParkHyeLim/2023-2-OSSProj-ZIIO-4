@@ -29,8 +29,8 @@ export default function AnnouncementItem({ item, category, itemNumber, onClipCli
           style={{ margin: "0.3rem 0 0 1.5rem" }}
           onClick={() => {
             const isToken = localStorage.getItem("ziio-token");
-            if (isToken) onClipClick({ type: "add", value: item })
-            else alert("로그인이 필요한 기능입니다")
+            if (isToken) onClipClick({ type: "add", value: item });
+            else alert("로그인이 필요한 기능입니다");
           }} />
       }
     </>
@@ -42,7 +42,6 @@ export default function AnnouncementItem({ item, category, itemNumber, onClipCli
       {item.fixed ? (
         <>
           <div className={styles.leftContainer}>
-            {bookmarkComponent}
             <div className={`${styles.announcementIdDefault} ${styles.announcementId} `}>
               공지
             </div>
