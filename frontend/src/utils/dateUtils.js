@@ -26,8 +26,8 @@ export const calculateDDay = eventDate => {
 export const formatDate = dateString => {
   if (!dateString) return '';
 
-  console.log('formatDate called with:', dateString); // Debugging line
-  console.log('formatDate called with:', typeof dateString); // Debugging line
+  // console.log('formatDate called with:', dateString); // Debugging line
+  // console.log('formatDate called with:', typeof dateString); // Debugging line
 
   const date = new Date(dateString);
 
@@ -41,31 +41,6 @@ export const formatDate = dateString => {
   }
   return `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
 };
-
-export function formatDateToYMD(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // JavaScript months are 0-indexed
-  const day = date.getDate();
-
-  // Ensure month and day are 2 digits (e.g., '02' instead of '2')
-  const monthFormatted = month.toString().padStart(2, '0');
-  const dayFormatted = day.toString().padStart(2, '0');
-
-  return `${year}.${monthFormatted}.${dayFormatted}`;
-}
-
-export function ymdToDate(ymd, end = false) {
-  const parts = ymd.split('.'); // Split the string into [year, month, day]
-  const year = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // JavaScript months are 0-indexed
-  const day = parseInt(parts[2], 10);
-
-  if (end) {
-    return new Date(year, month, day, 23, 59);
-  }
-
-  return new Date(year, month, day);
-}
 
 export const sortEventsByDate = eventData => {
   return eventData?.sort((a, b) => {

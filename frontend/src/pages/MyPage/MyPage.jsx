@@ -13,7 +13,8 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getUser } from '../../api/userAPI';
 import { sortEventsByDate, ymdToDate } from '../../utils/dateUtils';
-import { getMyEvents, updateMyEvent } from '../../api/mypageAPI';
+import { getMyEvents, addMyEvent, updateMyEvent } from '../../api/mypageAPI';
+import dayjs from 'dayjs';
 
 const MyPage = () => {
   const calendarRef = useRef(null);
@@ -29,11 +30,11 @@ const MyPage = () => {
   const { data: events } = useQuery(['events'], () => getMyEvents(), {
     select: data => {
       const newData = data.map(event => {
-        const { title, url, memo, color_code: color, start_date, end_date } = event;
-        const start = start_date ? ymdToDate(start_date) : null;
-        const end = end_date ? ymdToDate(end_date, true) : null;
+        const { my_page_id, title, url, memo, color_code: color, start_date, end_date } = event;
+        const start = start_date ? dayjs(start_date, 'YYYY-MM-DD').toDate() : null;
+        const end = end_date ? dayjs(end_date, 'YYYY-MM-DD').toDate() : null;
 
-        return { title, url, memo, color, start, end };
+        return { title, url, memo, color, start, end, my_page_id };
       });
       return newData;
     },
@@ -42,8 +43,9 @@ const MyPage = () => {
       updateListedEvents(sortedEvents);
     },
   });
-  const { mutate: updateEvent } = useMutation(event => updateMyEvent(event), {
+  const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
     onSuccess: () => {
+      setEvent({});
       queryClient.invalidateQueries('events');
     },
   });
@@ -61,7 +63,8 @@ const MyPage = () => {
   }
 
   // 일정 추가 모달에서 일정을 저장하는 함수
-  const saveEvent = eventData => {
+  // eventData는 풀캘린더 전용 데이터 포맷
+  const saveEvent = (eventData, type) => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // Set time to 23:59:59.999
@@ -69,12 +72,12 @@ const MyPage = () => {
     }
 
     // Add the event to FullCalendar
-    const updatedEvents = [...events, eventData];
+    // const updatedEvents = [...events, eventData];
     // setEvents(updatedEvents);
-    updateEvent(eventData);
+    addEvent(eventData);
 
-    // Use updateListedEvents for updating listedEvents
-    updateListedEvents(sortEventsByDate(updatedEvents));
+    // // Use updateListedEvents for updating listedEvents
+    // updateListedEvents(sortEventsByDate(updatedEvents));
 
     setShowModal(false);
 
@@ -115,21 +118,24 @@ const MyPage = () => {
 
   // 선택한 이벤트의 상세 정보를 보여주는 함수
   const handleEventClick = (eventData, jsEvent) => {
+    console.log(eventData);
     // jsEvent가 있으면 기본 동작 방지 (FullCalendar 이벤트에서만 적용)
     if (jsEvent) {
       jsEvent.preventDefault();
     }
 
-    // eventData의 구조에 따라 필요한 정보를 추출
-    const { title, url, extendedProps, backgroundColor, color, start, end } = eventData;
+    // eventData의 구조는 풀캘린더에서 나온 구조이거나 useQuery로 받아온 구조
+    const { title, url, extendedProps, memo, backgroundColor, color, start, end, my_page_id } = eventData;
 
+    // EventDetail에 표시할 정보를 담는 객체를 업데이트
     setEvent({
+      my_page_id: extendedProps ? extendedProps.my_page_id : my_page_id,
       title,
       url,
-      memo: extendedProps ? extendedProps.memo : '',
+      memo: extendedProps ? extendedProps.memo : memo,
       color: backgroundColor ? backgroundColor : color,
-      start,
-      end: end ? end : '',
+      start: start ? start : null,
+      end: end ? end : null,
     });
   };
 

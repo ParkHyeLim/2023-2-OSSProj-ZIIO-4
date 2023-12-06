@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
 
+// prevData: 1 depth
 export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevData, isDeleteActive }) => {
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
   const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
@@ -17,7 +18,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
   const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
   const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
   const [isMouseDownInside, setIsMouseDownInside] = useState(false);
-  const location = window.location.pathname;
+  // const location = window.location.pathname;
 
   const handleMouseDownInside = () => {
     setIsMouseDownInside(true);
@@ -48,15 +49,17 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
       return;
     }
 
+    // 풀캘린더 전용 데이터 포맷으로 변환
     saveEvent({
       id: eventId,
       title,
-      start: start,
-      end: end,
+      start,
+      end,
       url,
       backgroundColor: color,
       extendedProps: {
         memo,
+        my_page_id: prevData ? prevData.my_page_id : null,
       },
     });
   };
@@ -99,7 +102,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               className={styles.input}
             />
           </div>
-          {location !== '/myPage' && (
+          {url && (
             <div>
               <label className={styles.label}>URL</label>
               <input
@@ -115,7 +118,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
               <RangePicker
-                defaultValue={prevData ? [dayjs(start), dayjs(end)] : null}
+                defaultValue={prevData ? [dayjs(start), dayjs(end)] : [dayjs(new Date()), dayjs(new Date())]}
                 onChange={dates => {
                   console.log(dates);
                   if (dates.length === 2) {
@@ -123,9 +126,9 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
                     const startDate = new Date(dates[0].$d);
                     startDate.setHours(0, 0, 0, 0);
 
-                    // 두 번째 날짜의 시, 분, 초를 0으로 설정
+                    // 두 번째 날짜의 시, 분, 초를 23:59:59.999로 설정
                     const endDate = new Date(dates[1].$d);
-                    endDate.setHours(0, 0, 0, 0);
+                    endDate.setHours(23, 59, 59, 999);
 
                     setStart(startDate);
                     setEnd(endDate);
