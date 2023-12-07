@@ -1,13 +1,13 @@
-import React from "react";
-import { AiOutlineClose } from 'react-icons/ai'
+import React from 'react';
+import { AiOutlineClose } from 'react-icons/ai';
 import styles from './ClipModal.module.scss';
 import instance from "../../api/instance";
 import { addScraps } from "../../api/userAPI";
 
-const fetchProjects = async (planData) => {
+const fetchProjects = async planData => {
   const { data } = await instance.post('/scraps', planData);
   return data;
-}
+};
 
 const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onReloadScraps }) => {
 
@@ -32,8 +32,12 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onReloa
           <AiOutlineClose className={styles.button} onClick={handleClose} />
         </div>
         <div className={styles.modalButtonContainer}>
-          <button className={styles.button} onClick={saveClip}>스크랩만 하기</button>
-          <button className={styles.button} onClick={openEventModal}>일정 등록</button>
+          <button className={styles.button} onClick={saveClip}>
+            스크랩만 하기
+          </button>
+          <button className={styles.button} onClick={openEventModal}>
+            일정 등록
+          </button>
         </div>
       </div>
     </div>

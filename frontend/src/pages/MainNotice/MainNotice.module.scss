@@ -5,9 +5,22 @@
   margin: 2.4rem;
   width: calc(100% - 2.4rem * 2);
   height: calc(100vh - 2.4rem * 2 - 6.8rem);
+  overflow-x: hidden;
 
   * {
     font-weight: 500;
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 1150px) {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
+    width: 100%;
   }
 
   .userContainer {
@@ -17,36 +30,104 @@
     border: 1px solid var(--gray-200);
     padding: 2.2rem 2.6rem;
 
+    // 1150px 이하이면서 768px 이상일 때
+    @media (max-width: 1150px) and (min-width: 768px) {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ffffff;
+      padding: 4rem 4rem;
+    }
+
+    .closeButton {
+      position: absolute;
+      top: 4rem;
+      right: 4rem;
+      width: 1.8rem;
+      height: 1.8rem;
+      cursor: pointer;
+    }
+
     .text1 {
       // margin: 1.5rem 0 0 1.5rem;
       font-size: 1.5rem;
       font-weight: 500;
       color: var(--gray-600);
       margin-bottom: 1.7rem;
+
+      @media (max-width: 1150px) {
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        margin-bottom: 1.5rem;
+      }
     }
   }
 
   .noticeContainer {
     width: 80%;
-    height: 100%;
+    height: auto;
     border-radius: 15px;
     border: 1px solid var(--gray-200);
 
-    .fillterContainer {
+    @media (max-width: 1150px) {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      border: none;
+      border-radius: 0;
+    }
+
+    .filterContainer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin: 3rem;
 
+      @media (max-width: 768px) {
+        // flex-direction: column;
+        margin: 1rem 2rem 2rem 2rem;
+        // margin-bottom: 2rem;
+      }
+
+      .filterWrapper {
+        @media (max-width: 768px) {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+      }
+
       input {
         margin-right: 2rem;
         padding: 0 0 0 0.5rem;
-        width: 15.4rem;
+        width: 15rem;
         height: 3.5rem;
         border-radius: 7px;
         border: 1px solid var(--gray-300);
         font-family: var(--font-family);
         padding: 0 1rem;
+
+        @media (max-width: 1150px) {
+          width: 13rem;
+          margin-right: 1rem;
+        }
+
+        @media (max-width: 768px) {
+          width: calc(50% - 0.5rem);
+          margin-right: 0;
+          text-align: center;
+        }
       }
 
       .searchButton {
@@ -60,9 +141,16 @@
         font-family: var(--font-family);
         color: #ffffff;
         cursor: pointer;
+
+        @media (max-width: 768px) {
+          width: calc(50% - 0.5rem);
+          margin-right: 0;
+          text-align: center;
+        }
       }
 
       .bookmarkButton {
+        min-width: 12.825rem;
         display: flex;
         align-items: center;
         padding: 0.7rem 1rem;
@@ -70,6 +158,14 @@
         border-radius: 7px;
         border: 1px solid var(--gray-300);
         cursor: pointer;
+
+        @media (max-width: 768px) {
+          display: flex;
+          justify-content: center;
+          width: calc(50% - 0.5rem);
+          margin-right: 0;
+          border: 1px solid var(--gray-300);
+        }
 
         .star {
           margin-right: 0.5rem;
@@ -83,11 +179,30 @@
           font-weight: 500;
         }
       }
+
+      .bookmarkListButton {
+        @media (max-width: 768px) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          color: var(--gray-700);
+          background-color: #ffffff;
+          border-radius: 7px;
+          border: 1px solid var(--gray-300);
+          padding: 0.7rem 1rem;
+          cursor: pointer;
+        }
+      }
     }
 
     .itemList {
       width: 98%;
       margin: 0 2.5rem 0 1rem;
+
+      @media (max-width: 768px) {
+        margin: 0;
+      }
     }
   }
 }
@@ -102,6 +217,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
 }
 
 .modalContent {

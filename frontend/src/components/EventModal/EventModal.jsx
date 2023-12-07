@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { useMutation, useQueryClient } from 'react-query';
 import { deleteMyEvent } from '../../api/mypageAPI';
+import { useMediaQuery } from 'react-responsive';
 
 const { RangePicker } = DatePicker;
 
@@ -104,7 +105,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
         <form onSubmit={handleSubmit} className={styles.container} onMouseDown={handleMouseDownInside}>
           <h1 className={styles.title}>{modalTitle}</h1>
           <img src={closeIcon} alt="close" className={styles.close} onClick={closeModal} />
-          <div>
+          <div className={styles.inputWrapper}>
             <label className={styles.label}>일정명</label>
             <input
               type="text"
@@ -114,7 +115,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
               className={styles.input}
             />
           </div>
-          <div>
+          <div className={styles.inputWrapper}>
             <label className={styles.label}>메모</label>
             <input
               type="text"
@@ -125,7 +126,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
             />
           </div>
           {url && url !== 'null' && (
-            <div>
+            <div className={styles.inputWrapper}>
               <label className={styles.label}>URL</label>
               <input
                 type="text"

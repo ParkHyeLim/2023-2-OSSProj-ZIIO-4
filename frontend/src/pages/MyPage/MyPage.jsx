@@ -42,6 +42,7 @@ const MyPage = () => {
       const sortedEvents = sortEventsByDate(data);
       updateListedEvents(sortedEvents);
     },
+    cacheTime: 1000 * 60 * 60 * 24,
   });
   const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
     onSuccess: () => {
@@ -124,13 +125,13 @@ const MyPage = () => {
 
     // EventDetail에 표시할 정보를 담는 객체를 업데이트
     setEvent({
-      my_page_id: extendedProps ? extendedProps.my_page_id : my_page_id,
+      my_page_id: extendedProps?.my_page_id || my_page_id,
       title,
       url,
-      memo: extendedProps ? extendedProps.memo : memo,
-      color: backgroundColor ? backgroundColor : color,
-      start: start ? start : null,
-      end: end ? end : null,
+      memo: extendedProps?.memo || memo,
+      color: backgroundColor || color,
+      start: start || null,
+      end: end || null,
     });
   };
 
@@ -146,10 +147,8 @@ const MyPage = () => {
   return (
     <div className={styles.container}>
       {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
-      <div className={styles.leftWrapper}>
-        <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
-        <EventDetail event={event} clearEvent={clearEvent} />
-      </div>
+      <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
+      <EventDetail event={event} clearEvent={clearEvent} />
       <FullCalendar
         ref={calendarRef}
         customButtons={{
