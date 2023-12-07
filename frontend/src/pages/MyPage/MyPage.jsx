@@ -42,6 +42,7 @@ const MyPage = () => {
       const sortedEvents = sortEventsByDate(data);
       updateListedEvents(sortedEvents);
     },
+    cacheTime: 1000 * 60 * 60 * 24,
   });
   const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
     onSuccess: () => {

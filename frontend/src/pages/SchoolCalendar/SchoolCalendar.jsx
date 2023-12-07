@@ -9,28 +9,8 @@ import styles from '../MyPage/MyPage.module.scss';
 import { EventModal } from '../../components';
 import instance from '../../api/instance';
 import { useNavigate } from 'react-router-dom';
-
-const fetchProjects = async planData => {
-  if (planData === '') {
-    const { data } = await instance.get('/academics');
-    return data;
-  } else {
-    const { data } = await instance.post('/scraps', planData);
-    return data;
-  }
-};
-
-function formatDate(dateString) {
-  const parsedDate = new Date(dateString);
-  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(
-    parsedDate.getDate(),
-  )}`;
-  return formattedDate;
-}
-
-function padZero(number) {
-  return number.toString().padStart(2, '0');
-}
+import { fetchProjects } from '../../api/schoolCalendarAPI';
+import { formatDateToYMD } from '../../utils/dateUtils';
 
 const SchoolCalendar = () => {
   const navigate = useNavigate();
@@ -45,13 +25,16 @@ const SchoolCalendar = () => {
   const [eventHost, setEventHost] = useState('');
   const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const { data } = useQuery('academics', () => fetchProjects(''));
+  const { data } = useQuery('academics', () => fetchProjects(''), {
+    staleTime: 1000 * 60 * 60 * 24,
+    cacheTime: 1000 * 60 * 60 * 24,
+  });
 
   useEffect(() => {
     if (data) {
       const transformedEvents = data.map(item => {
-        const start = formatDate(item.start_date);
-        const end = formatDate(item.end_date);
+        const start = formatDateToYMD(item.start_date);
+        const end = formatDateToYMD(item.end_date);
         return {
           id: item.id,
           title: item.title,
