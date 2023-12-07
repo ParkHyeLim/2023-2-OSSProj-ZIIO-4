@@ -42,6 +42,11 @@
         color: var(--gray-600);
         cursor: pointer;
       }
+
+      @media (max-width: 1150px) {
+        width: 2rem;
+        height: 2rem;
+      }
     }
 
     .announcementIdDefault {
@@ -57,12 +62,20 @@
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--orange);
+
+      @media (max-width: 1150px) {
+        margin: 0 1.5rem 0 1rem;
+      }
     }
 
     .announcementTitleDefault {
       margin: 0 1rem;
       font-size: 1.5rem;
       color: var(--gray-900);
+
+      @media (max-width: 1150px) {
+        margin: 0;
+      }
     }
 
     .announcementTitle {
