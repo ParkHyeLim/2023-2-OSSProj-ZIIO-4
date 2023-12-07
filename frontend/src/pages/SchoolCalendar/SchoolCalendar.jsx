@@ -5,24 +5,26 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
 import { EventDetail, EventList } from './components';
-import styles from './SchoolCalendar.module.scss';
+import styles from '../MyPage/MyPage.module.scss';
 import { EventModal } from '../../components';
 import instance from '../../api/instance';
 import { useNavigate } from 'react-router-dom';
 
-const fetchProjects = async (planData) => {
-  if (planData === "") {
+const fetchProjects = async planData => {
+  if (planData === '') {
     const { data } = await instance.get('/academics');
     return data;
   } else {
     const { data } = await instance.post('/scraps', planData);
     return data;
   }
-}
+};
 
 function formatDate(dateString) {
   const parsedDate = new Date(dateString);
-  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(parsedDate.getDate())}`;
+  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(
+    parsedDate.getDate(),
+  )}`;
   return formattedDate;
 }
 
@@ -43,7 +45,7 @@ const SchoolCalendar = () => {
   const [eventHost, setEventHost] = useState('');
   const [eventColor, setEventColor] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const { data } = useQuery('academics', () => fetchProjects(""));
+  const { data } = useQuery('academics', () => fetchProjects(''));
 
   useEffect(() => {
     if (data) {
@@ -56,13 +58,23 @@ const SchoolCalendar = () => {
           start: start,
           end: end,
           backgroundColor: item.color_code,
-          extendedProps: { host_department: item.host_department }
-        }
+          extendedProps: { host_department: item.host_department },
+        };
       });
       setEvents(transformedEvents);
       setListedEvents(data);
     }
   }, [data]);
+
+  function clearEvent() {
+    setEventPostId('');
+    setEventId('');
+    setEventTitle('');
+    setEventDateStart('');
+    setEventDateEnd('');
+    setEventHost('');
+    setEventColor('');
+  }
 
   const handleEventClick = (eventData, jsEvent) => {
     // jsEvent가 있으면 기본 동작 방지 (FullCalendar 이벤트에서만 적용)
@@ -91,11 +103,11 @@ const SchoolCalendar = () => {
   const openShowModal = () => {
     const token = localStorage.getItem('ziio-token');
     if (token) setShowModal(!showModal);
-    else alert("로그인이 필요한 기능입니다");
-  }
+    else alert('로그인이 필요한 기능입니다');
+  };
 
   // 내 일정 추가(추후에는 DB에 보내기)
-  const saveEvent = async (eventData) => {
+  const saveEvent = async eventData => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
@@ -108,16 +120,17 @@ const SchoolCalendar = () => {
       memo: eventData.extendedProps.memo,
       url: eventData.url,
       color_code: eventData.backgroundColor,
-    }
+    };
 
     const json = JSON.stringify(resultData);
     const SearchData = fetchProjects(json);
     try {
       const result = await SearchData; // Promise가 완료되고 해결될 때까지 대기하고 결과를 얻습니다.
-      if (result === "This academic is already added to the MyPage") alert("해당 학사일정이 이미 내 일정에 저장되어 있습니다.");
+      if (result === 'This academic is already added to the MyPage')
+        alert('해당 학사일정이 이미 내 일정에 저장되어 있습니다.');
       else {
-        const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
-        if (response) navigate('/myPage')
+        const response = window.confirm('저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?');
+        if (response) navigate('/myPage');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -126,18 +139,17 @@ const SchoolCalendar = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.leftWrapper}>
-        <div className={styles.text1}>다음 학사일정 목록</div>
-        <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
-        <EventDetail
-          eventTitle={eventTitle}
-          eventDateStart={eventDateStart}
-          eventDateEnd={eventDateEnd}
-          eventHost={eventHost}
-          eventColor={eventColor}
-          onOpen={openShowModal}
-        />
-      </div>
+      {/* <div className={styles.text1}>다음 학사일정 목록</div> */}
+      <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
+      <EventDetail
+        eventTitle={eventTitle}
+        eventDateStart={eventDateStart}
+        eventDateEnd={eventDateEnd}
+        eventHost={eventHost}
+        eventColor={eventColor}
+        onOpen={openShowModal}
+        clearEvent={clearEvent}
+      />
       <FullCalendar
         ref={calendarRef}
         initialView="dayGridMonth"

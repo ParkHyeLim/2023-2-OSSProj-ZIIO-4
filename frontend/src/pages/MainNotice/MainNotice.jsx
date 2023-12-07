@@ -362,7 +362,7 @@ function MainNotice() {
                 </button>
                 {isLogin && (
                   <button className={styles.bookmarkListButton} onClick={() => setIsBookmarkOpen(!isBookmarkOpen)}>
-                    <img src={listIcon} alt="즐겨찾기 공지사항" />
+                    <img src={listIcon} alt="즐겨찾기 공지사항" style={{ marginRight: '0.3rem' }} />
                     즐겨찾기 카테고리 목록
                   </button>
                 )}

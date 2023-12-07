@@ -146,10 +146,8 @@ const MyPage = () => {
   return (
     <div className={styles.container}>
       {showModal && <EventModal modalTitle={'새 일정 추가'} saveEvent={saveEvent} closeModal={closeModal} />}
-      {/* <div className={styles.leftWrapper}> */}
       <EventList listedEvents={listedEvents} handleEventClick={handleEventClick} />
       <EventDetail event={event} clearEvent={clearEvent} />
-      {/* </div> */}
       <FullCalendar
         ref={calendarRef}
         customButtons={{
