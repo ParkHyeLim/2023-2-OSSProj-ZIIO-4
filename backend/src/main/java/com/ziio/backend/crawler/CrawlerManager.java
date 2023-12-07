@@ -24,6 +24,7 @@ public class CrawlerManager {
     private NoticeService noticeService;
 
     @Scheduled(cron = "0 40 19 * * ?")  // 매일 오후 7시 40분에 실행
+    //@PostConstruct
     public void runAllCrawlers() {
         // 카테고리와 공지사항 삭제
         categoryService.deleteAllCategories();
@@ -34,6 +35,7 @@ public class CrawlerManager {
         etcWebsiteCrawler.crawl();
     }
     // 학사일정 크롤러 실행
+    //@PostConstruct
     public void runAcademicCrawlers() {
         academicCalendarWebsiteCrawler.crawl();
     }
