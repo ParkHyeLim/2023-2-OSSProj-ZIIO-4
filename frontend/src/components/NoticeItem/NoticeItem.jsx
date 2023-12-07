@@ -27,14 +27,14 @@ export default function AnnouncementItem({ item, category, itemNumber, onClipCli
       ) : (
         <BsBookmark
           className={styles.regBookmarkIcon}
-          size={20}
+          size={15}
           style={{ margin: '0.3rem 0 0 1.5rem' }}
           onClick={() => {
             const isToken = localStorage.getItem("ziio-token");
             if (isToken) onClipClick({ type: "add", value: item });
             else alert("로그인이 필요한 기능입니다");
           }} />
-      }
+      )}
     </>
   );
 
