@@ -31,7 +31,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     JwtUtil jwtUtil;
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
-    final String REDIRECT_URI = "https://2023-2-oss-proj-ziio-4.vercel.app/login?jwt=";
+    final String REDIRECT_URI = "http://localhost:3000/login?jwt=";
     final long TOKEN_EXPIRATION_TIME = 3600000; // 1시간 동안 유효한 토큰
 
     // 이전 코드 생략
