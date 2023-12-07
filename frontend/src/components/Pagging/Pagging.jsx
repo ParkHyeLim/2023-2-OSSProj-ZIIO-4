@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import styles from './Pagging.module.scss';
 import NoticeItem from '../NoticeItem/NoticeItem';
 
 const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
   const [noticeData, setNoticeData] = useState([]);
-  const [nowData, setNowData] = useState([{ author: "", category_id: "", date_posted: "", id: 0, title: "", url: "" }]);
+  const [nowData, setNowData] = useState([{ author: '', category_id: '', date_posted: '', id: 0, title: '', url: '' }]);
   const [nowPage, setNowPage] = useState(1);
   const [nowFixedNuber, setNowFixedNuber] = useState(0);
 
@@ -31,7 +31,7 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
       const container = document.querySelector(`.${styles.container}`);
       const handleScroll = debounce(() => {
         const container = document.querySelector(`.${styles.container}`);
-        const scrollHeight = container.scrollHeight - 100;
+        const scrollHeight = container.scrollHeight;
         const scrollTop = container.scrollTop;
         const clientHeight = container.offsetHeight;
 
@@ -39,8 +39,10 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
           fetchMoreData();
         }
       }, 100);
-      container.addEventListener("scroll", handleScroll);
-      return () => { container.removeEventListener("scroll", handleScroll); };
+      container.addEventListener('scroll', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+      };
     }
   }, [nowData]);
 
@@ -57,13 +59,17 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
           fetchMoreData();
         }
       }, 100);
-      container.addEventListener("scroll", handleScroll);
-      return () => { container.removeEventListener("scroll", handleScroll); };
+      container.addEventListener('scroll', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+      };
     }
   }, [nowPage]);
 
   const fetchMoreData = () => {
-    if (nowPage >= Math.ceil(noticeData.length / 10)) { return; }
+    if (nowPage >= Math.ceil(noticeData.length / 10)) {
+      return;
+    }
     const cutNum = 10 * nowPage;
     const nextPageData = noticeData.slice(cutNum, cutNum + 10);
     setNowPage(prev => prev + 1);

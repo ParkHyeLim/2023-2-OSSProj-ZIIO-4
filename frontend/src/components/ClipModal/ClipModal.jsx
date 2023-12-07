@@ -1,5 +1,5 @@
-import React from "react";
-import { AiOutlineClose } from 'react-icons/ai'
+import React from 'react';
+import { AiOutlineClose } from 'react-icons/ai';
 import styles from './ClipModal.module.scss';
 import { addScraps } from "../../api/userAPI";
 
@@ -27,8 +27,12 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrap
           <AiOutlineClose className={styles.button} onClick={handleClose} />
         </div>
         <div className={styles.modalButtonContainer}>
-          <button className={styles.button} onClick={saveClip}>스크랩만 하기</button>
-          <button className={styles.button} onClick={openEventModal}>일정 등록</button>
+          <button className={styles.button} onClick={saveClip}>
+            스크랩만 하기
+          </button>
+          <button className={styles.button} onClick={openEventModal}>
+            일정 등록
+          </button>
         </div>
       </div>
     </div>

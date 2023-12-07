@@ -2,21 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
+import listIcon from '../../assets/icons/list.svg';
+import closeIcon from '../../assets/icons/close.svg';
+
 import styles from './MainNotice.module.scss';
 import ClipModal from '../../components/ClipModal/ClipModal';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
 
-import loading from '../../assets/images/Loding.gif'
+import loading from '../../assets/images/Loding.gif';
 import sampleCategories, { categoryList } from '../../utils/category';
 import { FaStar } from 'react-icons/fa';
 import UserCategory from '../../components/UserCategory/UserCategory';
 import Pagging from '../../components/Pagging/Pagging';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router-dom';
-import { addBookmark, addEventsScraps, deleteBookmark, deleteScraps, getBookmark, getNotice, getScraps, getSearchNotice } from '../../api/userAPI';
+import {
+  addBookmark,
+  addEventsScraps,
+  deleteBookmark,
+  deleteScraps,
+  getBookmark,
+  getNotice,
+  getScraps,
+  getSearchNotice,
+} from '../../api/userAPI';
+import { useMediaQuery } from 'react-responsive';
 
 function MainNotice() {
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false); // 모바일 전용 즐겨찾기 공지사항 열기
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
   const [isLogin, setIsLogin] = useState(() => {
@@ -44,7 +59,7 @@ function MainNotice() {
 
   // 공지 스크랩
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
-  const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index  
+  const [selectedCategory, setSelectedCategory] = useState('100100000'); // focus된 공지 index
 
   const noticeQuery = useQuery('noticeData', getNotice);
   const bookmarksQuery = useQuery('bookmarksData', getBookmark, {
@@ -164,17 +179,23 @@ function MainNotice() {
 
   const categotyIdSearch = (category1, category2, category3) => {
     let searchCategory = category3 || category2 || category1;
-    if (searchCategory === "") {
+    if (searchCategory === '') {
       searchCategory = category2 || category1;
-      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      const result =
+        categoryIdList.filter(cat => cat.name === searchCategory).length !== 0
+          ? categoryIdList.filter(cat => cat.name === searchCategory)[0].category_id
+          : [];
       setSelectedCategory(result);
       return result;
     } else {
-      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      const result =
+        categoryIdList.filter(cat => cat.name === searchCategory).length !== 0
+          ? categoryIdList.filter(cat => cat.name === searchCategory)[0].category_id
+          : [];
       setSelectedCategory(result);
       return result;
     }
-  }
+  };
 
   // 사용자 검색 기능
   const handleSearch = async () => {
@@ -223,18 +244,18 @@ function MainNotice() {
   };
 
   // 검색 기록 삭제 (세션에서 내용 지우기)
-  const deleteSearchList = (id) => {
+  const deleteSearchList = id => {
     const existingData = sessionStorage.getItem('searchCategories');
     const parseExistingData = existingData ? JSON.parse(existingData) : [];
     const updatedData = parseExistingData.filter(item => item.id !== id);
     sessionStorage.setItem('searchCategories', JSON.stringify(updatedData));
     setSearchCategories(updatedData);
-  }
+  };
 
   // 즐겨찾기
   // 즐겨찾기 추가
   const handleAddBookmark = async () => {
-    if (!isLogin) alert("로그인이 필요한 기능입니다.");
+    if (!isLogin) alert('로그인이 필요한 기능입니다.');
     else {
       if (category1 || category2 || category3) {
         const result = await addBookmark(selectedCategory);
@@ -252,19 +273,18 @@ function MainNotice() {
             if (!prev.some(category => category.id === newBookmark.id)) return [...prev, newBookmark];
             return prev;
           });
-
         }
       }
     }
   };
 
   // 즐겨찾기 삭제(db에 id 전달)
-  const handleDeleteBookmark = async (id) => {
+  const handleDeleteBookmark = async id => {
     const result = await deleteBookmark(id);
-    if (result === "fail") alert("해당 카테고리는 즐겨찾기로 등록되지 않은 카테고리입니다.");
-    else if (result === "error") alert("즐겨찾기 삭제를 다시 시도해주세요.");
+    if (result === 'fail') alert('해당 카테고리는 즐겨찾기로 등록되지 않은 카테고리입니다.');
+    else if (result === 'error') alert('즐겨찾기 삭제를 다시 시도해주세요.');
     else {
-      const newArray = bookmarkCategories.filter((item) => item.id !== result)
+      const newArray = bookmarkCategories.filter(item => item.id !== result);
       setBookmarkCategories(newArray);
     };
   }
@@ -284,8 +304,8 @@ function MainNotice() {
   }
 
   // 스크랩
-  const changeClipStarNotice = (item) => {
-    if (!isLogin) alert("로그인이 필요한 기능입니다");
+  const changeClipStarNotice = item => {
+    if (!isLogin) alert('로그인이 필요한 기능입니다');
     else {
       if (item.type === "add") {
         setIsOpen(!isOpen);
@@ -297,7 +317,7 @@ function MainNotice() {
         if (result === "success") { alert("스크랩이 취소되었습니다"); }
       }
     }
-  }
+  };
 
   // 스크랩 재실행 
   const reloadScraps = async (data) => {
@@ -308,7 +328,7 @@ function MainNotice() {
   }
 
   // 일정 등록
-  const saveEvent = async (eventData) => {
+  const saveEvent = async eventData => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
@@ -324,7 +344,7 @@ function MainNotice() {
       memo: eventData.extendedProps.memo === undefined ? null : eventData.extendedProps.memo,
       url: eventData.url,
       color_code: eventData.backgroundColor,
-    }
+    };
 
     const EventsData = addEventsScraps(resultData);
     try {
@@ -341,88 +361,120 @@ function MainNotice() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.userContainer}>
+      <div className={styles.userContainer} style={{ display: isBookmarkOpen || !isMobile ? 'block' : 'none' }}>
         {isLogin ? (
           <div>
-            <div className={styles.text1}>즐겨찾기 공지사항</div>
-            <UserCategory categoryList={bookmarkCategories}
-              onClick={ListSearch}
-              onDelete={handleDeleteBookmark}
+            <img
+              src={closeIcon}
+              alt="즐겨찾기 공지사항 닫기"
+              onClick={() => setIsBookmarkOpen(false)}
+              className={styles.closeButton}
+              style={{
+                display: isBookmarkOpen && isMobile ? 'block' : 'none',
+              }}
             />
+            <div className={styles.text1}>즐겨찾기 공지사항</div>
+            <UserCategory categoryList={bookmarkCategories} onClick={ListSearch} onDelete={handleDeleteBookmark} />
           </div>
         ) : (
           <div>
             <div className={styles.text1}>검색한 공지사항</div>
-            <UserCategory categoryList={searchCategories}
-              onClick={ListSearch}
-              onDelete={deleteSearchList}
-            />
+            <UserCategory categoryList={searchCategories} onClick={ListSearch} onDelete={deleteSearchList} />
           </div>
         )}
       </div>
 
       <div className={styles.noticeContainer}>
-        <div className={styles.fillterContainer}>
-          <div>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterWrapper}>
             <DropDownComp
               placeholder="대분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => handleCategories1Change(e)} />
+              onChange={e => handleCategories1Change(e)}
+            />
             <DropDownComp
               placeholder="중분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => handleCategories2Change(e)} />
+              onChange={e => handleCategories2Change(e)}
+            />
             <DropDownComp
               placeholder="소분류"
               data={sampleCategories}
               fillterData={[category1, category2, category3]}
-              onChange={e => setCategory3(e.target.value)} />
+              onChange={e => setCategory3(e.target.value)}
+            />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             <button className={styles.searchButton} onClick={handleSearch}>
               검색
             </button>
+            {isMobile && (
+              <>
+                <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
+                  <FaStar size={15} className={styles.star} />
+                  <div>즐겨찾기에 추가</div>
+                </button>
+                {isLogin && (
+                  <button className={styles.bookmarkListButton} onClick={() => setIsBookmarkOpen(!isBookmarkOpen)}>
+                    <img src={listIcon} alt="즐겨찾기 공지사항" style={{ marginRight: '0.3rem' }} />
+                    즐겨찾기 카테고리 목록
+                  </button>
+                )}
+              </>
+            )}
           </div>
-
-          <button className={styles.bookmarkButton} style={isButton ? { opacity: 0.5 } : {}} onClick={handleAddBookmark} disabled={isButton}>
-            <FaStar size={15} className={styles.star} />
-            <div>즐겨찾기에 추가</div>
-          </button>
+          {!isMobile && (
+            <button className={styles.bookmarkButton} style={isButton ? { opacity: 0.5 } : {}} onClick={handleAddBookmark} disabled={isButton}>
+              <FaStar size={15} className={styles.star} />
+              <div>즐겨찾기에 추가</div>
+            </button>
+          )}
         </div>
 
         <div className={styles.itemList}>
-          {noticeQuery.isLoading ?
-            <div className={styles.loadingContainer} >
+          {noticeQuery.isLoading ? (
+            <div className={styles.loadingContainer}>
               <img className={styles.loadingImage} src={loading} alt="공지사항을 불러오는 중입니다" />
-              <div className={styles.loadingText} >공지사항을 불러오는 중입니다.</div>
+              <div className={styles.loadingText}>공지사항을 불러오는 중입니다.</div>
             </div>
-            :
-            <Pagging data={noticeList} noticeCategory={categoryIdList} changeClipStarNotice={item => changeClipStarNotice(item)} />
-          }
+          ) : (
+            <Pagging
+              data={noticeList}
+              noticeCategory={categoryIdList}
+              changeClipStarNotice={item => changeClipStarNotice(item)}
+            />
+          )}
         </div>
       </div>
 
       {!isLogin
         ? isOpen && <LoginModal onModalClose={() => setIsOpen(!isOpen)} />
-        : isOpen && <ClipModal
-          noticeId={selectedNotice.notice_id}
-          categoryId={selectedCategory}
-          onModalClose={() => setIsOpen(!isOpen)}
-          openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }}
-          onScrapsData={(data) => reloadScraps(data)}
+        : isOpen && (
+          <ClipModal
+            noticeId={selectedNotice.notice_id}
+            categoryId={selectedCategory}
+            onModalClose={() => setIsOpen(!isOpen)}
+            openEventModal={() => {
+              setIsOpen(!isOpen);
+              setIsOpenEventModal(!isOpenEventModal);
+            }}
+            onScrapsData={(data) => reloadScraps(data)}
+          />
+        )}
+      {isOpenEventModal && (
+        <EventModal
+          modalTitle={'내 일정으로 추가'}
+          eventId={selectedNotice.notice_id}
+          prevData={{
+            title: selectedNotice.title,
+            start: selectedNotice.date_posted,
+            url: selectedNotice.url,
+          }}
+          saveEvent={saveEvent}
+          closeModal={() => setIsOpenEventModal(!isOpenEventModal)}
         />
-      }
-      {isOpenEventModal && <EventModal
-        modalTitle={'내 일정으로 추가'}
-        eventId={selectedNotice.notice_id}
-        prevData={{
-          title: selectedNotice.title,
-          start: selectedNotice.date_posted,
-          url: selectedNotice.url,
-        }}
-        saveEvent={saveEvent}
-        closeModal={() => setIsOpenEventModal(!isOpenEventModal)} />}
+      )}
     </div>
   );
 }
