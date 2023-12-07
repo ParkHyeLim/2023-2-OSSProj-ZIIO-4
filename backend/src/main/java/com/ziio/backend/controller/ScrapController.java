@@ -1,7 +1,7 @@
 package com.ziio.backend.controller;
 
-import com.ziio.backend.dto.MyPageDTO;
 import com.ziio.backend.dto.NoticeDTO;
+import com.ziio.backend.entity.Academic;
 import com.ziio.backend.entity.Notice;
 import com.ziio.backend.service.AcademicService;
 import com.ziio.backend.service.MyPageService;
@@ -32,7 +32,7 @@ public class ScrapController {
 
     // 특정 사용자의 스크랩 목록에서 id만을 반환하는 메소드
     @GetMapping
-    public ResponseEntity <List<Map<String, Long>>> getUserScraps(
+    public ResponseEntity<List<Map<String, Long>>> getUserScraps(
             @RequestHeader("Authorization") String authorizationHeader) {
 
         // 토큰에서 유저 이메일 가져오기
@@ -53,13 +53,11 @@ public class ScrapController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 특정 공지사항을 스크랩(마이페이지에 추가)하는 메소드
+    // 특정 공지사항을 마이페이지에 추가하는 메소드
     @PostMapping
-    public ResponseEntity<MyPageDTO.Info> addNoticeToMyPage(
+    public ResponseEntity<List<Map<String, Long>>> addNoticeToMyPage(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody NoticeDTO.Request request) {
-
-        MyPageDTO.Info myPageInfo = null;
 
         // 공지사항, 카테고리, 학사일정 아이디
         Long noticeId = request.getNotice_id();
@@ -75,50 +73,33 @@ public class ScrapController {
             // 정보 가져오기
             Notice noticeInfo = noticeService.getNoticeByNoticeIdAndCategoryId(noticeId, categoryId);
             // 마이페이지에 추가
-            long myPageId = myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
-            // 응답 객체 생성 및 반환
-            myPageInfo = MyPageDTO.Info.builder()
-                    .my_page_id(myPageId)
-                    .notice_id(noticeId)
-                    .academic_id(null)
-                    .category_id(noticeInfo.getCategory_id())
-                    .user_email(userEmail)
-                    .start_date(request.getStart_date())
-                    .end_date(request.getEnd_date())
-                    .title(noticeInfo.getTitle())
-                    .url(noticeInfo.getUrl())
-                    .color_code(request.getColor_code())
-                    .memo(request.getMemo())
-                    .message("successfully created.")
-                    .build();
+            myPageService.addNoticeToMyPage(noticeInfo, request, userEmail);
         }
         // 2) 학사일정인 경우
         else {
             // 정보 가져오기
-            com.ziio.backend.entity.Academic academicInfo = academicService.getAcademicById(academicId);
+            Academic academicInfo = academicService.getAcademicById(academicId);
             // 마이페이지에 추가
-            long myPageId = myPageService.addAcademicToMyPage(academicInfo, request, userEmail);
-            // 응답 객체 생성 및 반환
-            myPageInfo = MyPageDTO.Info.builder()
-                    .my_page_id(myPageId)
-                    .notice_id(null)
-                    .academic_id(academicId)
-                    .user_email(userEmail)
-                    .start_date(academicInfo.getStart_date())
-                    .end_date(academicInfo.getEnd_date())
-                    .title(request.getTitle() == null ? academicInfo.getTitle() : request.getTitle())
-                    .color_code(request.getColor_code() == null ? academicInfo.getColor_code() : request.getColor_code())
-                    .memo(request.getMemo())
-                    .message("successfully created.")
-                    .build();
+            myPageService.addAcademicToMyPage(academicInfo, request, userEmail);
         }
 
-        return new ResponseEntity<>(myPageInfo, HttpStatus.CREATED);
+        // 스크랩 목록
+        List<Long> userScrapIds = myPageService.getScrapIdsByUserEmail(userEmail);
+
+        // 응답 객체 생성 및 반환
+        List<Map<String, Long>> response = new ArrayList<>();
+        for (int i = 0; i < userScrapIds.size(); i++) {
+            Map<String, Long> map = new HashMap<>();
+            map.put("id", userScrapIds.get(i));
+            response.add(map);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // 특정 공지사항을 마이페이지에서 삭제하는 메소드
     @DeleteMapping
-    public ResponseEntity<Map<String, String>> removeNoticeToMyPage(
+    public ResponseEntity<List<Map<String, Long>>> removeNoticeToMyPage(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody NoticeDTO.Request request) {
 
@@ -142,9 +123,16 @@ public class ScrapController {
             myPageService.removeAcademicFromMyPage(academicId, userEmail);
         }
 
+        // 스크랩 목록
+        List<Long> userScrapIds = myPageService.getScrapIdsByUserEmail(userEmail);
+
         // 응답 객체 생성 및 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "successfully removed.");
+        List<Map<String, Long>> response = new ArrayList<>();
+        for (int i = 0; i < userScrapIds.size(); i++) {
+            Map<String, Long> map = new HashMap<>();
+            map.put("id", userScrapIds.get(i));
+            response.add(map);
+        }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
