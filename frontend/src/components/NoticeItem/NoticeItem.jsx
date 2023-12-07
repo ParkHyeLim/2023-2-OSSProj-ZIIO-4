@@ -27,7 +27,7 @@ export default function AnnouncementItem({ item, category, itemNumber, onClipCli
       ) : (
         <BsBookmark
           className={styles.regBookmarkIcon}
-          size={15}
+          size={20}
           style={{ margin: '0.3rem 0 0 1.5rem' }}
           onClick={() => {
             const isToken = localStorage.getItem('ziio-token');
