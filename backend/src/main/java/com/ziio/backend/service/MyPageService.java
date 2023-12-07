@@ -31,8 +31,8 @@ public class MyPageService {
         List<Long> userScrapIds = new ArrayList<>();
         // 스크랩된 공지사항 id 목록
         for (MyPage scrap : userScraps) {
-            // 학사일정은 제외
-            if (scrap.getAcademic_id() == null) {
+            // 공지사항만 해당
+            if (scrap.getNotice_id() != null) {
                 Notice notice = noticeService.getNoticeByNoticeIdAndCategoryId(scrap.getNotice_id(), scrap.getCategory_id());
                 userScrapIds.add(notice.getId());
             }
