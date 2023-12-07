@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
+
 import listIcon from '../../assets/icons/list.svg';
 import closeIcon from '../../assets/icons/close.svg';
 
@@ -16,6 +17,7 @@ import UserCategory from '../../components/UserCategory/UserCategory';
 import Pagging from '../../components/Pagging/Pagging';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router-dom';
+
 import {
   addBookmark,
   addEventsScraps,
@@ -78,11 +80,10 @@ function MainNotice() {
       setNoticeList(formattedNotices);
       if (data.bookmarks && bookmarkCategories.length === 0) {
         const getBookmarkData = data.bookmarks;
-        getBookmarkData.forEach(item => {
+        getBookmarkData.forEach((item) => {
           const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === item.category_id);
           if (!isDuplicate) {
-            const selectedCategory =
-              categoryList.filter(category => category.name === item.category_name)[0]?.categoryList || [];
+            const selectedCategory = (categoryList.filter((category) => category.name === item.category_name)[0]?.categoryList) || [];
             const result = {
               name: item.category_name,
               url: {
@@ -90,14 +91,20 @@ function MainNotice() {
                 category2: selectedCategory[1],
                 category3: selectedCategory[2],
               },
-              id: item.category_id,
-            };
-            setBookmarkCategories(prev => [...prev, result]);
+              id: item.category_id
+            }
+            setBookmarkCategories((prev) => [...prev, result]);
           }
-        });
+        })
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (isScraps) {
+      handleSearch();
+    }
+  }, [isScraps]);
 
   const noticeFormat = (data, scraps) => {
     const newArray = data;
@@ -153,14 +160,15 @@ function MainNotice() {
     let searchResult;
     const nowCategoryId = categotyIdSearch(category1, category2, category3);
     try {
-      if (searchQuery === '') searchResult = await getSearchNotice(nowCategoryId, '');
+      if (searchQuery === "") searchResult = await getSearchNotice(nowCategoryId, "");
       else searchResult = await getSearchNotice(nowCategoryId, searchQuery);
-      if (searchResult !== 'error') {
+      if (searchResult !== "error") {
         const formattedNotices = noticeFormat(searchResult, scrapsList);
         setNoticeList(formattedNotices);
-      } else alert('검색을 다시 시도해주세요.');
+      }
+      else alert("검색을 다시 시도해주세요.");
     } catch (error) {
-      alert('검색 중 오류가 발생했습니다.');
+      alert("검색 중 오류가 발생했습니다.");
     } finally {
       addSearchList();
     }
@@ -238,38 +246,41 @@ function MainNotice() {
     else {
       const newArray = bookmarkCategories.filter(item => item.id !== result);
       setBookmarkCategories(newArray);
-    }
-  };
+    };
+  }
 
   // 기록에서 검색
-  const ListSearch = async value => {
-    const SearchData = await getSearchNotice(value.id, '');
-    if (SearchData === 'error') alert('검색을 다시 시도해주세요.');
+  const ListSearch = async (value) => {
+    const SearchData = await getSearchNotice(value.id, "");
+    if (SearchData === "error") alert("검색을 다시 시도해주세요.");
     else {
       const formattedNotices = noticeFormat(SearchData);
       setNoticeList(formattedNotices);
       setCategory1(value.url.category1);
       setCategory2(value.url.category2);
       setCategory3(value.url.category3);
-    }
-  };
+    };
+  }
 
   // 스크랩
   const changeClipStarNotice = item => {
     if (!isLogin) alert('로그인이 필요한 기능입니다');
     else {
-      if (item.type === 'add') {
-        setIsOpen(!isOpen);
-        setSelectedNotice(item.value);
-        setSelectedCategory(item.value.category_id);
-      } else {
-        const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id });
-        if (result === 'success') {
-          alert('스크랩이 취소되었습니다');
-        } else if (result === 'fail') alert('삭제할 해당 스크랩이 없습니다');
+      if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value); setSelectedCategory(item.value.category_id) }
+      else {
+        const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
+        if (result === "success") { alert("스크랩이 취소되었습니다"); reloadScraps(); }
+        else if (result === "fail") alert("삭제할 해당 스크랩이 없습니다");
       }
     }
   };
+
+  // 스크랩 반영
+  const reloadScraps = async () => {
+    const scrapsData = await getScraps();
+    if (scrapsData) { setScrapsList(scrapsData); setIsScraps(!isScraps) }
+  }
+
 
   // 일정 등록
   const saveEvent = async eventData => {
@@ -277,7 +288,7 @@ function MainNotice() {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
-    }
+    } 
 
     const resultData = {
       notice_id: eventData.id,
@@ -293,17 +304,17 @@ function MainNotice() {
     const EventsData = addEventsScraps(resultData);
     try {
       const result = await EventsData;
-      if (result === 'success') {
-        const response = window.confirm('저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?');
-        if (response) navigate('/myPage');
-      } else if (result === 'fail') alert('잘못된 데이터 형태입니다. 다시 스크랩을 시도해주세요.');
+      if (result === "success") {
+        const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
+        if (response) navigate('/myPage')
+        else reloadScraps();
+      } else if (result === "fail") alert("잘못된 데이터 형태입니다. 다시 스크랩을 시도해주세요.");
     } catch (error) {
       console.error('Error:', error);
     }
     setIsOpenEventModal(!isOpenEventModal);
   };
 
-  console.log(isBookmarkOpen);
   return (
     <div className={styles.container}>
       <div className={styles.userContainer} style={{ display: isBookmarkOpen || !isMobile ? 'block' : 'none' }}>

@@ -1,15 +1,16 @@
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import styles from './ClipModal.module.scss';
-import instance from '../../api/instance';
-import { addScraps } from '../../api/userAPI';
+import instance from "../../api/instance";
+import { addScraps } from "../../api/userAPI";
 
 const fetchProjects = async planData => {
   const { data } = await instance.post('/scraps', planData);
   return data;
 };
 
-const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal }) => {
+const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onReloadScraps }) => {
+
   const handleClose = () => {
     onModalClose(false);
   };
@@ -17,12 +18,10 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal }) => {
   const saveClip = async () => {
     const resultData = {
       notice_id: noticeId,
-      category_id: categoryId,
-    };
-    const SearchData = addScraps(resultData);
-    if (SearchData) {
-      onModalClose(false);
+      category_id: categoryId
     }
+    const SearchData = addScraps(resultData);
+    if (SearchData) { onReloadScraps(); onModalClose(false); }
   };
 
   return (
