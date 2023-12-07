@@ -17,12 +17,13 @@ export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname.split('/')[1];
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false); // 모바일에서 헤더 메뉴를 보여줄지 여부
   const [isLoggedin, setIsLoggedin] = useRecoilState(loginState);
-  const [isModalOpen, setIsModalOpen] = useRecoilState(loginModalState);
+  const [isModalOpen, setIsModalOpen] = useRecoilState(loginModalState); // 로그인 모달을 보여줄지 여부
 
   const handleLogin = () => {
     if (isLoggedin) {
+      setIsHeaderVisible(false);
       // 로그아웃 여부 물어보기
       const result = window.confirm('로그아웃 하시겠습니까?');
       if (result) {
@@ -31,6 +32,7 @@ export const Header = () => {
         window.location.reload();
       }
     } else {
+      setIsHeaderVisible(false);
       setIsModalOpen(true);
     }
   };

@@ -7,6 +7,21 @@
   border-bottom: 1px solid #e5e7eb;
   color: var(--gray-500);
 
+  @media (max-width: 1150px) {
+    margin: 0 0 1.7rem 1.7rem;
+  }
+
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    @media (max-width: 1150px) {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
   * {
     font-weight: 500;
   }
@@ -51,7 +66,7 @@
     }
 
     .announcementTitle {
-      font-weight: bold;
+      // font-weight: bold;
     }
   }
 
@@ -60,25 +75,42 @@
     justify-content: flex-end;
     align-items: center;
 
+    @media (max-width: 1150px) {
+      margin-top: 0.5rem;
+    }
+
     .announcementCategoryDefault {
+      text-wrap: nowrap;
       margin: 0 1rem;
       font-size: 1.3rem;
     }
 
-    .announcementCategory {}
+    .announcementCategory {
+    }
 
     .announcementDatePostedDefault {
       margin: 0 1.5rem;
       font-size: 1.3rem;
+
+      @media (max-width: 1150px) {
+        margin: 0;
+      }
     }
 
-    .announcementDatePosted {}
+    .announcementDatePosted {
+    }
 
     .announcementAuthorDefault {
+      text-wrap: nowrap;
       margin: 0 1.5rem;
       font-size: 1.3rem;
+
+      @media (max-width: 1150px) {
+        margin: 0 1rem;
+      }
     }
 
-    .announcementAuthor {}
+    .announcementAuthor {
+    }
   }
 }

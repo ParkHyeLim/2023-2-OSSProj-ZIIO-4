@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
+import listIcon from '../../assets/icons/list.svg';
+import closeIcon from '../../assets/icons/close.svg';
 
 import styles from './MainNotice.module.scss';
 import ClipModal from '../../components/ClipModal/ClipModal';
@@ -22,8 +24,12 @@ import {
   getNotice,
   getSearchNotice,
 } from '../../api/userAPI';
+import { useMediaQuery } from 'react-responsive';
+import eventModalStyles from '../../components/EventModal/EventModal.module.scss';
 
 function MainNotice() {
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false); // 모바일 전용 즐겨찾기 공지사항 열기
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
   const [isLogin, setIsLogin] = useState(false);
@@ -297,11 +303,21 @@ function MainNotice() {
     setIsOpenEventModal(!isOpenEventModal);
   };
 
+  console.log(isBookmarkOpen);
   return (
     <div className={styles.container}>
-      <div className={styles.userContainer}>
+      <div className={styles.userContainer} style={{ display: isBookmarkOpen || !isMobile ? 'block' : 'none' }}>
         {isLogin ? (
           <div>
+            <img
+              src={closeIcon}
+              alt="즐겨찾기 공지사항 닫기"
+              onClick={() => setIsBookmarkOpen(false)}
+              className={styles.closeButton}
+              style={{
+                display: isBookmarkOpen && isMobile ? 'block' : 'none',
+              }}
+            />
             <div className={styles.text1}>즐겨찾기 공지사항</div>
             <UserCategory categoryList={bookmarkCategories} onClick={ListSearch} onDelete={handleDeleteBookmark} />
           </div>
@@ -314,8 +330,8 @@ function MainNotice() {
       </div>
 
       <div className={styles.noticeContainer}>
-        <div className={styles.fillterContainer}>
-          <div>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterWrapper}>
             <DropDownComp
               placeholder="대분류"
               data={sampleCategories}
@@ -338,12 +354,27 @@ function MainNotice() {
             <button className={styles.searchButton} onClick={handleSearch}>
               검색
             </button>
+            {isMobile && (
+              <>
+                <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
+                  <FaStar size={15} className={styles.star} />
+                  <div>즐겨찾기에 추가</div>
+                </button>
+                {isLogin && (
+                  <button className={styles.bookmarkListButton} onClick={() => setIsBookmarkOpen(!isBookmarkOpen)}>
+                    <img src={listIcon} alt="즐겨찾기 공지사항" />
+                    즐겨찾기 카테고리 목록
+                  </button>
+                )}
+              </>
+            )}
           </div>
-
-          <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
-            <FaStar size={15} className={styles.star} />
-            <div>즐겨찾기에 추가</div>
-          </button>
+          {!isMobile && (
+            <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
+              <FaStar size={15} className={styles.star} />
+              <div>즐겨찾기에 추가</div>
+            </button>
+          )}
         </div>
 
         <div className={styles.itemList}>
