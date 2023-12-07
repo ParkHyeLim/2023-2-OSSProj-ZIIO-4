@@ -14,14 +14,19 @@ import UserCategory from '../../components/UserCategory/UserCategory';
 import Pagging from '../../components/Pagging/Pagging';
 import { EventModal } from '../../components';
 import { useNavigate } from 'react-router-dom';
-import { addBookmark, addEventsScraps, deleteBookmark, deleteScraps, getNotice, getScraps, getSearchNotice } from '../../api/userAPI';
+import { addBookmark, addEventsScraps, deleteBookmark, deleteScraps, getBookmark, getNotice, getScraps, getSearchNotice } from '../../api/userAPI';
 
 function MainNotice() {
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(() => {
+    const isToken = localStorage.getItem("ziio-token");
+    if (isToken) return true;
+    else return false
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [isScraps, setIsScraps] = useState(false);
+  const [isButton, setIsButton] = useState(false);
   const [isOpenEventModal, setIsOpenEventModal] = useState(false);
 
   const [category1, setCategory1] = useState('메인');
@@ -41,7 +46,14 @@ function MainNotice() {
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
   const [selectedCategory, setSelectedCategory] = useState("100100000"); // focus된 공지 index  
 
-  const { isLoading, data } = useQuery('notices', getNotice);
+  const noticeQuery = useQuery('noticeData', getNotice);
+  const bookmarksQuery = useQuery('bookmarksData', getBookmark, {
+    enabled: !!isLogin
+  });
+
+  const scrapsQuery = useQuery('scrapsData', getScraps, {
+    enabled: !!isLogin
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,17 +67,24 @@ function MainNotice() {
   }, []);
 
   useEffect(() => {
-    if (noticeList.length === 0 && data) {
+    if (noticeList.length === 0 && noticeQuery && noticeQuery.data) {
       setBookmarkCategories([]);
-      setCategoryIdList(data.categories);
-      setScrapsList(data.scraps);
-      let formattedNotices;
-      if (data.scraps) formattedNotices = noticeFormat(data.notices, data.scraps);
-      else formattedNotices = noticeFormat(data.notices);
-      setNoticeList(formattedNotices);
-      if (data.bookmarks && bookmarkCategories.length === 0) {
-        const getBookmarkData = data.bookmarks;
-        getBookmarkData.forEach((item) => {
+      const { data } = noticeQuery;
+      if (Array.isArray(data.notices)) {
+        const formattedNotices = noticeFormat(data.notices);
+        setNoticeList(formattedNotices);
+      }
+      if (Array.isArray(data.categories)) {
+        setCategoryIdList(data.categories);
+      }
+    }
+  }, [noticeQuery, noticeList]);
+
+  useEffect(() => {
+    if (bookmarksQuery && bookmarksQuery.data) {
+      const { data } = bookmarksQuery;
+      if (Array.isArray(data)) {
+        data.forEach((item) => {
           const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === item.category_id);
           if (!isDuplicate) {
             const selectedCategory = (categoryList.filter((category) => category.name === item.category_name)[0]?.categoryList) || [];
@@ -83,31 +102,31 @@ function MainNotice() {
         })
       }
     }
-  }, [data]);
+  }, [bookmarksQuery]);
 
   useEffect(() => {
-    if (isScraps) {
-      handleSearch();
+    if (scrapsQuery && scrapsQuery.data) {
+      const { data } = scrapsQuery;
+      if (Array.isArray(data)) {
+        setScrapsList(data);
+      }
     }
-  }, [isScraps]);
+  }, [scrapsQuery]);
 
-  const noticeFormat = (data, scraps) => {  
-    const newArray = data || [];
-    newArray.map((item) => {
-      const words = item.title.split(' ');
-      if (words.length > 0 && item.notice_id === null) {
-        const restOfWords = words.slice(1);
-        item.title = restOfWords.join(' ');
-        item.fixed = item.notice_id === null ? true : false;
-      }
-      if (scraps && Array.isArray(scraps)) {
-        item.isClip = scraps.some((clip) => clip.id === item.id);
-      } else {
-        item.isClip = false;
-      }
-    })
-    return newArray;
-  }
+  useEffect(() => {
+    if (Array.isArray(scrapsList)) {
+      const formattedNotices = noticeFormat(noticeList, scrapsList);
+      setNoticeList(formattedNotices);
+    }
+  }, [scrapsList]);
+
+  useEffect(() => {
+    if (bookmarkCategories.length !== 0) {
+      const req = bookmarkCategories.some(item => item.id === selectedCategory)
+      if (req) setIsButton(true);
+      else setIsButton(false);
+    }
+  }, [noticeList, bookmarkCategories]);
 
   const handleCategories1Change = e => {
     setCategory1(e.target.value);
@@ -120,18 +139,39 @@ function MainNotice() {
     setCategory3(''); // 소분류 초기화
   };
 
+  const noticeFormat = (data, scraps) => {
+    if (Array.isArray(data) && data.length !== 0) {
+      const newArray = data.map((item) => {
+        const words = item.title.split(' ');
+        if (words.length > 0 && item.notice_id === null) {
+          if (words[0].includes("공지")) {
+            const restOfWords = words.slice(1);
+            item.title = restOfWords.join(' ');
+          }
+          item.fixed = item.notice_id === null ? true : false;
+        }
+        if (scraps && Array.isArray(scraps)) {
+          item.isClip = scraps.some((clip) => clip.id === item.id);
+        } else {
+          item.isClip = false;
+        }
+        return item;
+      });
+      return newArray;
+    }
+    return [];
+  };
+
   const categotyIdSearch = (category1, category2, category3) => {
     let searchCategory = category3 || category2 || category1;
     if (searchCategory === "") {
       searchCategory = category2 || category1;
-      const result = Array.isArray(categoryIdList) && categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0
-  ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id
-  : [];setSelectedCategory(result);
+      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      setSelectedCategory(result);
       return result;
     } else {
-      const result = Array.isArray(categoryIdList) && categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0
-  ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id
-  : [];setSelectedCategory(result);
+      const result = categoryIdList.filter((cat) => cat.name === searchCategory).length !== 0 ? categoryIdList.filter((cat) => cat.name === searchCategory)[0].category_id : [];
+      setSelectedCategory(result);
       return result;
     }
   }
@@ -198,10 +238,7 @@ function MainNotice() {
     else {
       if (category1 || category2 || category3) {
         const result = await addBookmark(selectedCategory);
-
-        if (result === "fail") alert("이미 등록된 카테고리입니다.");
-        else if (result === "error") alert("즐겨찾기 추가를 다시 시도주세요.");
-        else if (result && result.category_id) {
+        if (result && result.category_id) {
           const newBookmark = {
             name: category3 || category2,
             url: {
@@ -242,6 +279,7 @@ function MainNotice() {
       setCategory1(value.url.category1);
       setCategory2(value.url.category2);
       setCategory3(value.url.category3);
+      reloadScraps();
     };
   }
 
@@ -249,21 +287,25 @@ function MainNotice() {
   const changeClipStarNotice = (item) => {
     if (!isLogin) alert("로그인이 필요한 기능입니다");
     else {
-      if (item.type === "add") { setIsOpen(!isOpen); setSelectedNotice(item.value); setSelectedCategory(item.value.category_id) }
+      if (item.type === "add") {
+        setIsOpen(!isOpen);
+        setSelectedNotice(item.value);
+        setSelectedCategory(item.value.category_id);
+      }
       else {
         const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
-        if (result === "success") { alert("스크랩이 취소되었습니다"); reloadScraps(); }
-        else if (result === "fail") alert("삭제할 해당 스크랩이 없습니다");
+        if (result === "success") { alert("스크랩이 취소되었습니다"); }
       }
     }
   }
 
-  // 스크랩 반영
-  const reloadScraps = async () => {
-    const scrapsData = await getScraps();
-    if (scrapsData) { setScrapsList(scrapsData); setIsScraps(!isScraps) }
+  // 스크랩 재실행 
+  const reloadScraps = async (data) => {
+    if (Array.isArray(data)) {
+      console.log("제발", data);
+      setScrapsList([...data]);
+    }
   }
-
 
   // 일정 등록
   const saveEvent = async (eventData) => {
@@ -271,7 +313,7 @@ function MainNotice() {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
-    } 
+    }
 
     const resultData = {
       notice_id: eventData.id,
@@ -290,8 +332,7 @@ function MainNotice() {
       if (result === "success") {
         const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
         if (response) navigate('/myPage')
-        else reloadScraps();
-      } else if (result === "fail") alert("잘못된 데이터 형태입니다. 다시 스크랩을 시도해주세요.");
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -344,14 +385,14 @@ function MainNotice() {
             </button>
           </div>
 
-          <button className={styles.bookmarkButton} onClick={handleAddBookmark}>
+          <button className={styles.bookmarkButton} style={isButton ? { opacity: 0.5 } : {}} onClick={handleAddBookmark} disabled={isButton}>
             <FaStar size={15} className={styles.star} />
             <div>즐겨찾기에 추가</div>
           </button>
         </div>
 
         <div className={styles.itemList}>
-          {isLoading ?
+          {noticeQuery.isLoading ?
             <div className={styles.loadingContainer} >
               <img className={styles.loadingImage} src={loading} alt="공지사항을 불러오는 중입니다" />
               <div className={styles.loadingText} >공지사항을 불러오는 중입니다.</div>
@@ -369,7 +410,7 @@ function MainNotice() {
           categoryId={selectedCategory}
           onModalClose={() => setIsOpen(!isOpen)}
           openEventModal={() => { setIsOpen(!isOpen); setIsOpenEventModal(!isOpenEventModal) }}
-          onReloadScraps={reloadScraps}
+          onScrapsData={(data) => reloadScraps(data)}
         />
       }
       {isOpenEventModal && <EventModal

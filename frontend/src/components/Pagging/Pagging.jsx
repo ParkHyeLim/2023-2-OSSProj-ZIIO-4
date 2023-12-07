@@ -10,18 +10,20 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
   const [nowFixedNuber, setNowFixedNuber] = useState(0);
 
   useEffect(() => {
-    setNowPage(1);
-    const inputData = [...data];
-    const fixedData = inputData.filter((item) => {
-      return item.fixed === true;
-    });
-    setNowFixedNuber(fixedData.length);
-    const updatedInputData = inputData.filter((item) => {
-      return item.fixed !== true;
-    });
-    const mergedArray = fixedData.concat(updatedInputData);
-    setNoticeData(mergedArray);
-    setNowData(mergedArray.slice(0, 10));
+    if (Array.isArray(data)) {
+      setNowPage(1);
+      const inputData = [...data];
+      const fixedData = inputData.filter((item) => {
+        return item.fixed === true;
+      });
+      setNowFixedNuber(fixedData.length);
+      const updatedInputData = inputData.filter((item) => {
+        return item.fixed !== true;
+      });
+      const mergedArray = fixedData.concat(updatedInputData);
+      setNoticeData(mergedArray);
+      setNowData(mergedArray.slice(0, 10));
+    }
   }, [data]);
 
   useEffect(() => {
