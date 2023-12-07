@@ -124,13 +124,13 @@ const MyPage = () => {
 
     // EventDetail에 표시할 정보를 담는 객체를 업데이트
     setEvent({
-      my_page_id: extendedProps ? extendedProps.my_page_id : my_page_id,
+      my_page_id: extendedProps?.my_page_id || my_page_id,
       title,
       url,
-      memo: extendedProps ? extendedProps.memo : memo,
-      color: backgroundColor ? backgroundColor : color,
-      start: start ? start : null,
-      end: end ? end : null,
+      memo: extendedProps?.memo || memo,
+      color: backgroundColor || color,
+      start: start || null,
+      end: end || null,
     });
   };
 
