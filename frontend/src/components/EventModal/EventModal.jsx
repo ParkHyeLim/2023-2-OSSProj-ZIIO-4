@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { useMutation, useQueryClient } from 'react-query';
 import { deleteMyEvent } from '../../api/mypageAPI';
-import { useMediaQuery } from 'react-responsive';
 
 const { RangePicker } = DatePicker;
 

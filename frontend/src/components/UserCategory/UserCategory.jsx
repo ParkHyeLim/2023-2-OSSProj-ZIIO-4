@@ -20,7 +20,7 @@ function UserCategory({ categoryList, onClick, onDelete }) {
 
   return (
     <div className={styles.categoryContainer}>
-      {data.map((value, index) => (
+      {data && data.map((value, index) => (
         <div key={index} className={styles.categoryButton}>
           <div className={styles.content}>
             <FaStar size={16} className={styles.star} />

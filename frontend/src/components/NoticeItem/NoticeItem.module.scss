@@ -33,6 +33,11 @@
 
     .bookmarkIcon {
       color: var(--yellow);
+
+      @media (max-width: 1150px) {
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+      }
     }
 
     .regBookmarkIcon {
@@ -44,8 +49,8 @@
       }
 
       @media (max-width: 1150px) {
-        min-width: 2rem;
-        min-height: 2rem;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
       }
     }
 
