@@ -96,6 +96,6 @@ export const addEventsScraps = async (item) => {
     const result = await data;
     if (result) return result;
   } catch (error) {
-    return alert("일정 등록에 실패하셨습니다. 다시 시도해주세요");;
+    alert("일정 등록에 실패하셨습니다. 다시 시도해주세요");
   }
 }
