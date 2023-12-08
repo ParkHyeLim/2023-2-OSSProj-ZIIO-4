@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -7,7 +8,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { EventDetail, EventList } from './components';
 import styles from '../MyPage/MyPage.module.scss';
 import { EventModal } from '../../components';
-import instance from '../../api/instance';
 import { useNavigate } from 'react-router-dom';
 import { fetchProjects } from '../../api/schoolCalendarAPI';
 import { formatDateToYMD } from '../../utils/dateUtils';
@@ -99,6 +99,8 @@ const SchoolCalendar = () => {
 
     const resultData = {
       notice_id: eventData.id,
+      start_date: dayjs(eventData.start).format('YYYY.MM.DD'),
+      end_date: dayjs(eventData.end).format('YYYY.MM.DD'),
       title: eventData.title,
       memo: eventData.extendedProps.memo,
       url: eventData.url,

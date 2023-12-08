@@ -15,7 +15,6 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrap
       category_id: categoryId
     }
     const SearchData = await addScraps(resultData);
-    console.log(SearchData);
     if (SearchData) { onScrapsData(SearchData); onModalClose(false); }
   };
 

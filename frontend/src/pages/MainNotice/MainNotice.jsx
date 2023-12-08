@@ -34,13 +34,13 @@ function MainNotice() {
   const [isBookmarkOpen, setIsBookmarkOpen] = useState(false); // 모바일 전용 즐겨찾기 공지사항 열기
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
-  const [isLogin, setIsLogin] = useState(() => {
+
+  const [isLogin, setIsLogin] = useState(() => { // 로그인 유무 판다
     const isToken = localStorage.getItem("ziio-token");
     if (isToken) return true;
     else return false
   });
   const [isOpen, setIsOpen] = useState(false);
-  const [isScraps, setIsScraps] = useState(false);
   const [isButton, setIsButton] = useState(false);
   const [isOpenEventModal, setIsOpenEventModal] = useState(false);
 
@@ -62,13 +62,8 @@ function MainNotice() {
   const [selectedCategory, setSelectedCategory] = useState('100100000'); // focus된 공지 index
 
   const noticeQuery = useQuery('noticeData', getNotice);
-  const bookmarksQuery = useQuery('bookmarksData', getBookmark, {
-    enabled: !!isLogin
-  });
-
-  const scrapsQuery = useQuery('scrapsData', getScraps, {
-    enabled: !!isLogin
-  });
+  const bookmarksQuery = useQuery('bookmarksData', getBookmark, { enabled: !!isLogin });
+  const scrapsQuery = useQuery('scrapsData', getScraps, { enabled: !!isLogin });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,25 +76,30 @@ function MainNotice() {
     if (isToken) setIsLogin(true);
   }, []);
 
+  // 공지사항 불러오기
   useEffect(() => {
     if (noticeList.length === 0 && noticeQuery && noticeQuery.data) {
       setBookmarkCategories([]);
+      setScrapsList([]);
       const { data } = noticeQuery;
       if (Array.isArray(data.notices)) {
-        const formattedNotices = noticeFormat(data.notices);
-        setNoticeList(formattedNotices);
+        if (scrapsQuery && scrapsQuery.data) {
+          const formattedNotices = noticeFormat(data.notices, scrapsQuery.data);
+          setNoticeList(formattedNotices);
+        }
       }
       if (Array.isArray(data.categories)) {
         setCategoryIdList(data.categories);
       }
     }
-  }, [noticeQuery, noticeList]);
+  }, [noticeQuery]);
 
+  // 북마크 불러오기
   useEffect(() => {
     if (bookmarksQuery && bookmarksQuery.data) {
       const { data } = bookmarksQuery;
       if (Array.isArray(data)) {
-        data.forEach((item) => {
+        data.forEach((item) => { // 불로온 북마크 데이터를 프론트 측에서 커스텀
           const isDuplicate = bookmarkCategories.some(existingCategory => existingCategory.id === item.category_id);
           if (!isDuplicate) {
             const selectedCategory = (categoryList.filter((category) => category.name === item.category_name)[0]?.categoryList) || [];
@@ -120,29 +120,24 @@ function MainNotice() {
   }, [bookmarksQuery]);
 
   useEffect(() => {
-    if (scrapsQuery && scrapsQuery.data) {
+    if (scrapsList.length === 0 && scrapsQuery && scrapsQuery.data) {
       const { data } = scrapsQuery;
       if (Array.isArray(data)) {
         setScrapsList(data);
       }
     }
-  }, [scrapsQuery]);
+  }, [scrapsList, scrapsQuery]);
 
-  useEffect(() => {
-    if (Array.isArray(scrapsList)) {
-      const formattedNotices = noticeFormat(noticeList, scrapsList);
-      setNoticeList(formattedNotices);
-    }
-  }, [scrapsList]);
-
+  // 북마크 된 여부에 따라 즐겨찾기 버튼 활성화, 비활성화 설정
   useEffect(() => {
     if (bookmarkCategories.length !== 0) {
       const req = bookmarkCategories.some(item => item.id === selectedCategory)
       if (req) setIsButton(true);
       else setIsButton(false);
     }
-  }, [noticeList, bookmarkCategories]);
+  }, [noticeList, bookmarkCategories, selectedCategory]);
 
+  // 대, 중, 소분류 카테고리 선택시마다 초기화되는 기능
   const handleCategories1Change = e => {
     setCategory1(e.target.value);
     setCategory2(''); // 중분류 초기화
@@ -154,6 +149,7 @@ function MainNotice() {
     setCategory3(''); // 소분류 초기화
   };
 
+  // 상단 고정 및 스크랩 여부 판단하여 noticeList에 해당 정보 추가
   const noticeFormat = (data, scraps) => {
     if (Array.isArray(data) && data.length !== 0) {
       const newArray = data.map((item) => {
@@ -165,11 +161,8 @@ function MainNotice() {
           }
           item.fixed = item.notice_id === null ? true : false;
         }
-        if (scraps && Array.isArray(scraps)) {
-          item.isClip = scraps.some((clip) => clip.id === item.id);
-        } else {
-          item.isClip = false;
-        }
+        if (scraps && Array.isArray(scraps)) item.isClip = scraps.some((clip) => clip.id === item.id);
+        else item.isClip = false;
         return item;
       });
       return newArray;
@@ -177,6 +170,7 @@ function MainNotice() {
     return [];
   };
 
+  // 카테고리 선택 시 해당 카테고리 id 찾아주는 함수
   const categotyIdSearch = (category1, category2, category3) => {
     let searchCategory = category3 || category2 || category1;
     if (searchCategory === '') {
@@ -210,12 +204,30 @@ function MainNotice() {
       }
       else alert("검색을 다시 시도해주세요.");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert("검색 중 오류가 발생했습니다.");
     } finally {
       addSearchList();
     }
   };
+
+  // 기록에서 검색
+  const ListSearch = async (value) => {
+    try {
+      const SearchData = await getSearchNotice(value.id, "");
+      if (SearchData === "error") alert("검색을 다시 시도해주세요.");
+      else {
+        const formattedNotices = noticeFormat(SearchData, scrapsList);
+        setNoticeList(formattedNotices);
+        setCategory1(value.url.category1);
+        setCategory2(value.url.category2);
+        setCategory3(value.url.category3);
+        setSelectedCategory(value.id);
+      }
+    } catch (error) {
+      alert("검색 중 오류가 발생했습니다.");
+    };
+  }
 
   // 검색 기록 (세션에 저장)
   const addSearchList = () => {
@@ -252,8 +264,7 @@ function MainNotice() {
     setSearchCategories(updatedData);
   };
 
-  // 즐겨찾기
-  // 즐겨찾기 추가
+  // 카테고리 즐겨찾기(북마크) 추가
   const handleAddBookmark = async () => {
     if (!isLogin) alert('로그인이 필요한 기능입니다.');
     else {
@@ -278,29 +289,13 @@ function MainNotice() {
     }
   };
 
-  // 즐겨찾기 삭제(db에 id 전달)
+  // 카테고리 즐겨찾기(북마크) 삭제(db에 id 전달)
   const handleDeleteBookmark = async id => {
+    const prevBookmarkData = [...bookmarkCategories];
+    setBookmarkCategories(prevBookmarkData.filter(item => item.id !== id));
     const result = await deleteBookmark(id);
     if (result === 'fail') alert('해당 카테고리는 즐겨찾기로 등록되지 않은 카테고리입니다.');
-    else if (result === 'error') alert('즐겨찾기 삭제를 다시 시도해주세요.');
-    else {
-      const newArray = bookmarkCategories.filter(item => item.id !== result);
-      setBookmarkCategories(newArray);
-    };
-  }
-
-  // 기록에서 검색
-  const ListSearch = async (value) => {
-    const SearchData = await getSearchNotice(value.id, "");
-    if (SearchData === "error") alert("검색을 다시 시도해주세요.");
-    else {
-      const formattedNotices = noticeFormat(SearchData);
-      setNoticeList(formattedNotices);
-      setCategory1(value.url.category1);
-      setCategory2(value.url.category2);
-      setCategory3(value.url.category3);
-      reloadScraps();
-    };
+    else if (result === 'error') setBookmarkCategories(prevBookmarkData);
   }
 
   // 스크랩
@@ -312,18 +307,28 @@ function MainNotice() {
         setSelectedNotice(item.value);
         setSelectedCategory(item.value.category_id);
       }
-      else {
-        const result = deleteScraps({ notice_id: item.value.notice_id, category_id: item.value.category_id })
-        if (result === "success") { alert("스크랩이 취소되었습니다"); }
-      }
+      else
+        deleteScrapsNotice({ notice_id: item.value.notice_id, category_id: item.value.category_id })
     }
   };
 
-  // 스크랩 재실행 
+  // 스크랩 삭제
+  const deleteScrapsNotice = async (item) => {
+    try {
+      const result = await deleteScraps(item);
+      alert("스크랩이 취소되었습니다");
+      reloadScraps(result);
+    } catch (error) {
+      return;
+    }
+  };
+
+  // 스크랩 notice 반영 업데이트
   const reloadScraps = async (data) => {
     if (Array.isArray(data)) {
-      console.log("제발", data);
       setScrapsList([...data]);
+      const newArray = noticeFormat(noticeList, data);
+      setNoticeList(newArray);
     }
   }
 
@@ -346,12 +351,12 @@ function MainNotice() {
       color_code: eventData.backgroundColor,
     };
 
-    const EventsData = addEventsScraps(resultData);
     try {
-      const result = await EventsData;
-      if (result === "success") {
+      const EventsData = await addEventsScraps(resultData);
+      if (EventsData) {
         const response = window.confirm("저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?")
-        if (response) navigate('/myPage')
+        if (response) navigate('/myPage');
+        else reloadScraps(EventsData);
       }
     } catch (error) {
       console.error('Error:', error);
