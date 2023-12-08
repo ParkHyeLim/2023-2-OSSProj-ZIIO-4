@@ -101,8 +101,7 @@ const SchoolCalendar = () => {
     }
 
     const resultData = {
-      notice_id: eventData.id,
-      category_id: "103000000",
+      academic_id: eventData.id,
       start_date: dayjs(eventData.start).format('YYYY.MM.DD'),
       end_date: dayjs(eventData.end).format('YYYY.MM.DD'),
       title: eventData.title,
