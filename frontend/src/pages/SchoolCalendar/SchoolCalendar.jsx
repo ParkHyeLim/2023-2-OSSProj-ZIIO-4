@@ -109,7 +109,6 @@ const SchoolCalendar = () => {
       url: eventData.url,
       color_code: eventData.backgroundColor,
     };
-    console.log("zja", resultData);
 
     try {
       const SearchData = addEventAcademics(resultData);

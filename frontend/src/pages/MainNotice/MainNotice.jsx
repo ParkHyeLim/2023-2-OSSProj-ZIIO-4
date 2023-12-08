@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useQuery } from 'react-query';
+import { useMediaQuery } from 'react-responsive';
+import { FaStar } from 'react-icons/fa';
 
 import listIcon from '../../assets/icons/list.svg';
 import closeIcon from '../../assets/icons/close.svg';
 
 import styles from './MainNotice.module.scss';
-import ClipModal from '../../components/ClipModal/ClipModal';
+import Pagging from './components/Pagging/Pagging';
+import ClipModal from './components/ClipModal/ClipModal';
+import UserCategory from './components/UserCategory/UserCategory';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import DropDownComp from '../../components/DropDownComp/DropDownComp';
-
+import { EventModal } from '../../components';
 import loading from '../../assets/images/Loding.gif';
 import sampleCategories, { categoryList } from '../../utils/category';
-import { FaStar } from 'react-icons/fa';
-import UserCategory from '../../components/UserCategory/UserCategory';
-import Pagging from '../../components/Pagging/Pagging';
-import { EventModal } from '../../components';
-import { useNavigate } from 'react-router-dom';
 import {
   addBookmark,
   addEventsScraps,
@@ -26,8 +26,7 @@ import {
   getNotice,
   getScraps,
   getSearchNotice,
-} from '../../api/userAPI';
-import { useMediaQuery } from 'react-responsive';
+} from '../../api/noticeAPI';
 
 function MainNotice() {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
