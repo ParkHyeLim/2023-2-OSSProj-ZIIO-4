@@ -85,13 +85,16 @@ function MainNotice() {
         if (scrapsQuery && scrapsQuery.data) {
           const formattedNotices = noticeFormat(data.notices, scrapsQuery.data);
           setNoticeList(formattedNotices);
+        } else {
+          const formattedNotices = noticeFormat(data.notices, []);
+          setNoticeList(formattedNotices);
         }
       }
       if (Array.isArray(data.categories)) {
         setCategoryIdList(data.categories);
       }
     }
-  }, [noticeQuery]);
+  }, [noticeQuery, noticeList, scrapsQuery]);
 
   // 북마크 불러오기
   useEffect(() => {
@@ -233,7 +236,7 @@ function MainNotice() {
     if (category1 || category2 || category3) {
       const categoryId = categotyIdSearch(category1, category2, category3);
       const newSearch = {
-        name: category3 || category2,
+        name: category3 || category2 || category1,
         url: {
           category1,
           category2,
@@ -271,7 +274,7 @@ function MainNotice() {
         const result = await addBookmark(selectedCategory);
         if (result && result.category_id) {
           const newBookmark = {
-            name: category3 || category2,
+            name: category3 || category2 || category1,
             url: {
               category1,
               category2,
@@ -410,7 +413,7 @@ function MainNotice() {
               onChange={e => setCategory3(e.target.value)}
             />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-            <button className={styles.searchButton} onClick={handleSearch}>
+            <button className={category2 === '' ? styles.disabledSearchButton : styles.searchButton} onClick={handleSearch} disabled={category2 === '' ? true : false}>
               검색
             </button>
             {isMobile && (
