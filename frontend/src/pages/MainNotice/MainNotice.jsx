@@ -17,31 +17,21 @@ import DropDownComp from '../../components/DropDownComp/DropDownComp';
 import { EventModal } from '../../components';
 import loading from '../../assets/images/Loding.gif';
 import sampleCategories, { categoryList } from '../../utils/category';
-import {
-  addBookmark,
-  addEventsScraps,
-  deleteBookmark,
-  deleteScraps,
-  getBookmark,
-  getNotice,
-  getScraps,
-  getSearchNotice,
-} from '../../api/noticeAPI';
+import { addBookmark, addEventsScraps, deleteBookmark, deleteScraps, getBookmark, getNotice, getScraps, getSearchNotice } from '../../api/noticeAPI';
 
 function MainNotice() {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [isBookmarkOpen, setIsBookmarkOpen] = useState(false); // 모바일 전용 즐겨찾기 공지사항 열기
   const [categoryIdList, setCategoryIdList] = useState([]); // db에서 카테고리 id 전달 받기
 
-
-  const [isLogin, setIsLogin] = useState(() => { // 로그인 유무 판다
+  const [isLogin, setIsLogin] = useState(() => { // 로그인 유무 판단
     const isToken = localStorage.getItem("ziio-token");
     if (isToken) return true;
     else return false
   });
-  const [isOpen, setIsOpen] = useState(false);
-  const [isButton, setIsButton] = useState(false);
-  const [isOpenEventModal, setIsOpenEventModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // 스크랩 모달창
+  const [isButton, setIsButton] = useState(false); // 즐겨찾기 버튼 활성화
+  const [isOpenEventModal, setIsOpenEventModal] = useState(false); // 일정 모달창 
 
   const [category1, setCategory1] = useState('메인');
   const [category2, setCategory2] = useState('일반공지');
@@ -64,7 +54,7 @@ function MainNotice() {
   const bookmarksQuery = useQuery('bookmarksData', getBookmark, { enabled: !!isLogin });
   const scrapsQuery = useQuery('scrapsData', getScraps, { enabled: !!isLogin });
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const isSessionData = sessionStorage.getItem('searchCategories');
     const parseExistingData = isSessionData
@@ -98,7 +88,7 @@ function MainNotice() {
 
   // 북마크 불러오기
   useEffect(() => {
-    if (bookmarksQuery && bookmarksQuery.data) {
+    if (bookmarkCategories.length === 0 && bookmarksQuery && bookmarksQuery.data) {
       const { data } = bookmarksQuery;
       if (Array.isArray(data)) {
         data.forEach((item) => { // 불로온 북마크 데이터를 프론트 측에서 커스텀
@@ -119,7 +109,7 @@ function MainNotice() {
         })
       }
     }
-  }, [bookmarksQuery]);
+  }, [bookmarksQuery, bookmarkCategories]);
 
   useEffect(() => {
     if (scrapsList.length === 0 && scrapsQuery && scrapsQuery.data) {
@@ -231,20 +221,21 @@ function MainNotice() {
     };
   }
 
+  // 카테고리 데이터 형태를 만들어 주는 함수
+  const categoryDataForm = (c1, c2, c3, id) => {
+    const data = {
+      name: c3 || c2 || c1,
+      url: { c1, c2, c3, },
+      id: id,
+    }
+    return data;
+  }
+
   // 검색 기록 (세션에 저장)
   const addSearchList = () => {
     if (category1 || category2 || category3) {
       const categoryId = categotyIdSearch(category1, category2, category3);
-      const newSearch = {
-        name: category3 || category2 || category1,
-        url: {
-          category1,
-          category2,
-          category3,
-        },
-        id: categoryId,
-      };
-
+      const newSearch = categoryDataForm(category1, category2, category3, categoryId);
       const existingData = sessionStorage.getItem('searchCategories');
       const parseExistingData = existingData ? JSON.parse(existingData) : [];
       const isExist = parseExistingData.some(filter => filter.id === newSearch.id);
@@ -273,15 +264,7 @@ function MainNotice() {
       if (category1 || category2 || category3) {
         const result = await addBookmark(selectedCategory);
         if (result && result.category_id) {
-          const newBookmark = {
-            name: category3 || category2 || category1,
-            url: {
-              category1,
-              category2,
-              category3,
-            },
-            id: result.category_id,
-          };
+          const newBookmark = categoryDataForm(category1, category2, category3, result.category_id);
           setBookmarkCategories(prev => {
             if (!prev.some(category => category.id === newBookmark.id)) return [...prev, newBookmark];
             return prev;
@@ -294,10 +277,9 @@ function MainNotice() {
   // 카테고리 즐겨찾기(북마크) 삭제(db에 id 전달)
   const handleDeleteBookmark = async id => {
     const prevBookmarkData = [...bookmarkCategories];
-    setBookmarkCategories(prevBookmarkData.filter(item => item.id !== id));
     const result = await deleteBookmark(id);
-    if (result === 'fail') alert('해당 카테고리는 즐겨찾기로 등록되지 않은 카테고리입니다.');
-    else if (result === 'error') setBookmarkCategories(prevBookmarkData);
+    if (result === 'error') setBookmarkCategories(prevBookmarkData);
+    else setBookmarkCategories(prevBookmarkData.filter(item => item.id !== id));
   }
 
   // 스크랩
