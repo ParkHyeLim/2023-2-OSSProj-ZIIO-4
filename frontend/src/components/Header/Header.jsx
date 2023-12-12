@@ -22,7 +22,7 @@ export const Header = () => {
   const [isModalOpen, setIsModalOpen] = useRecoilState(loginModalState); // 로그인 모달을 보여줄지 여부
 
   const handleLogin = () => {
-    if (isLoggedin) {
+    if (isLoggedin && !isMobile) {
       setIsHeaderVisible(false);
       // 로그아웃 여부 물어보기
       const result = window.confirm('로그아웃 하시겠습니까?');
@@ -34,6 +34,10 @@ export const Header = () => {
     } else {
       setIsHeaderVisible(false);
       setIsModalOpen(true);
+    }
+
+    if (isMobile) {
+      window.location.href = process.env.REACT_APP_SERVER_URL + '/oauth2/authorization/google';
     }
   };
 
@@ -97,7 +101,7 @@ export const Header = () => {
         </header>
       )}
       <Outlet />
-      {isModalOpen && <LoginModal onModalClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && !isMobile && <LoginModal onModalClose={() => setIsModalOpen(false)} />}
     </>
   );
 };
