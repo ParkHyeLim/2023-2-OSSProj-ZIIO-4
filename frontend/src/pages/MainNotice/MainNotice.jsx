@@ -64,7 +64,7 @@ function MainNotice() {
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
   const [selectedCategory, setSelectedCategory] = useState('100100000'); // focus된 공지 index
 
-  const noticeQuery = useQuery('noticeData', getNotice);
+  const noticeQuery = useQuery('noticeData', getNotice, { cacheTime: 1000 * 60 * 60 * 24 });
   const bookmarksQuery = useQuery('bookmarksData', getBookmark, { enabled: !!isLogin });
   const scrapsQuery = useQuery('scrapsData', getScraps, { enabled: !!isLogin });
   const navigate = useNavigate();
@@ -106,7 +106,7 @@ function MainNotice() {
 
   // 북마크 불러오기
   useEffect(() => {
-    if (bookmarkCategories.length === 3 && bookmarksQuery && bookmarksQuery.data) {
+    if (bookmarkCategories.length === 0 && bookmarksQuery && bookmarksQuery.data) {
       const { data } = bookmarksQuery;
       if (Array.isArray(data)) {
         data.forEach(item => {
@@ -129,7 +129,7 @@ function MainNotice() {
         });
       }
     }
-  }, [bookmarksQuery, bookmarkCategories]);
+  }, [bookmarksQuery]);
 
   useEffect(() => {
     if (scrapsList.length === 0 && scrapsQuery && scrapsQuery.data) {
@@ -255,7 +255,6 @@ function MainNotice() {
     if (category1 || category2 || category3) {
       const categoryId = categotyIdSearch(category1, category2, category3);
       const newSearch = categoryDataForm(category1, category2, category3, categoryId);
-      console.log(newSearch);
       const existingData = sessionStorage.getItem('searchCategories');
       const parseExistingData = existingData ? JSON.parse(existingData) : [];
       const isExist = parseExistingData.some(filter => filter.id === newSearch.id);
