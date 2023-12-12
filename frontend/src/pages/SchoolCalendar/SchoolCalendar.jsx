@@ -98,12 +98,13 @@ const SchoolCalendar = () => {
 
   // 내 일정 추가(추후에는 DB에 보내기)
   const saveEvent = async eventData => {
+    console.log(eventData.end);
+
     if (eventData.end) {
       const endDate = new Date(eventData.end);
       endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
     }
-
     const resultData = {
       academic_id: eventData.id,
       start_date: dayjs(eventData.start).format('YYYY.MM.DD'),
@@ -118,7 +119,6 @@ const SchoolCalendar = () => {
       const SearchData = addEventAcademics(resultData);
       const result = await SearchData;
       if (result) {
-        console.log('zja', result);
         const response = window.confirm('저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?');
         if (response) navigate('/myPage');
       }
@@ -127,7 +127,7 @@ const SchoolCalendar = () => {
       createGoogleEvent({
         ...resultData,
         start: new Date(eventData.start),
-        end: new Date(eventData.end),
+        end: eventData.end ? new Date(eventData.end) : new Date(eventData.start),
       });
     } catch (error) {
       console.error('Error:', error);
