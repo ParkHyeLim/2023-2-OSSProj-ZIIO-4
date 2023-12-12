@@ -149,6 +149,25 @@
         }
       }
 
+      .disabledSearchButton {
+        width: 5.6rem;
+        height: 3.5rem;
+        margin-right: 1.6rem;
+        padding: 0.7rem 1rem;
+        background-color: var(--gray-200);
+        border-radius: 7px;
+        font-size: 1.3rem;
+        font-family: var(--font-family);
+        color: #ffffff;
+        cursor: pointer;
+
+        @media (max-width: 768px) {
+          width: calc(50% - 0.5rem);
+          margin-right: 0;
+          text-align: center;
+        }
+      }
+
       .bookmarkButton {
         min-width: 12.825rem;
         display: flex;
