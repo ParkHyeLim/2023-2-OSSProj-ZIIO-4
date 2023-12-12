@@ -54,3 +54,15 @@ export const sortEventsByDate = eventData => {
     return diffB - diffA;
   });
 };
+
+export const formatDateToYMD = dateString => {
+  const parsedDate = new Date(dateString);
+  const formattedDate = `${parsedDate.getFullYear()}-${padZero(parsedDate.getMonth() + 1)}-${padZero(
+    parsedDate.getDate(),
+  )}`;
+  return formattedDate;
+};
+
+export const padZero = number => {
+  return number.toString().padStart(2, '0');
+};

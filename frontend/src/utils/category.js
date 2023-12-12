@@ -1,3 +1,4 @@
+// 카테고리 구조
 const categories = [
   {
     category1: '메인',
@@ -38,15 +39,14 @@ const categories = [
       {
         category2: '사회과학대학',
         category3: [
-          '정치행정학부 정치외교학전공',
-          '정치행정학부 행정학전공',
-          '정치행정학부 북한학전공',
+          '정치외교학전공',
+          '행정학전공',
+          '북한학전공',
           '경제학과',
           '국제통상학과',
-          '사회언론정보학과 사회학전공',
-          '사회언론정보학부 미디어커뮤니케이션학전공',
+          '사회학전공',
+          '미디어커뮤니케이션학전공',
           '식품산업관리학과',
-          '광고홍보학과',
           '사회복지학과',
         ],
       },
@@ -97,7 +97,7 @@ const categories = [
       },
       {
         category2: '예술대학',
-        category3: ['미술학부', '연국학부', '영화영상학과', '스포츠문화학과', '한국음악'],
+        category3: ['미술학부', '연국학부', '스포츠문화학과', '한국음악'],
       },
     ],
   },
@@ -105,15 +105,11 @@ const categories = [
     category1: '기타',
     category2: [
       {
-        category2: '동국대학교 IT융합교육센터',
+        category2: 'IT융합교육센터',
         category3: [],
       },
       {
-        category2: '동국대학교 고양캠퍼스 미래융합교육원',
-        category3: [],
-      },
-      {
-        category2: '동국대학교 미래융합교육원',
+        category2: '고양캠퍼스 미래융합교육원',
         category3: [],
       },
     ],
@@ -123,18 +119,6 @@ const categories = [
 export default categories;
 
 export const categoryList = [
-  {
-    name: "메인",
-    categoryList: ["메인", "", ""]
-  },
-  {
-    name: "단과대",
-    categoryList: ["단과대", "", ""]
-  },
-  {
-    name: "기타",
-    categoryList: ["기타", "", ""]
-  },
   {
     name: "일반공지",
     categoryList: ["메인", "일반공지", ""]
@@ -212,16 +196,16 @@ export const categoryList = [
     categoryList: ["단과대", "사회과학대학", ""]
   },
   {
-    name: "정치행정학부 정치외교학전공",
-    categoryList: ["단과대", "사회과학대학", "정치행정학부 정치외교학전공"]
+    name: "정치외교학전공",
+    categoryList: ["단과대", "사회과학대학", "정치외교학전공"]
   },
   {
-    name: "정치행정학부 행정학전공",
-    categoryList: ["단과대", "사회과학대학", "정치행정학부 행정학전공"]
+    name: "행정학전공",
+    categoryList: ["단과대", "사회과학대학", "행정학전공"]
   },
   {
-    name: "정치행정학부 북한학전공",
-    categoryList: ["단과대", "사회과학대학", "정치행정학부 북한학전공"]
+    name: "북한학전공",
+    categoryList: ["단과대", "사회과학대학", "북한학전공"]
   },
   {
     name: "경제학과",
@@ -232,20 +216,16 @@ export const categoryList = [
     categoryList: ["단과대", "사회과학대학", "국제통상학과"]
   },
   {
-    name: "사회언론정보학부 사회학전공",
-    categoryList: ["단과대", "사회과학대학", "사회언론정보학부 사회학전공"]
+    name: "사회학전공",
+    categoryList: ["단과대", "사회과학대학", "사회학전공"]
   },
   {
-    name: "사회언론정보학부 미디어커뮤니케이션학전공",
-    categoryList: ["단과대", "사회과학대학", "사회언론정보학부 미디어커뮤니케이션학전공"]
+    name: "미디어커뮤니케이션학전공",
+    categoryList: ["단과대", "사회과학대학", "미디어커뮤니케이션학전공"]
   },
   {
     name: "식품산업관리학과",
     categoryList: ["단과대", "사회과학대학", "식품산업관리학과"]
-  },
-  {
-    name: "광고홍보학과",
-    categoryList: ["단과대", "사회과학대학", "광고홍보학과"]
   },
   {
     name: "사회복지학과",
@@ -392,23 +372,19 @@ export const categoryList = [
     categoryList: ["단과대", "예술대학", "연극학부"]
   },
   {
-    name: "영화영상학과",
-    categoryList: ["단과대", "예술대학", "영화영상학과"]
-  },
-  {
     name: "한국음악과",
     categoryList: ["단과대", "예술대학", "한국음악과"]
   },
   {
-    name: "동국대학교 IT융합교육센터",
-    categoryList: ["기타", "동국대학교 IT융합교육센터", ""]
+    name: "IT융합교육센터",
+    categoryList: ["기타", "IT융합교육센터", ""]
   },
   {
-    name: "동국대학교 고양캠퍼스 미래융합교육원",
-    categoryList: ["기타", "동국대학교 고양캠퍼스 미래융합교육원", ""]
+    name: "고양캠퍼스 미래융합교육원",
+    categoryList: ["기타", "고양캠퍼스 미래융합교육원", ""]
   },
   {
-    name: "동국대학교 미래융합교육원",
-    categoryList: ["기타", "동국대학교 미래융합교육원", ""]
+    name: "미래융합교육원",
+    categoryList: ["기타", "미래융합교육원", ""]
   },
 ];
