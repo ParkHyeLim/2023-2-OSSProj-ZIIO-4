@@ -2,7 +2,7 @@ export const calculateDDay = eventDate => {
   const now = new Date();
   const eventDateEnd = new Date(eventDate);
   const timeDiff = eventDateEnd.getTime() - now.getTime();
-  const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+  const dayDiff = Math.round(timeDiff / (1000 * 3600 * 24));
 
   // NaN 체크: 유효하지 않은 날짜면 빈 문자열 반환
   if (isNaN(dayDiff)) {

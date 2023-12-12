@@ -9,11 +9,10 @@ import { EventModal } from '../../components';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginModalState, loginState } from '../../store/loginStore';
-import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getUser } from '../../api/userAPI';
-import { sortEventsByDate, ymdToDate } from '../../utils/dateUtils';
-import { getMyEvents, addMyEvent, updateMyEvent } from '../../api/mypageAPI';
+import { sortEventsByDate } from '../../utils/dateUtils';
+import { getMyEvents, addMyEvent } from '../../api/mypageAPI';
 import dayjs from 'dayjs';
 import useGoogleCalendar from '../../hook/useGoogleCalendar';
 
@@ -24,7 +23,9 @@ const MyPage = () => {
       const newData = data.map(event => {
         const { my_page_id, title, url, memo, color_code: color, start_date, end_date } = event;
         const start = start_date ? dayjs(start_date, 'YYYY-MM-DD').toDate() : null;
-        const end = end_date ? dayjs(end_date, 'YYYY-MM-DD').toDate() : null;
+        const end = end_date
+          ? dayjs(end_date, 'YYYY-MM-DD').toDate()
+          : start_date && dayjs(start_date, 'YYYY-MM-DD').toDate();
 
         return { title, url, memo, color, start, end, my_page_id };
       });
