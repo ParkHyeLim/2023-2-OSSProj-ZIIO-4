@@ -95,14 +95,20 @@ function MainNotice() {
         }
       }
       if (Array.isArray(data.categories)) {
-        const prevData = [{ name: "메인", category_id: "100" }, { name: "단과대", category_id: "101" }, { name: "기타", category_id: "102" }];
+        const prevData = [
+          { name: '메인', category_id: '100' },
+          { name: '단과대', category_id: '101' },
+          { name: '기타', category_id: '102' },
+        ];
         const newData = prevData.concat(data.categories);
         setCategoryIdList(newData);
       }
     }
   }, [noticeQuery, noticeList, scrapsQuery]);
 
-  useEffect(()=>{console.log(categoryIdList)},[categoryIdList])
+  useEffect(() => {
+    console.log(categoryIdList);
+  }, [categoryIdList]);
 
   // 북마크 불러오기
   useEffect(() => {
@@ -244,7 +250,7 @@ function MainNotice() {
   const categoryDataForm = (c1, c2, c3, id) => {
     const data = {
       name: c3 || c2 || c1,
-      url: { category1: c1, category2: c2, category3: c3, },
+      url: { category1: c1, category2: c2, category3: c3 },
       id: id,
     };
     return data;
@@ -422,7 +428,7 @@ function MainNotice() {
               onChange={e => setCategory3(e.target.value)}
             />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-            <button className={styles.searchButton} onClick={handleSearch} >
+            <button className={styles.searchButton} onClick={handleSearch}>
               검색
             </button>
             {isMobile && (
