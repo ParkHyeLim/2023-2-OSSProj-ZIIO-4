@@ -1,4 +1,4 @@
-용package com.ziio.backend.entity;
+package com.ziio.backend.entity;
 
 import lombok.Getter;
 import lombok.Setter;
