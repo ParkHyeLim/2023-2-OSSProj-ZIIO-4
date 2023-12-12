@@ -64,7 +64,7 @@ function MainNotice() {
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
   const [selectedCategory, setSelectedCategory] = useState('100100000'); // focus된 공지 index
 
-  const noticeQuery = useQuery('noticeData', getNotice);
+  const noticeQuery = useQuery('noticeData', getNotice, { cacheTime: 1000 * 60 * 60 * 24 });
   const bookmarksQuery = useQuery('bookmarksData', getBookmark, { enabled: !!isLogin });
   const scrapsQuery = useQuery('scrapsData', getScraps, { enabled: !!isLogin });
   const navigate = useNavigate();
