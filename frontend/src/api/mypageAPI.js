@@ -40,6 +40,7 @@ export const updateMyEvent = async eventData => {
       title: eventData.title,
       memo: eventData.extendedProps.memo,
       color_code: eventData.backgroundColor,
+      url: eventData.url,
     });
 
     return response.data;
