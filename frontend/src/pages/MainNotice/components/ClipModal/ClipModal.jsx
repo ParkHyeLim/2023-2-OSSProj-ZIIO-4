@@ -1,7 +1,7 @@
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import styles from './ClipModal.module.scss';
-import { addScraps } from "../../api/userAPI";
+import { addScraps } from "../../../../api/noticeAPI";
 
 const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrapsData }) => {
 
@@ -15,7 +15,6 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrap
       category_id: categoryId
     }
     const SearchData = await addScraps(resultData);
-    console.log(SearchData);
     if (SearchData) { onScrapsData(SearchData); onModalClose(false); }
   };
 
