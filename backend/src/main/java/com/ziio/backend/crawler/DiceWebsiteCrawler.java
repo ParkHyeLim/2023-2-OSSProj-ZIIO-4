@@ -1,9 +1,8 @@
 // IT융합교육센터 웹사이트
 package com.ziio.backend.crawler;
 
-import com.ziio.backend.constants.CrawlingInfos;
-import com.ziio.backend.entity.Category;
-import com.ziio.backend.entity.Notice;
+import com.ziio.backend.entity.NewCategory;
+import com.ziio.backend.entity.NewNotice;
 import com.ziio.backend.service.CategoryService;
 import com.ziio.backend.service.NoticeService;
 import org.jsoup.Connection;
@@ -51,7 +50,7 @@ public class DiceWebsiteCrawler {
         }
         // IT융합교육센터 웹사이트 공지사항 DB 저장
         for (int i = 0; i < url_Infos.size(); i++) {
-            Notice notice = new Notice();
+            NewNotice notice = new NewNotice();
             notice.setNotice_id(notice_id_Infos.get(i) != null ? Long.parseLong(notice_id_Infos.get(i)) : null);
             notice.setTitle(title_Infos.get(i));
             notice.setUrl(url_Infos.get(i));
@@ -61,7 +60,7 @@ public class DiceWebsiteCrawler {
             noticeService.save(notice);
         }
         // 카테고리 DB 저장
-        Category category = new Category();
+        NewCategory category = new NewCategory();
         category.setCategory_id(categoryID);
         category.setName(categoryName);
         category.setTop_fixed(topFixed);
