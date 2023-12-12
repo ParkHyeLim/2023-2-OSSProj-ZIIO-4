@@ -25,11 +25,15 @@ public class CrawlingInfos {
             {"101110101","국어교육과","duce","","3"}, {"101110102","역사교육과","historyedu","1","3"}, {"101110103","지리교육과","geoedu","","3"},
             {"101110104","수학교육과","dume","","3"}, {"101110105","가정교육과","homeedu","","3"}, {"101110106","체육교육과","pe","","3"},
             {"101113100","미술학부","aart","","3"}, {"101113101","연극학부","theatre","","3"}, {"101113103","한국음악","kmart","","3"},
-            {"102100000","IT융합교육센터","itcec","","3"}, {"102101000","고양캠퍼스 미래융합교육원","bmclife","","3"}
+            {"102101000","고양캠퍼스 미래융합교육원","bmclife","","3"}
     };
+
     // 기타 웹사이트 정보 (category_id, category_name, 크롤링 대상 URL, 카테고리 변수, 페이지 제한)
     public static final String[][] ETC_ALL_INFOS = new String[][]{
             {"101102102","통계학과","https://stat.dongguk.edu/article/board1/list","stat","3"}, {"101105102","경영정보학과","https://mis.dongguk.edu/article/news/list","mis","3"},
             {"101109105","건축공학부","https://archi.dongguk.edu/article/info1/list","archi","3"}, {"101110100","교육학과","https://education.dongguk.edu/article/news2/list","education","3"},
     };
+
+    // IT 융합교육센터 정보 (category_id, category_name, 크롤링 대상 URL, 디테일 url 변수, 페이지 제한)
+    public static final String[] DICE_INFOS = new String[]{"102100000","IT융합교육센터", "https://dice.dongguk.edu/board/list.do?id=S181", "3"};
 }
