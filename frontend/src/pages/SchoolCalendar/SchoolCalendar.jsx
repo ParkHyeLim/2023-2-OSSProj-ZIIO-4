@@ -11,10 +11,14 @@ import { EventModal } from '../../components';
 import { useNavigate } from 'react-router-dom';
 import { addEventAcademics, getAcademics } from '../../api/schoolCalendarAPI';
 import { formatDateToYMD } from '../../utils/dateUtils';
+import useGoogleCalendar from '../../hook/useGoogleCalendar';
+import { getUser } from '../../api/userAPI';
 
 const SchoolCalendar = () => {
   const navigate = useNavigate();
   const calendarRef = useRef(null);
+  const { data: userData } = useQuery(['user'], () => getUser());
+  const { createGoogleEvent } = useGoogleCalendar(userData);
   const [events, setEvents] = useState([]);
   const [listedEvents, setListedEvents] = useState([]);
   const [eventPostId, setEventPostId] = useState('');
@@ -114,10 +118,17 @@ const SchoolCalendar = () => {
       const SearchData = addEventAcademics(resultData);
       const result = await SearchData;
       if (result) {
-        console.log("zja", result);
+        console.log('zja', result);
         const response = window.confirm('저장된 내 일정을 확인하기 위해 마이페이지로 이동하시겠습니까?');
         if (response) navigate('/myPage');
       }
+
+      // 구글 캘린더에 일정 추가
+      createGoogleEvent({
+        ...resultData,
+        start: new Date(eventData.start),
+        end: new Date(eventData.end),
+      });
     } catch (error) {
       console.error('Error:', error);
     }

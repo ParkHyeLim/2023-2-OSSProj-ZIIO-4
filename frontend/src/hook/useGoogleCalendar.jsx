@@ -20,12 +20,18 @@ const useGoogleCalendar = userData => {
       visibility: 'private',
     };
 
-    const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
-      headers: {
-        Authorization: `Bearer ${userData.accessToken}`,
-      },
-    });
+    try {
+      const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
+        headers: {
+          Authorization: `Bearer ${userData.accessToken}`,
+        },
+      });
+      console.log('구글 캘린더에 일정 추가', response);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
+
   return { createGoogleEvent };
 };
 
