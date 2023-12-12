@@ -24,7 +24,7 @@ const MyPage = () => {
         const { my_page_id, title, url, memo, color_code: color, start_date, end_date } = event;
         const start = start_date ? dayjs(start_date, 'YYYY-MM-DD').toDate() : null;
         const end = end_date
-          ? dayjs(end_date, 'YYYY-MM-DD').toDate()
+          ? dayjs(end_date, 'YYYY-MM-DD').hour(23).minute(59).toDate() // 여기에서 시간을 23시 59분으로 설정
           : start_date && dayjs(start_date, 'YYYY-MM-DD').toDate();
 
         return { title, url, memo, color, start, end, my_page_id };
@@ -38,6 +38,13 @@ const MyPage = () => {
     cacheTime: 1000 * 60 * 60 * 24,
   });
 
+  const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
+    onSuccess: () => {
+      clearEvent();
+      queryClient.invalidateQueries('events');
+    },
+  });
+
   const calendarRef = useRef(null);
   const navigate = useNavigate();
   const { createGoogleEvent } = useGoogleCalendar(userData);
@@ -47,13 +54,6 @@ const MyPage = () => {
   const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' }); // 선택된 이벤트 정보를 담는 객체
   const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
   const queryClient = useQueryClient();
-
-  const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
-    onSuccess: () => {
-      clearEvent();
-      queryClient.invalidateQueries('events');
-    },
-  });
 
   function clearEvent() {
     setEvent({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' });
@@ -76,7 +76,7 @@ const MyPage = () => {
   const saveEvent = (eventData, type) => {
     if (eventData.end) {
       const endDate = new Date(eventData.end);
-      endDate.setHours(23, 59, 59, 999); // Set time to 23:59:59.999
+      endDate.setHours(23, 59, 59, 999); // 날짜의 시간을 23:59:59.999로 설정
       eventData.end = endDate;
     }
 
