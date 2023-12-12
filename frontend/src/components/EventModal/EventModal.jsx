@@ -16,8 +16,8 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
   const queryClient = useQueryClient();
   const mypageId = prevData ? prevData.my_page_id : null;
   const [title, setTitle] = useState(prevData && prevData.title !== '' ? prevData.title : '');
-  const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : '');
-  const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : '');
+  const [start, setStart] = useState(prevData && prevData.start !== '' ? prevData.start : new Date());
+  const [end, setEnd] = useState(prevData && prevData.end !== '' ? prevData.end : new Date());
   const [memo, setMemo] = useState(prevData && prevData.memo !== '' ? prevData.memo : '');
   const [url, setUrl] = useState(prevData && prevData.url !== '' ? prevData.url : '');
   const [color, setColor] = useState(prevData && prevData.color !== '' ? prevData.color : '');
@@ -140,7 +140,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
             <label className={styles.label}>기간 </label>
             <div className={styles.wrapper}>
               <RangePicker
-                defaultValue={prevData ? [dayjs(start), dayjs(end)] : [dayjs(new Date()), dayjs(new Date())]}
+                defaultValue={[dayjs(start), dayjs(end)]}
                 onChange={dates => {
                   console.log(dates);
                   if (dates.length === 2) {
