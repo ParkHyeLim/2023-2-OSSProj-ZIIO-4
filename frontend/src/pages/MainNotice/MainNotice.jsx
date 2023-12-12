@@ -95,14 +95,18 @@ function MainNotice() {
         }
       }
       if (Array.isArray(data.categories)) {
-        setCategoryIdList(data.categories);
+        const prevData = [{ name: "메인", category_id: "100" }, { name: "단과대", category_id: "101" }, { name: "기타", category_id: "102" }];
+        const newData = prevData.concat(data.categories);
+        setCategoryIdList(newData);
       }
     }
   }, [noticeQuery, noticeList, scrapsQuery]);
 
+  useEffect(()=>{console.log(categoryIdList)},[categoryIdList])
+
   // 북마크 불러오기
   useEffect(() => {
-    if (bookmarkCategories.length === 0 && bookmarksQuery && bookmarksQuery.data) {
+    if (bookmarkCategories.length === 3 && bookmarksQuery && bookmarksQuery.data) {
       const { data } = bookmarksQuery;
       if (Array.isArray(data)) {
         data.forEach(item => {
@@ -240,7 +244,7 @@ function MainNotice() {
   const categoryDataForm = (c1, c2, c3, id) => {
     const data = {
       name: c3 || c2 || c1,
-      url: { c1, c2, c3 },
+      url: { category1: c1, category2: c2, category3: c3, },
       id: id,
     };
     return data;
@@ -251,6 +255,7 @@ function MainNotice() {
     if (category1 || category2 || category3) {
       const categoryId = categotyIdSearch(category1, category2, category3);
       const newSearch = categoryDataForm(category1, category2, category3, categoryId);
+      console.log(newSearch);
       const existingData = sessionStorage.getItem('searchCategories');
       const parseExistingData = existingData ? JSON.parse(existingData) : [];
       const isExist = parseExistingData.some(filter => filter.id === newSearch.id);
@@ -418,10 +423,7 @@ function MainNotice() {
               onChange={e => setCategory3(e.target.value)}
             />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-            <button
-              className={category2 === '' ? styles.disabledSearchButton : styles.searchButton}
-              onClick={handleSearch}
-              disabled={category2 === '' ? true : false}>
+            <button className={styles.searchButton} onClick={handleSearch} >
               검색
             </button>
             {isMobile && (
