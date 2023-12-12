@@ -22,7 +22,7 @@ export const Header = () => {
   const [isModalOpen, setIsModalOpen] = useRecoilState(loginModalState); // 로그인 모달을 보여줄지 여부
 
   const handleLogin = () => {
-    if (isLoggedin && !isMobile) {
+    if (isLoggedin) {
       setIsHeaderVisible(false);
       // 로그아웃 여부 물어보기
       const result = window.confirm('로그아웃 하시겠습니까?');
@@ -32,12 +32,12 @@ export const Header = () => {
         window.location.reload();
       }
     } else {
-      setIsHeaderVisible(false);
-      setIsModalOpen(true);
-    }
-
-    if (isMobile) {
-      window.location.href = process.env.REACT_APP_SERVER_URL + '/oauth2/authorization/google';
+      if (isMobile) {
+        window.location.href = process.env.REACT_APP_SERVER_URL + '/oauth2/authorization/google';
+      } else {
+        setIsHeaderVisible(false);
+        setIsModalOpen(true);
+      }
     }
   };
 
