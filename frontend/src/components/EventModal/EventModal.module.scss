@@ -25,6 +25,7 @@
   border-radius: 1rem;
   z-index: 101;
   padding: 2.1rem 2.5rem;
+  overflow-x: auto;
 
   @media (max-width: 420px) {
     width: 100%;
