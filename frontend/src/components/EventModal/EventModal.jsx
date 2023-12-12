@@ -143,7 +143,7 @@ export const EventModal = ({ eventId, modalTitle, saveEvent, closeModal, prevDat
                 defaultValue={[dayjs(start), dayjs(end)]}
                 onChange={dates => {
                   console.log(dates);
-                  if (dates.length === 2) {
+                  if (dates?.length === 2) {
                     // 첫 번째 날짜의 시, 분, 초를 0으로 설정
                     const startDate = new Date(dates[0].$d);
                     startDate.setHours(0, 0, 0, 0);

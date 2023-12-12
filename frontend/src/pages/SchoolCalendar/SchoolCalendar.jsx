@@ -36,7 +36,7 @@ const SchoolCalendar = () => {
 
   // 받아온 데이터를 fullcalendar에 넣기 위한 데이터 형태 커스텀
   useEffect(() => {
-    if (events.length === 0 && academicsQuery && academicsQuery.data) {
+    if (events?.length === 0 && academicsQuery && academicsQuery.data) {
       const transformedEvents = academicsQuery.data.map(item => {
         const start = formatDateToYMD(item.start_date);
         const end = formatDateToYMD(item.end_date);
