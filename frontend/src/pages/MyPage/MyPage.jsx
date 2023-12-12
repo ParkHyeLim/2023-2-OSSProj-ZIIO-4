@@ -15,17 +15,9 @@ import { getUser } from '../../api/userAPI';
 import { sortEventsByDate, ymdToDate } from '../../utils/dateUtils';
 import { getMyEvents, addMyEvent, updateMyEvent } from '../../api/mypageAPI';
 import dayjs from 'dayjs';
+import useGoogleCalendar from '../../hook/useGoogleCalendar';
 
 const MyPage = () => {
-  const calendarRef = useRef(null);
-  const navigate = useNavigate();
-  const isLoggedin = useRecoilValue(loginState);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(loginModalState);
-  const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
-  const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' }); // 선택된 이벤트 정보를 담는 객체
-  const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
-  const queryClient = useQueryClient();
-
   const { data: userData } = useQuery(['user'], () => getUser());
   const { data: events } = useQuery(['events'], () => getMyEvents(), {
     select: data => {
@@ -44,6 +36,17 @@ const MyPage = () => {
     },
     cacheTime: 1000 * 60 * 60 * 24,
   });
+
+  const calendarRef = useRef(null);
+  const navigate = useNavigate();
+  const { createGoogleEvent } = useGoogleCalendar(userData);
+  const isLoggedin = useRecoilValue(loginState);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(loginModalState);
+  const [listedEvents, setListedEvents] = useState([]); // 이미 지난 일정은 리스트에서 제외
+  const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' }); // 선택된 이벤트 정보를 담는 객체
+  const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
+  const queryClient = useQueryClient();
+
   const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
     onSuccess: () => {
       clearEvent();
@@ -79,32 +82,6 @@ const MyPage = () => {
     addEvent(eventData);
     setShowModal(false);
     createGoogleEvent(eventData);
-  };
-
-  // 구글 캘린더에 일정 추가하는 함수
-  const createGoogleEvent = async eventData => {
-    const { title, memo, start, end } = eventData;
-    const event = {
-      summary: title,
-      description: memo,
-      start: {
-        dateTime: start,
-        timeZone: 'Asia/Seoul',
-      },
-      end: {
-        dateTime: end,
-        timeZone: 'Asia/Seoul',
-      },
-      colorId: 5,
-      status: 'confirmed',
-      visibility: 'private',
-    };
-
-    const response = await axios.post('https://www.googleapis.com/calendar/v3/calendars/primary/events', event, {
-      headers: {
-        Authorization: `Bearer ${userData.accessToken}`,
-      },
-    });
   };
 
   // 일정 추가 모달을 닫는 함수
