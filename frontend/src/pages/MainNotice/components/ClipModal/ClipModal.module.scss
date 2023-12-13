@@ -1,0 +1,69 @@
+.modalBackgound {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.5);
+}
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40rem;
+  height: 20rem;
+  background: white;
+  border-radius: 11px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem 0 2rem;
+  margin: 0;
+  width: 40rem;
+  height: 4.5rem;
+  background: var(--orange);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  .item {
+    margin: 0;
+    color: white;
+    font-weight: 500;
+    font-size: 1.5rem;
+  }
+
+  .button {
+    margin: 0;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+}
+
+.modalButtonContainer {
+  display: flex;
+  justify-content: center;
+
+  .button {
+    margin: 2.8rem 1rem 2rem 1rem;
+    width: 15rem;
+    height: 10rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    border: 2px solid var(--orange);
+    font-weight: 700;
+  }
+}

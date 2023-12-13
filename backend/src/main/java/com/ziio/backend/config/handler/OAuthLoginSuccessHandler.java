@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,13 +30,11 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     JwtUtil jwtUtil;
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
-    final String REDIRECT_URI = "http://localhost:3000/login?jwt=";
+    final String REDIRECT_URI = "https://dgu-campus-calendar-ziio.vercel.app/login?jwt=";
     final long TOKEN_EXPIRATION_TIME = 3600000; // 1시간 동안 유효한 토큰
 
-    // 이전 코드 생략
-
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
 
         // 토큰에서 email, name 추출

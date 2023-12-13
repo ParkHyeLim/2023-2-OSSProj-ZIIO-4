@@ -1,0 +1,138 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 2rem 2rem;
+  padding: 0 0 2rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--gray-500);
+
+  @media (max-width: 1150px) {
+    margin: 0 0 1.7rem 1.7rem;
+  }
+
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    @media (max-width: 1150px) {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  * {
+    font-weight: 500;
+  }
+
+  .leftContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .bookmarkIcon {
+      color: var(--yellow);
+
+      @media (max-width: 1150px) {
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+      }
+    }
+
+    .regBookmarkIcon {
+      color: var(--gray-400);
+
+      &:hover {
+        color: var(--gray-600);
+        cursor: pointer;
+      }
+
+      @media (max-width: 1150px) {
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+      }
+    }
+
+    .announcementIdDefault {
+      display: flex;
+      justify-content: center;
+      min-width: 3rem;
+      margin: 0 1rem 0 1.5rem;
+      font-size: 1.3rem;
+
+      @media (max-width: 1150px) {
+        margin: 0 0.9rem 0 0.5rem;
+      }
+    }
+
+    .announcementId {
+      margin: 0 2rem 0 1.5rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--orange);
+
+      @media (max-width: 1150px) {
+        margin: 0 1.5rem 0 1rem;
+      }
+    }
+
+    .announcementTitleDefault {
+      margin: 0 1rem;
+      font-size: 1.5rem;
+      color: var(--gray-900);
+
+      @media (max-width: 1150px) {
+        margin: 0;
+      }
+    }
+
+    .announcementTitle {
+      // font-weight: bold;
+    }
+  }
+
+  .rightContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media (max-width: 1150px) {
+      margin-top: 0.5rem;
+    }
+
+    .announcementCategoryDefault {
+      text-wrap: nowrap;
+      margin: 0 1rem;
+      font-size: 1.3rem;
+    }
+
+    .announcementCategory {
+    }
+
+    .announcementDatePostedDefault {
+      margin: 0 1.5rem;
+      font-size: 1.3rem;
+
+      @media (max-width: 1150px) {
+        margin: 0;
+      }
+    }
+
+    .announcementDatePosted {
+    }
+
+    .announcementAuthorDefault {
+      text-wrap: nowrap;
+      margin: 0 1.5rem;
+      font-size: 1.3rem;
+
+      @media (max-width: 1150px) {
+        margin: 0 1rem;
+      }
+    }
+
+    .announcementAuthor {
+    }
+  }
+}

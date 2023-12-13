@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 export const getMyEvents = async () => {
   try {
     const response = await instance.get('/mypages');
+    // console.log('mypageAPI.js getMyEvents response:', response);
     return response.data;
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -39,6 +40,7 @@ export const updateMyEvent = async eventData => {
       title: eventData.title,
       memo: eventData.extendedProps.memo,
       color_code: eventData.backgroundColor,
+      url: eventData.url,
     });
 
     return response.data;

@@ -13,11 +13,11 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
     if (Array.isArray(data)) {
       setNowPage(1);
       const inputData = [...data];
-      const fixedData = inputData.filter((item) => {
+      const fixedData = inputData.filter(item => {
         return item.fixed === true;
       });
-      setNowFixedNuber(fixedData.length);
-      const updatedInputData = inputData.filter((item) => {
+      setNowFixedNuber(fixedData?.length);
+      const updatedInputData = inputData.filter(item => {
         return item.fixed !== true;
       });
       const mergedArray = fixedData.concat(updatedInputData);
@@ -27,7 +27,7 @@ const Pagging = ({ data, noticeCategory, changeClipStarNotice }) => {
   }, [data]);
 
   useEffect(() => {
-    if (nowData.length === 10) {
+    if (nowData?.length === 10) {
       const container = document.querySelector(`.${styles.container}`);
       const handleScroll = debounce(() => {
         const container = document.querySelector(`.${styles.container}`);

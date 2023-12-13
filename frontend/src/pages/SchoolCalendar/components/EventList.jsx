@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from '../../MyPage/MyPage.module.scss';
 import { calculateDDay } from '../../../utils/dateUtils';
 
 const EventList = ({ listedEvents, handleEventClick }) => {
   const nowDate = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+
   return (
     <div className={styles.eventList}>
-      {listedEvents?.map(
+      {listedEvents.map(
         event =>
           event.start_date > nowDate && (
             <div key={event.defId} className={styles.eventListRow} onClick={() => handleEventClick(event)}>
@@ -16,7 +17,7 @@ const EventList = ({ listedEvents, handleEventClick }) => {
                 {calculateDDay(event.end_date !== null ? event.end_date : event.start_date)}
               </div>
             </div>
-          ),
+          )
       )}
     </div>
   );
