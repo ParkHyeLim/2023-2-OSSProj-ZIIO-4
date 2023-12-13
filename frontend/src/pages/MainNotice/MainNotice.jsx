@@ -64,7 +64,7 @@ function MainNotice() {
   const [selectedNotice, setSelectedNotice] = useState([]); // focus된 공지 index
   const [selectedCategory, setSelectedCategory] = useState('100100000'); // focus된 공지 index
 
-  const noticeQuery = useQuery('noticeData', getNotice, { cacheTime: 1000 * 60 * 60 * 24 });
+  const noticeQuery = useQuery('noticeData', getNotice);
   const bookmarksQuery = useQuery('bookmarksData', getBookmark, { enabled: !!isLogin });
   const scrapsQuery = useQuery('scrapsData', getScraps, { enabled: !!isLogin });
   const navigate = useNavigate();
@@ -95,14 +95,11 @@ function MainNotice() {
         }
       }
       if (Array.isArray(data.categories)) {
-        const prevData = [{ name: "메인", category_id: "100" }, { name: "단과대", category_id: "101" }, { name: "기타", category_id: "102" }];
-        const newData = prevData.concat(data.categories);
-        setCategoryIdList(newData);
+        const prevData = data.categories;
+        setCategoryIdList([...prevData]);
       }
     }
   }, [noticeQuery, noticeList, scrapsQuery]);
-
-  useEffect(()=>{console.log(categoryIdList)},[categoryIdList])
 
   // 북마크 불러오기
   useEffect(() => {
@@ -471,17 +468,17 @@ function MainNotice() {
       {!isLogin
         ? isOpen && <LoginModal onModalClose={() => setIsOpen(!isOpen)} />
         : isOpen && (
-            <ClipModal
-              noticeId={selectedNotice.notice_id}
-              categoryId={selectedCategory}
-              onModalClose={() => setIsOpen(!isOpen)}
-              openEventModal={() => {
-                setIsOpen(!isOpen);
-                setIsOpenEventModal(!isOpenEventModal);
-              }}
-              onScrapsData={data => reloadScraps(data)}
-            />
-          )}
+          <ClipModal
+            noticeId={selectedNotice.notice_id}
+            categoryId={selectedCategory}
+            onModalClose={() => setIsOpen(!isOpen)}
+            openEventModal={() => {
+              setIsOpen(!isOpen);
+              setIsOpenEventModal(!isOpenEventModal);
+            }}
+            onScrapsData={data => reloadScraps(data)}
+          />
+        )}
       {isOpenEventModal && (
         <EventModal
           modalTitle={'내 일정으로 추가'}
