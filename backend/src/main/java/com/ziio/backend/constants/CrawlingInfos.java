@@ -34,6 +34,9 @@ public class CrawlingInfos {
             {"101109105","건축공학부","https://archi.dongguk.edu/article/info1/list","archi","3"}, {"101110100","교육학과","https://education.dongguk.edu/article/news2/list","education","3"},
     };
 
-    // IT 융합교육센터 정보 (category_id, category_name, 크롤링 대상 URL, 디테일 url 변수, 페이지 제한)
-    public static final String[] DICE_INFOS = new String[]{"102100000","IT융합교육센터", "https://dice.dongguk.edu/board/list.do?id=S181", "3"};
+    // SW교육원 정보 (category_id, category_name, 크롤링 대상 URL, 디테일 url 변수, 페이지 제한)
+    public static final String[] DICE_INFOS = new String[]{"102100000","SW교육원", "https://dice.dongguk.edu/board/list.do?id=S181", "3"};
+
+    // 대분류 카테고리 정보 (category_id, category_name)
+    public static final String[][] MAJOR_CATEGORY_INFOS = new String[][]{{"100000000","메인"}, {"101000000","단과대"}, {"102000000","기타"}};
 }
