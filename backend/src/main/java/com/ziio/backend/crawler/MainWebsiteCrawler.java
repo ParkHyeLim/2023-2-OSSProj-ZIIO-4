@@ -28,11 +28,21 @@ public class MainWebsiteCrawler {
     // 크롤링 실행
     public void crawl() {
         String[][] mainAllInfos = CrawlingInfos.MAIN_ALL_INFOS;
+        String[][] majorCategoryInfos = CrawlingInfos.MAJOR_CATEGORY_INFOS;
+
+        // 대분류 카테고리 DB 저장
+        NewCategory category = new NewCategory();
+        category.setCategory_id(majorCategoryInfos[0][0]);
+        category.setName(majorCategoryInfos[0][1]);
+        category.setTop_fixed(0);
+        categoryService.save(category);
+
+        // 카테고리별로 크롤링
         for (String[] eachInfo : mainAllInfos) {
             getNoticeList(eachInfo[0], eachInfo[1], eachInfo[2], Integer.parseInt(eachInfo[3]));
             }
         }
-    // 카테고리 별로 크롤링
+
     private void getNoticeList(String categoryID, String categoryName, String noticeKind, int pageLimit) {
         List<String> url_Infos = new ArrayList<>();
         List<String> title_Infos = new ArrayList<>();
