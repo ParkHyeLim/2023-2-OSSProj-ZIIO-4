@@ -13,7 +13,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 |프론트엔드|프론트엔드|백엔드|
 |경제학과|사학과|경영정보학과|
 |2020110210|2019110340|2018111366|
-|디자인, 소셜로그인, 마이페이지, 반응형 UI|프로젝트 관리, 공지사항, 학사일정, 배포|API 구현, DB 구축, 크롤링, 서버 구축 및 배포|
+|웹디자인, 소셜로그인, 마이페이지, 반응형 UI|프로젝트 관리, 공지사항, 학사일정, 배포|API 구현, DB 구축, 크롤링, 서버 구축 및 배포|
 
 ---
 
@@ -24,7 +24,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 '학사통달' - 동국대학교 공지사항 통합 달력의 준말.
 
 ### 의의
- 64개의 동국대학교 공지사항 페이지와 학사 일정 페이지를 통합한 시스템을 구축하여 학교 산하 사이트의 공지사항을 학생들이 사이트를 직접 찾아서 정보를 습득하는 기존 방식에서 벗어나고자 한다. 또한 사용자 일정 관리 캘린더 시스템을 구현하고, 이를 구글 캘린더와의 연동함으로서 학교 공지사항 및 학사 일정을 실제 본인의 일정으로 관리할 수 있도록 한다.
+ 64개의 동국대학교 공지사항 페이지와 학사 일정 페이지를 통합한 시스템을 구축한다. 또한 사용자 일정 관리 캘린더 시스템을 구현하고, 이를 구글 캘린더와의 연동함으로서 학교 공지사항 및 학사 일정을 실제 본인의 일정으로 관리할 수 있도록 한다.
 
 ### 현행 시스템 분석
 
@@ -62,19 +62,11 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 ### Frontend
 
-<img src="https://img.shields.io/badge/react 18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=black"> 
-
-<img src="https://img.shields.io/badge/react dom-18.2.0-61DAFB?style=for-the-badge&logo=&logoColor=black"> <img src="https://img.shields.io/badge/react query - 3.39.3-61DAFB?style=for-the-badge&logo=&logoColor=black">
-<img src="https://img.shields.io/badge/react icons-4.11.0-61DAFB?style=for-the-badge&logo=&logoColor=black">
-<img src="https://img.shields.io/badge/react responsive-9.0.2-61DAFB?style=for-the-badge&logo=&logoColor=black">
-<img src="https://img.shields.io/badge/react routerdom-6.16.0-61DAFB?style=for-the-badge&logo=&logoColor=black">
-<img src="https://img.shields.io/badge/react scripts-5.0.1-61DAFB?style=for-the-badge&logo=&logoColor=black">
-
-<img src="https://img.shields.io/badge/Goolge FullCalendar 6.1.9-003545?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/axios 1.6.2-5A29E4?style=for-the-badge&logo=axios&logoColor=white">
+<img src="https://img.shields.io/badge/react 18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/react query 3.39.3-FF4154?style=for-the-badge&logo=reactquery&logoColor=white"> <img src="https://img.shields.io/badge/react responsive 9.0.2-61DAFB?style=for-the-badge&logo=&logoColor=black">
+<img src="https://img.shields.io/badge/axios 1.6.2-5A29E4?style=for-the-badge&logo=axios&logoColor=white">
 <img src="https://img.shields.io/badge/recoil 0.7.7-3578E5?style=for-the-badge&logo=recoil&logoColor=white">
-<img src="https://img.shields.io/badge/classnames-2.3.2-003545?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/antd-5.11.4-003545?style=for-the-badge&logo=&logoColor=white">
-  
+<img src="https://img.shields.io/badge/FullCalendar 6.1.9-003545?style=for-the-badge&logo=&logoColor=white"> 
+   
 ### Backend
 
 <img src="https://img.shields.io/badge/java 11-007396?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/spring boot 2.7.13-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
@@ -91,8 +83,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 ### 공지사항 페이지
 
-<img width="1636" alt="image" src="https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/113084292/455c2e60-3f4c-45f5-92cb-681b239f2e2c">
-
+![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/2878efdc-add9-45a9-b0b0-c3993b8d027b)
 📍 사이트 접속 시 가장 먼저 보이는 페이지로, 사용자가 카테고리를 선택한 후 선택적으로 검색어를 추가하여 원하는 공지사항을 찾을 수 있도록 구현하였다.
 
 📍 첫 접속 상태는 현재와 같이 비 로그인 상태이므로, 사용자의 Session Storage에 검색 기록을 저장한 후 이를 검색한 공지사항 목록으로 보여주고, 별도의 카테고리 없이 사용자가 목록에서 카테고리를 누르면 해당 카테고리 공지사항을 검색하도록 구현하였다.
@@ -105,7 +96,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 ---
 
-<img width="1676" alt="image" src="https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/113084292/645fd46a-45c6-4d84-ade4-0d91ca7f7240">
+![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/6a532664-72db-40d9-a5c3-23bc8b161648)
 
 📍 만일 이미 즐겨찾기에 있는 카테고리를 검색했을 때는, 중복을 방지하기 위해 1차적으로 Front 측에서 판단하여 버튼을 비활성화 시켜두었다.
 
@@ -122,7 +113,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 ### 학사일정 페이지
 
-![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/113084292/593a9731-7257-45b8-81c6-d4503e9c70e3)
+![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/44a27b89-b5df-40ad-898d-6ffd57beeaf9)
 
 📍 학사일정 페이지의 왼쪽에서는, 현재 날짜를 기준으로 다음 일정들을 디데이 형태로 보여준다. 또한 일정의 시각화를 위해 Google FullCalendar 오픈소스를 이용해 캘린더 형태로 구현하였다. 사용자는 원하는 일정의 상세 정보를 달력의 일정 또는 목록을 클릭함으로써 좌측 아래와 같이 확인할 수 있다.
 
@@ -132,8 +123,7 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 ### 마이페이지
 
-<img width="1223" alt="image" src="https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/113084292/03294b04-4878-4b75-8075-93eecb73859b">
-
+![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/4dea6eea-36a2-464d-b6e6-73effa8a3fda)
 
 📍 마이페이지 왼쪽의 리스트는 로그인 된 사용자의 일정 리스트이다. 해당 리스트는 디데이 순으로 정렬되어 있으며, 이미 지난 일정은 보이지 않는다. 회색으로 표시된 일정은 기간이 정해지지 않은 일정이다.
 
@@ -149,47 +139,11 @@ https://dgu-campus-calendar-ziio.vercel.app/
 
 <img width="1189" alt="image" src="https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/113084292/3c1f85e1-ea8f-464e-92ac-93340cf66267">
 
-📍 `react-responsive`와 `미디어쿼리`, `css grid`를 사용하여 구현하였다. grid를 이용해 뷰포트의 너비에 따라 다른 열수와 행수를 지정하였다. 
+📍 `react-responsive`와 `미디어쿼리`, `css grid`를 사용하여 구현하였다. 
 
 ---
 
-## 프로젝트 아키텍처 🧱
-![image](https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/102a4d59-3440-4dbc-ae6f-41a0993b9671)
-
----
-
-## 데이터베이스 구조 🗂️
-<img src="https://github.com/CSID-DGU/2023-2-OSSProj-ZIIO-4/assets/87259219/578f71b6-bc8b-47a2-a8a9-886ea8059915" width="900" />
-
----
-
-## 커밋 규칙 🔐
-|작업태그|내용|
-|:---:|:---:|
-|Feat|	새로운 기능 추가 / 일부 코드 추가 / 일부 코드 수정(리팩토링과 구분) / 디자인 요소 수정|
-|Fix|	버그 수정|
-|Refactor|	코드 리팩토링|
-|Style|	코드 의미에 영향을 주지 않는 변경사항(코드 포맷팅, 오타 수정, 변수명 변경, 에셋 추가)|
-|Chore|	빌드 부분 혹은 패키지 매니저 수정 사항, 파일 이름 변경 및 위치 변경, 파일 삭제
-
----
-
-## HTTP 상태코드 🚨
-
-|상태코드|설명|
-|:---:|:---:|
-|200 OK|	클라이언트의 요청 정상 수행|
-|201 Created|	POST를 통한 리소스 생성 시, 해당 리소스가 클라이언트의 요청에 맞게 성공적으로 생성|
-|400 Bad Request|	클라이언트의 요청이 부적절한 경우|
-|401 Unauthorized|	클라이언트가 인증되지 않은 상태에서, 보호된 리소스를 요청했을 때|
-|404 Not Found|	클라이언트가 서버와 통신할 수는 있지만, 서버가 요청한 바를 찾을 수 없을 때|
-|405 Method Not Allowed|	클라이언트가 요청한 리소스에서는 사용 불가능한 메소드를 이용했을 때|
-|409 Conflict|	클라이언트가 중복 등록을 시도했을 때|
-|500 Internal Server Error|	서버가 처리 방법을 모를 때|
-
----
-
-## 실행 순서 💡
+## 실행 방법 💡
 ### Frontend
 1. `npm install`
 2. `npm start`
