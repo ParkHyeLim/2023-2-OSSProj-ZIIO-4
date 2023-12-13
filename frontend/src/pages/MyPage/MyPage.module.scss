@@ -115,6 +115,7 @@
   border-radius: 0.7rem;
   border: 1px solid var(--gray-200, #e5e7eb);
   padding: 1.8rem;
+  background-color: white !important;
 
   // 1150px 이하일 때
   @media (max-width: 1150px) {
