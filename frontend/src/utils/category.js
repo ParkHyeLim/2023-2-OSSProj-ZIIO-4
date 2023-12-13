@@ -105,7 +105,7 @@ const categories = [
     category1: '기타',
     category2: [
       {
-        category2: 'IT융합교육센터',
+        category2: 'SW교육원',
         category3: [],
       },
       {
@@ -376,15 +376,11 @@ export const categoryList = [
     categoryList: ["단과대", "예술대학", "한국음악과"]
   },
   {
-    name: "IT융합교육센터",
-    categoryList: ["기타", "IT융합교육센터", ""]
+    name: "SW교육원",
+    categoryList: ["기타", "SW교육원", ""]
   },
   {
     name: "고양캠퍼스 미래융합교육원",
     categoryList: ["기타", "고양캠퍼스 미래융합교육원", ""]
-  },
-  {
-    name: "미래융합교육원",
-    categoryList: ["기타", "미래융합교육원", ""]
   },
 ];
