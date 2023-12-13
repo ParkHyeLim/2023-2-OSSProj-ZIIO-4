@@ -113,6 +113,16 @@ const MyPage = () => {
     });
   };
 
+  const getMyGoogleEvents = async () => {
+    const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      headers: {
+        Authorization: `Bearer ${userData.accessToken}`,
+      },
+    });
+    const data = await response.json();
+    console.log('구글 캘린더에서 받아온 일정', data);
+  };
+
   // 로그인이 되어있지 않으면 홈으로 리다이렉트
   useEffect(() => {
     if (!isLoggedin) {
@@ -120,6 +130,8 @@ const MyPage = () => {
       navigate('/'); // 홈으로 리다이렉트
       setIsLoginModalOpen(true);
     }
+
+    getMyGoogleEvents();
   }, []);
 
   return (
