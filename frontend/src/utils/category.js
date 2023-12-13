@@ -88,16 +88,12 @@ const categories = [
         category3: [],
       },
       {
-        category2: '미래융합대학',
-        category3: [],
-      },
-      {
         category2: '다르마칼리지',
         category3: [],
       },
       {
         category2: '예술대학',
-        category3: ['미술학부', '연국학부', '스포츠문화학과', '한국음악'],
+        category3: ['미술학부', '연극학부', '한국음악'],
       },
     ],
   },
@@ -350,10 +346,6 @@ export const categoryList = [
   {
     name: "약학대학",
     categoryList: ["단과대", "약학대학", ""]
-  },
-  {
-    name: "미래융합대학",
-    categoryList: ["단과대", "미래융합대학", ""]
   },
   {
     name: "다르마칼리지",
