@@ -35,5 +35,5 @@ public class CrawlingInfos {
     };
 
     // IT 융합교육센터 정보 (category_id, category_name, 크롤링 대상 URL, 디테일 url 변수, 페이지 제한)
-    public static final String[] DICE_INFOS = new String[]{"102100000","IT융합교육센터", "https://dice.dongguk.edu/board/list.do?id=S181", "3"};
+    public static final String[] DICE_INFOS = new String[]{"102100000","SW교육원", "https://dice.dongguk.edu/board/list.do?id=S181", "3"};
 }
