@@ -1,6 +1,8 @@
 package com.ziio.backend.service;
 
+import com.ziio.backend.entity.NewNotice;
 import com.ziio.backend.entity.Notice;
+import com.ziio.backend.repository.NewNoticeRepository;
 import com.ziio.backend.repository.NoticeRepository;
 import com.ziio.backend.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,13 @@ public class NoticeService {
     @Autowired
     private NoticeRepository noticeRepository;
     @Autowired
+    private NewNoticeRepository newNoticeRepository;
+    @Autowired
     private StringUtil stringUtil;
 
     // DB에 공지사항 저장
-    public void save(Notice notice) {
-        noticeRepository.save(notice);
+    public void save(NewNotice newNotice) {
+        newNoticeRepository.save(newNotice);
     }
 
     // 모든 공지사항 정보를 반환하는 메소드
@@ -63,6 +67,6 @@ public class NoticeService {
 
     // 모든 공지사항을 삭제하는 메소드
     public void deleteAllNotices() {
-        noticeRepository.deleteAll();
+        newNoticeRepository.deleteAll();
     }
 }

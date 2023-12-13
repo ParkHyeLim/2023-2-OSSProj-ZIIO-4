@@ -10,7 +10,7 @@
   // 미디어 쿼리
   @media (max-width: 768px) {
     height: 6rem;
-    padding: 1rem 3rem;
+    padding: 2rem 3rem 1rem 3rem;
     background: white;
     justify-content: space-between;
     align-items: center;
@@ -44,7 +44,7 @@
 
     // 미디어 쿼리
     @media (max-width: 768px) {
-      position: absolute;
+      position: fixed;
       top: 0;
       right: 0;
       flex-direction: column;
@@ -81,7 +81,7 @@
 .closeButton {
   position: absolute;
   top: 2rem;
-  right: 4rem;
+  right: 3rem;
   width: 2rem;
   height: 2rem;
   cursor: pointer;
