@@ -127,7 +127,7 @@ const SchoolCalendar = () => {
       createGoogleEvent({
         ...resultData,
         start: new Date(eventData.start),
-        end: new Date(eventData.end),
+        end: eventData.end ? new Date(eventData.end) : new Date(eventData.start),
       });
     } catch (error) {
       console.error('Error:', error);

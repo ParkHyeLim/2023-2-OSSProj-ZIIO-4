@@ -1,10 +1,11 @@
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import styles from './ClipModal.module.scss';
-import { addScraps } from "../../../../api/noticeAPI";
+import { addScraps } from '../../../../api/noticeAPI';
+import { useMediaQuery } from 'react-responsive';
 
 const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrapsData }) => {
-
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const handleClose = () => {
     onModalClose(false);
   };
@@ -12,10 +13,13 @@ const ClipModal = ({ noticeId, categoryId, onModalClose, openEventModal, onScrap
   const saveClip = async () => {
     const resultData = {
       notice_id: noticeId,
-      category_id: categoryId
-    }
+      category_id: categoryId,
+    };
     const SearchData = await addScraps(resultData);
-    if (SearchData) { onScrapsData(SearchData); onModalClose(false); }
+    if (SearchData) {
+      onScrapsData(SearchData);
+      onModalClose(false);
+    }
   };
 
   return (
