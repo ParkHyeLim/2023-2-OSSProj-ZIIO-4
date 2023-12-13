@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // 3000 port 접근 허용
+                    config.setAllowedOrigins(List.of("https://dgu-campus-calendar-ziio.vercel.app", "http://localhost:3000")); // vercel 접근 허용
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setExposedHeaders(List.of("*"));
@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/bookmarks/**").permitAll()
                 .antMatchers("/mypages/**").permitAll()
                 .antMatchers("/scraps/**").permitAll()
+                .antMatchers("/health-check/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 구글 OAuth 2.0 로그인 관련 설정

@@ -241,7 +241,7 @@ function MainNotice() {
   const categoryDataForm = (c1, c2, c3, id) => {
     const data = {
       name: c3 || c2 || c1,
-      url: { category1: c1, category2: c2, category3: c3, },
+      url: { category1: c1, category2: c2, category3: c3 },
       id: id,
     };
     return data;
@@ -419,7 +419,7 @@ function MainNotice() {
               onChange={e => setCategory3(e.target.value)}
             />
             <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-            <button className={styles.searchButton} onClick={handleSearch} >
+            <button className={styles.searchButton} onClick={handleSearch}>
               검색
             </button>
             {isMobile && (

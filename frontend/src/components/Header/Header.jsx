@@ -32,8 +32,12 @@ export const Header = () => {
         window.location.reload();
       }
     } else {
-      setIsHeaderVisible(false);
-      setIsModalOpen(true);
+      if (isMobile) {
+        window.location.href = process.env.REACT_APP_SERVER_URL + '/oauth2/authorization/google';
+      } else {
+        setIsHeaderVisible(false);
+        setIsModalOpen(true);
+      }
     }
   };
 
@@ -97,7 +101,7 @@ export const Header = () => {
         </header>
       )}
       <Outlet />
-      {isModalOpen && <LoginModal onModalClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && !isMobile && <LoginModal onModalClose={() => setIsModalOpen(false)} />}
     </>
   );
 };

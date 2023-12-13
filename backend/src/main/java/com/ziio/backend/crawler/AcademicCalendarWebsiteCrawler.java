@@ -17,16 +17,13 @@ import java.io.IOException;
 
 @Component
 public class AcademicCalendarWebsiteCrawler {
-    private final AcademicService academicService;
-    private final ColorService colorService;
-    private final RandomUtil randomUtil;
-
     @Autowired
-    public AcademicCalendarWebsiteCrawler(AcademicService academicService, ColorService colorService, RandomUtil randomUtil) {
-        this.academicService = academicService;
-        this.colorService = colorService;
-        this.randomUtil = randomUtil;
-    }
+    private AcademicService academicService;
+    @Autowired
+    private ColorService colorService;
+    @Autowired
+    private RandomUtil randomUtil;
+
     // 크롤링 실행
     public void crawl() {
         getNotice();
