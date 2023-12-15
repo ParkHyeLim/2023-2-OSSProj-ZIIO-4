@@ -1,0 +1,95 @@
+.modalBackgound {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.5);
+}
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40rem;
+  height: 20rem;
+  background: white;
+  border-radius: 11px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem 0 2rem;
+  margin: 0;
+  width: 40rem;
+  height: 4.5rem;
+  background: var(--orange);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 6rem;
+    border-radius: 0;
+  }
+
+  .item {
+    margin: 0;
+    color: white;
+    font-weight: 500;
+    font-size: 1.5rem;
+  }
+
+  .button {
+    margin: 0;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+}
+
+.modalButtonContainer {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10rem;
+  }
+
+  .button {
+    margin: 2.8rem 1rem 2rem 1rem;
+    width: 15rem;
+    height: 10rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+      margin: 1rem 0 1rem 0;
+      width: 80%;
+      height: 7rem;
+    }
+  }
+
+  .button:hover {
+    border: 2px solid var(--orange);
+    font-weight: 700;
+  }
+}

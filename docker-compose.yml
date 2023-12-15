@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  ziio_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ziio_backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ziio.c6pok3klrnal.ap-northeast-2.rds.amazonaws.com:3306/ziio_db?useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ziio_user
+      SPRING_DATASOURCE_PASSWORD: ziio1234
