@@ -38,13 +38,6 @@ const MyPage = () => {
     cacheTime: 1000 * 60 * 60 * 24,
   });
 
-  const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
-    onSuccess: () => {
-      clearEvent();
-      queryClient.invalidateQueries('events');
-    },
-  });
-
   const calendarRef = useRef(null);
   const navigate = useNavigate();
   const { createGoogleEvent } = useGoogleCalendar(userData);
@@ -54,6 +47,13 @@ const MyPage = () => {
   const [event, setEvent] = useState({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' }); // 선택된 이벤트 정보를 담는 객체
   const [showModal, setShowModal] = useState(false); // 일정 추가 모달을 보여줄지 여부
   const queryClient = useQueryClient();
+
+  const { mutate: addEvent } = useMutation(event => addMyEvent(event), {
+    onSuccess: () => {
+      clearEvent();
+      queryClient.invalidateQueries('events');
+    },
+  });
 
   function clearEvent() {
     setEvent({ title: '', url: null, memo: '', color: '', start: '', end: '', my_page_id: '' });
@@ -113,16 +113,6 @@ const MyPage = () => {
     });
   };
 
-  const getMyGoogleEvents = async () => {
-    const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-      headers: {
-        Authorization: `Bearer ${userData.accessToken}`,
-      },
-    });
-    const data = await response.json();
-    console.log('구글 캘린더에서 받아온 일정', data);
-  };
-
   // 로그인이 되어있지 않으면 홈으로 리다이렉트
   useEffect(() => {
     if (!isLoggedin) {
@@ -130,8 +120,6 @@ const MyPage = () => {
       navigate('/'); // 홈으로 리다이렉트
       setIsLoginModalOpen(true);
     }
-
-    getMyGoogleEvents();
   }, []);
 
   return (
