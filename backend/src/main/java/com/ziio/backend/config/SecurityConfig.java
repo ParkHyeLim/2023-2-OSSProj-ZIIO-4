@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.setAllowedOrigins(List.of("https://dgu-campus-calendar-ziio.vercel.app", "http://localhost:3000")); // vercel 접근 허용
+                    config.setAllowedOrigins(List.of("https://dgu-campus-calendar-ziio.vercel.app")); // vercel 접근 허용
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setExposedHeaders(List.of("*"));

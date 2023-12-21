@@ -28,12 +28,21 @@ public class CollegeAndDepartmentWebsiteCrawler {
     // 크롤링 실행
     public void crawl() {
         String[][] mainAllInfos = CrawlingInfos.COLLEGE_AND_DEPARTMENT_ALL_INFOS;
+        String[][] majorCategoryInfos = CrawlingInfos.MAJOR_CATEGORY_INFOS;
+
+        // 대분류 카테고리 DB 저장
+        NewCategory category = new NewCategory();
+        category.setCategory_id(majorCategoryInfos[1][0]);
+        category.setName(majorCategoryInfos[1][1]);
+        category.setTop_fixed(0);
+        categoryService.save(category);
+
+        // 카테고리별로 크롤링
         for (String[] eachInfo : mainAllInfos) {
             getNoticeList(eachInfo[0], eachInfo[1], eachInfo[2], eachInfo[3], Integer.parseInt(eachInfo[4]));
         }
     }
 
-    // 카테고리 별로 크롤링
     private void getNoticeList(String categoryID, String categoryName, String noticeKind, String noticeNum, int pageLimit) {
         List<String> url_Infos = new ArrayList<>();
         List<String> title_Infos = new ArrayList<>();
